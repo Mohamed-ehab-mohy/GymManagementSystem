@@ -1,38 +1,40 @@
 /* =========================================
-   PREMIUM GYM DESIGN SYSTEM
+   PREMIUM GYM DESIGN SYSTEM (REFINED)
    ========================================= */
 :root {
-    /* Light Mode Variables */
-    --bg-color: #f0f2f5;
+    /* Light Mode Variables - Soft & Clean */
+    --bg-color: #f8fafc;
     --bg-secondary: #ffffff;
     --bg-glass: rgba(255, 255, 255, 0.85);
-    --text-primary: #121212;
-    --text-secondary: #5f6368;
-    --border-color: rgba(0, 0, 0, 0.08);
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --border-color: rgba(15, 23, 42, 0.08);
     
-    /* Brand Colors (Electric Blue / Neon Purple Theme) */
-    --primary-color: #0055ff;
-    --primary-glow: rgba(0, 85, 255, 0.4);
-    --secondary-color: #7000ff;
-    --accent-color: #ff0055;
+    /* Brand Colors - Elegant Deep Blue */
+    --primary-color: #2563eb;
+    --primary-glow: rgba(37, 99, 235, 0.25);
+    --secondary-color: #4f46e5;
+    --accent-color: #f43f5e;
     
-    --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.08);
-    --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    --card-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
+    --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); /* Smoother Apple-like easing */
 }
 
 [data-theme="dark"] {
-    /* Dark Mode Variables */
-    --bg-color: #0a0a0c;
-    --bg-secondary: #16161a;
-    --bg-glass: rgba(22, 22, 26, 0.85);
-    --text-primary: #f8f9fa;
-    --text-secondary: #a0a0a0;
-    --border-color: rgba(255, 255, 255, 0.08);
+    /* Dark Mode Variables - Easy on eyes */
+    --bg-color: #0f172a; /* Slate 900 - much softer than black */
+    --bg-secondary: #1e293b; /* Slate 800 */
+    --bg-glass: rgba(30, 41, 59, 0.85);
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --border-color: rgba(255, 255, 255, 0.06);
     
-    --primary-color: #00e5ff;
-    --primary-glow: rgba(0, 229, 255, 0.5);
+    /* Brand Colors - Vibrant but not blinding */
+    --primary-color: #38bdf8; /* Sky 400 */
+    --primary-glow: rgba(56, 189, 248, 0.12); /* Subtle glow */
+    --secondary-color: #818cf8; /* Indigo 400 */
     
-    --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+    --card-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.3);
 }
 
 /* =========================================
@@ -44,11 +46,13 @@ body {
     font-family: 'Inter', sans-serif;
     transition: var(--transition);
     overflow-x: hidden;
+    line-height: 1.6; /* Better readability */
 }
 
 h1, h2, h3, h4, h5, h6, .navbar-brand {
     font-family: 'Outfit', sans-serif;
     font-weight: 700;
+    letter-spacing: -0.02em; /* More modern tight tracking */
 }
 
 a {
@@ -58,7 +62,7 @@ a {
 }
 
 a:hover {
-    color: var(--text-primary);
+    color: var(--secondary-color);
 }
 
 /* =========================================
@@ -66,33 +70,33 @@ a:hover {
    ========================================= */
 .navbar-glass {
     background: var(--bg-glass) !important;
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--border-color);
     position: sticky;
     top: 0;
     z-index: 1000;
     transition: var(--transition);
-    padding: 1rem 0;
+    padding: 0.8rem 0;
 }
 
 .navbar-brand img {
-    height: 50px;
-    border-radius: 12px;
-    box-shadow: 0 0 15px var(--primary-glow);
+    height: 42px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px var(--primary-glow);
     transition: var(--transition);
 }
 
 .navbar-brand:hover img {
-    transform: scale(1.05);
+    transform: translateY(-2px);
 }
 
 .nav-link {
     color: var(--text-secondary) !important;
-    font-weight: 600;
+    font-weight: 500;
     position: relative;
     padding: 0.5rem 1.2rem !important;
-    font-size: 1.1rem;
+    font-size: 1.05rem;
 }
 
 .nav-link:hover, .nav-link.active {
@@ -109,34 +113,34 @@ a:hover {
     background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
     transition: var(--transition);
     transform: translateX(-50%);
+    border-radius: 2px;
 }
 
 .nav-link:hover::after, .nav-link.active::after {
-    width: 70%;
+    width: 60%; /* More subtle underline */
 }
 
 /* =========================================
    THEME TOGGLE
    ========================================= */
 .theme-toggle {
-    background: transparent;
-    border: none;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
     color: var(--text-primary);
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0.5rem;
+    padding: 0.5rem 0.6rem;
     border-radius: 50%;
     transition: var(--transition);
 }
 
 .theme-toggle:hover {
-    background: var(--bg-secondary);
-    box-shadow: 0 0 15px var(--primary-glow);
+    box-shadow: 0 4px 12px var(--primary-glow);
     color: var(--primary-color);
-    transform: rotate(15deg);
+    transform: translateY(-2px);
 }
 
 /* =========================================
@@ -146,13 +150,14 @@ a:hover {
     background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
     color: #fff !important;
     border: none;
-    border-radius: 8px;
-    padding: 10px 24px;
+    border-radius: 10px;
+    padding: 12px 28px;
     font-weight: 600;
     position: relative;
     z-index: 1;
     overflow: hidden;
     transition: var(--transition);
+    letter-spacing: 0.02em;
 }
 
 .btn-gradient::before {
@@ -170,24 +175,26 @@ a:hover {
 }
 
 .btn-gradient:hover {
-    box-shadow: 0 0 20px var(--primary-glow);
+    box-shadow: 0 8px 20px var(--primary-glow);
     transform: translateY(-2px);
 }
 
 .btn-glass {
-    background: transparent;
-    border: 2px solid var(--border-color);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
     color: var(--text-primary);
-    border-radius: 8px;
-    font-weight: 600;
+    border-radius: 10px;
+    font-weight: 500;
     transition: var(--transition);
+    padding: 12px 28px;
 }
 
 .btn-glass:hover {
-    background: rgba(255,255,255,0.05);
+    background: var(--bg-color);
     color: var(--primary-color);
     border-color: var(--primary-color);
-    box-shadow: 0 0 15px var(--primary-glow);
+    box-shadow: 0 4px 15px var(--primary-glow);
+    transform: translateY(-2px);
 }
 
 /* =========================================
@@ -196,7 +203,7 @@ a:hover {
 .premium-card {
     background: var(--bg-secondary);
     border: 1px solid var(--border-color);
-    border-radius: 16px;
+    border-radius: 20px; /* Softer, rounder corners */
     box-shadow: var(--card-shadow);
     transition: var(--transition);
     overflow: hidden;
@@ -204,25 +211,22 @@ a:hover {
 }
 
 .premium-card:hover {
-    transform: translateY(-8px);
-    border-color: var(--primary-color);
-    box-shadow: 0 12px 40px var(--primary-glow);
+    transform: translateY(-6px);
+    border-color: var(--border-color);
+    box-shadow: 0 15px 40px -10px var(--primary-glow);
 }
 
 .premium-card-header {
-    background: rgba(0,0,0,0.05);
-    padding: 1.5rem;
+    background: var(--bg-color);
+    padding: 2rem 1.5rem;
     border-bottom: 1px solid var(--border-color);
     position: relative;
-}
-
-[data-theme="dark"] .premium-card-header {
-    background: rgba(0,0,0,0.3);
+    transition: var(--transition);
 }
 
 .premium-card-header.active-plan {
-    background: linear-gradient(135deg, rgba(0,229,255,0.1), rgba(112,0,255,0.1));
-    border-bottom: 1px solid rgba(0,229,255,0.3);
+    background: linear-gradient(135deg, rgba(56, 189, 248, 0.05), rgba(129, 140, 248, 0.05));
+    border-bottom: 1px solid rgba(56, 189, 248, 0.15);
 }
 
 /* Gradient Text Utilities */
@@ -246,13 +250,20 @@ a:hover {
     background-color: var(--bg-color);
     border: 1px solid var(--border-color);
     color: var(--text-primary);
-    border-radius: 8px;
-    padding: 0.8rem 1rem;
+    border-radius: 10px;
+    padding: 0.8rem 1.2rem;
+    transition: var(--transition);
 }
 
 .form-control:focus, .form-select:focus {
     background-color: var(--bg-color);
     color: var(--text-primary);
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 0.25rem var(--primary-glow);
+    box-shadow: 0 0 0 4px var(--primary-glow);
+}
+
+/* Badges */
+.badge {
+    font-weight: 500;
+    letter-spacing: 0.02em;
 }
