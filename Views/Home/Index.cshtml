@@ -1,8 +1,48 @@
-﻿@{
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="text-center py-5">
+    <div class="row align-items-center justify-content-center min-vh-50">
+        <div class="col-lg-8 mx-auto">
+            <h1 class="display-3 fw-bold mb-4">
+                Unleash Your <span class="text-gradient">True Potential</span>
+            </h1>
+            <p class="lead mb-5 text-secondary fs-4" style="line-height: 1.8;">
+                Experience a premium fitness journey with state-of-the-art equipment, elite trainers, and plans tailored just for you.
+            </p>
+            <div class="d-flex gap-3 justify-content-center flex-wrap">
+                <a asp-controller="Plans" asp-action="Index" class="btn btn-gradient btn-lg px-5 py-3 fs-5">
+                    Explore Plans
+                </a>
+                <a href="#" class="btn btn-glass btn-lg px-5 py-3 fs-5">
+                    Meet Trainers
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mt-5 pt-5 border-top" style="border-color: var(--border-color) !important;">
+    <div class="col-md-4">
+        <div class="premium-card p-5 text-center h-100">
+            <i class="bi bi-lightning-charge-fill display-3 text-primary-theme mb-4 d-block"></i>
+            <h3 class="h4 fw-bold mb-3">Elite Equipment</h3>
+            <p class="text-secondary fs-5">Access to world-class machines and free weights.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="premium-card p-5 text-center h-100">
+            <i class="bi bi-people-fill display-3 text-primary-theme mb-4 d-block"></i>
+            <h3 class="h4 fw-bold mb-3">Expert Trainers</h3>
+            <p class="text-secondary fs-5">Learn from certified professionals dedicated to your success.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="premium-card p-5 text-center h-100">
+            <i class="bi bi-activity display-3 text-primary-theme mb-4 d-block"></i>
+            <h3 class="h4 fw-bold mb-3">Track Progress</h3>
+            <p class="text-secondary fs-5">Advanced analytics to monitor your fitness journey.</p>
+        </div>
+    </div>
 </div>
