@@ -1,0 +1,106 @@
+@model GymManagementSystem.PL.ViewModels.MemberViewModel
+
+@{
+    ViewData["Title"] = "Add New Member";
+}
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-12 col-xl-10">
+            <header class="d-flex justify-content-between mb-4 align-items-center border-bottom pb-3" style="border-color: var(--border-color) !important;">
+                <div>
+                    <h2 class="display-6 fw-bold mb-1">Add <span class="text-gradient">Member</span></h2>
+                    <p class="text-secondary fs-6 mb-0">Register a new member to the gym system.</p>
+                </div>
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-2"></i> Back to List
+                </a>
+            </header>
+
+            <div class="premium-card p-4 p-md-5">
+                <form asp-action="Create" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-4"></div>
+
+                    <h5 class="text-primary-theme fw-bold mb-4 border-bottom pb-2" style="border-color: var(--border-color) !important;">
+                        <i class="bi bi-person-badge me-2"></i>Personal Details
+                    </h5>
+                    <div class="row g-4 mb-5">
+                        <div class="col-md-6">
+                            <label asp-for="FirstName" class="form-label text-secondary fw-semibold"></label>
+                            <input asp-for="FirstName" class="form-control form-control-lg premium-input" placeholder="Enter first name" />
+                            <span asp-validation-for="FirstName" class="text-danger small mt-1"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="LastName" class="form-label text-secondary fw-semibold"></label>
+                            <input asp-for="LastName" class="form-control form-control-lg premium-input" placeholder="Enter last name" />
+                            <span asp-validation-for="LastName" class="text-danger small mt-1"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Email" class="form-label text-secondary fw-semibold"></label>
+                            <input asp-for="Email" class="form-control form-control-lg premium-input" placeholder="example@email.com" />
+                            <span asp-validation-for="Email" class="text-danger small mt-1"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="PhoneNumber" class="form-label text-secondary fw-semibold"></label>
+                            <input asp-for="PhoneNumber" class="form-control form-control-lg premium-input" placeholder="01xxxxxxxxx" />
+                            <span asp-validation-for="PhoneNumber" class="text-danger small mt-1"></span>
+                        </div>
+                    </div>
+
+                    <h5 class="text-primary-theme fw-bold mb-4 border-bottom pb-2" style="border-color: var(--border-color) !important;">
+                        <i class="bi bi-geo-alt me-2"></i>Address Information
+                    </h5>
+                    <div class="row g-4 mb-5">
+                        <div class="col-12">
+                            <label asp-for="Street" class="form-label text-secondary fw-semibold"></label>
+                            <input asp-for="Street" class="form-control form-control-lg premium-input" placeholder="Street name and building number" />
+                            <span asp-validation-for="Street" class="text-danger small mt-1"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="City" class="form-label text-secondary fw-semibold"></label>
+                            <input asp-for="City" class="form-control form-control-lg premium-input" placeholder="City" />
+                            <span asp-validation-for="City" class="text-danger small mt-1"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="State" class="form-label text-secondary fw-semibold"></label>
+                            <input asp-for="State" class="form-control form-control-lg premium-input" placeholder="State/Province" />
+                            <span asp-validation-for="State" class="text-danger small mt-1"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="ZipCode" class="form-label text-secondary fw-semibold"></label>
+                            <input asp-for="ZipCode" class="form-control form-control-lg premium-input" placeholder="Postal Code" />
+                            <span asp-validation-for="ZipCode" class="text-danger small mt-1"></span>
+                        </div>
+                    </div>
+
+                    <h5 class="text-warning fw-bold mb-4 border-bottom pb-2" style="border-color: var(--border-color) !important;">
+                        <i class="bi bi-heart-pulse me-2"></i>Emergency Contact
+                    </h5>
+                    <div class="row g-4 mb-5">
+                        <div class="col-md-6">
+                            <label asp-for="EmergencyContactName" class="form-label text-secondary fw-semibold"></label>
+                            <input asp-for="EmergencyContactName" class="form-control form-control-lg premium-input" placeholder="Contact person name" />
+                            <span asp-validation-for="EmergencyContactName" class="text-danger small mt-1"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="EmergencyContactPhone" class="form-label text-secondary fw-semibold"></label>
+                            <input asp-for="EmergencyContactPhone" class="form-control form-control-lg premium-input" placeholder="Emergency phone number" />
+                            <span asp-validation-for="EmergencyContactPhone" class="text-danger small mt-1"></span>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-3 mt-4 pt-4 border-top" style="border-color: var(--border-color) !important;">
+                        <button type="button" class="btn btn-outline-secondary px-4 py-2" onclick="window.history.back()">Cancel</button>
+                        <button type="submit" class="btn btn-gradient px-5 py-2 fw-bold">
+                            <i class="bi bi-check-circle me-2"></i> Save Member
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

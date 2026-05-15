@@ -1,0 +1,52 @@
+@model GymManagementSystem.PL.ViewModels.PlanViewModel
+
+<div class="premium-card h-100 d-flex flex-column">
+    <div class="premium-card-header text-center @(Model.IsActive ? "active-plan" : "")">
+        @if (Model.IsActive)
+        {
+            <span class="badge bg-success position-absolute top-0 end-0 m-3 fs-6 rounded-pill px-3 py-2">Active</span>
+        }
+        else
+        {
+            <span class="badge bg-secondary position-absolute top-0 end-0 m-3 fs-6 rounded-pill px-3 py-2">Inactive</span>
+        }
+        <h3 class="fw-bold mb-0 mt-2">@Model.Name</h3>
+    </div>
+    
+    <div class="card-body p-4 d-flex flex-column flex-grow-1">
+        <div class="text-center mb-4 pb-3 border-bottom" style="border-color: var(--border-color) !important;">
+            <div class="display-4 fw-bold text-primary-theme">@Model.Price.ToString("G29")</div>
+            <span class="text-secondary fw-semibold">EGP / @Model.DurationDays Days</span>
+        </div>
+
+        <div class="mb-4 flex-grow-1">
+            <p class="text-secondary mb-0">
+                @Model.Description
+            </p>
+        </div>
+
+        <div class="mt-auto pt-3">
+            <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-gradient w-100 mb-3 py-2">
+                <i class="bi bi-eye me-2"></i> View Details
+            </a>
+
+            <div class="d-flex gap-2">
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-soft flex-fill py-2 text-center">
+                    <i class="bi bi-pencil me-1"></i> Edit
+                </a>
+                <form asp-action="ToggleActive" asp-route-id="@Model.Id" method="post" class="flex-fill m-0">
+                    <button type="submit" class="btn btn-soft w-100 py-2 @(Model.IsActive ? "hover-danger" : "hover-success")">
+                        @if (Model.IsActive)
+                        {
+                            <i class="bi bi-x-circle me-1"></i> <span>Disable</span>
+                        }
+                        else
+                        {
+                            <i class="bi bi-check-circle me-1"></i> <span>Enable</span>
+                        }
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

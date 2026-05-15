@@ -1,0 +1,44 @@
+@model IEnumerable<GymManagementSystem.PL.ViewModels.PlanViewModel>
+
+@{
+    ViewData["Title"] = "Plans";
+}
+
+<div class="container py-4">
+    <header class="d-flex justify-content-between mb-5 align-items-center flex-wrap gap-3 border-bottom pb-4" style="border-color: var(--border-color) !important;">
+        <div>
+            <h2 class="display-5 fw-bold mb-2">Membership <span class="text-gradient">Plans</span></h2>
+            <p class="text-secondary fs-5 mb-0">Choose the perfect package for your fitness journey.</p>
+        </div>
+        <div>
+            <a asp-action="Create" class="btn btn-gradient btn-lg">
+                <i class="bi bi-plus-circle me-2"></i> Add New Plan
+            </a>
+        </div>
+    </header>
+
+    <div class="row g-4">
+        @if (Model != null && Model.Any())
+        {
+            foreach (var plan in Model)
+            {
+                <div class="col-12 col-md-6 col-lg-4">
+                    <partial name="_PlanCard" model="plan" />
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12 text-center py-5">
+                <div class="premium-card p-5">
+                    <i class="bi bi-inbox display-1 text-secondary mb-3 d-block"></i>
+                    <h3 class="text-primary-theme fw-bold">No Plans Available</h3>
+                    <p class="text-secondary fs-5 mt-3">Get started by creating your first membership plan.</p>
+                    <a asp-action="Create" class="btn btn-gradient mt-3 px-4 py-2">
+                        Create Plan
+                    </a>
+                </div>
+            </div>
+        }
+    </div>
+</div>

@@ -1,0 +1,131 @@
+@model GymManagementSystem.PL.ViewModels.MemberViewModel
+
+@{
+    ViewData["Title"] = "Member Details";
+}
+
+<div class="container py-4">
+    <header class="d-flex justify-content-between mb-4 align-items-center border-bottom pb-3" style="border-color: var(--border-color) !important;">
+        <div>
+            <h2 class="display-6 fw-bold mb-1">Member <span class="text-gradient">Profile</span></h2>
+            <p class="text-secondary fs-6 mb-0">Detailed information and status.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-gradient">
+                <i class="bi bi-pencil me-2"></i> Edit Member
+            </a>
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                <i class="bi bi-list me-2"></i> Back to List
+            </a>
+        </div>
+    </header>
+
+    <div class="row g-4">
+        <!-- Profile Card -->
+        <div class="col-12 col-lg-4">
+            <div class="premium-card p-4 text-center h-100 d-flex flex-column justify-content-center">
+                <div class="bg-primary text-white rounded-circle d-flex justify-content-center align-items-center mx-auto mb-4" style="width: 120px; height: 120px; font-size: 3rem; font-weight: bold; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)) !important;">
+                    @Model?.FirstName.Substring(0, 1)@Model?.LastName.Substring(0, 1)
+                </div>
+                <h3 class="fw-bold text-white mb-1">@Model?.FirstName @Model?.LastName</h3>
+                <p class="text-secondary mb-4">Gym Member</p>
+                
+                <div class="d-grid gap-2 mt-auto">
+                    <button class="btn btn-outline-info">
+                        <i class="bi bi-envelope me-2"></i> Send Email
+                    </button>
+                    <button class="btn btn-outline-success">
+                        <i class="bi bi-whatsapp me-2"></i> Message
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Details Card -->
+        <div class="col-12 col-lg-8">
+            <div class="premium-card p-4 h-100">
+                <ul class="nav nav-tabs custom-tabs mb-4" id="memberTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab" aria-selected="true">Overview</button>
+                    </li>
+                </ul>
+
+                <div class="tab-content" id="memberTabsContent">
+                    <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="detail-group">
+                                    <label class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-envelope me-2"></i>Email Address</label>
+                                    <p class="fs-5 fw-medium text-white mb-0">@Model?.Email</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="detail-group">
+                                    <label class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-telephone me-2"></i>Phone Number</label>
+                                    <p class="fs-5 fw-medium text-white mb-0">@Model?.PhoneNumber</p>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12">
+                                <hr style="border-color: var(--border-color);" />
+                            </div>
+
+                            <div class="col-12">
+                                <div class="detail-group">
+                                    <label class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-geo-alt me-2"></i>Address</label>
+                                    <p class="fs-5 fw-medium text-white mb-0">@Model?.Street, @Model?.City, @Model?.State @Model?.ZipCode</p>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <hr style="border-color: var(--border-color);" />
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="detail-group">
+                                    <label class="text-warning small text-uppercase fw-bold mb-1"><i class="bi bi-heart-pulse me-2"></i>Emergency Contact</label>
+                                    <p class="fs-5 fw-medium text-white mb-0">@(string.IsNullOrEmpty(Model?.EmergencyContactName) ? "N/A" : Model.EmergencyContactName)</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="detail-group">
+                                    <label class="text-warning small text-uppercase fw-bold mb-1"><i class="bi bi-telephone-fill me-2"></i>Emergency Phone</label>
+                                    <p class="fs-5 fw-medium text-white mb-0">@(string.IsNullOrEmpty(Model?.EmergencyContactPhone) ? "N/A" : Model.EmergencyContactPhone)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .custom-tabs {
+        border-bottom: 1px solid var(--border-color);
+    }
+    .custom-tabs .nav-link {
+        color: var(--text-color);
+        background: transparent;
+        border: none;
+        border-bottom: 2px solid transparent;
+        font-weight: 600;
+        padding: 0.75rem 1.5rem;
+    }
+    .custom-tabs .nav-link:hover {
+        border-color: transparent;
+        color: var(--primary-color);
+    }
+    .custom-tabs .nav-link.active {
+        color: var(--primary-color);
+        background: transparent;
+        border-color: var(--primary-color);
+    }
+    .detail-group {
+        background: rgba(255, 255, 255, 0.02);
+        padding: 1rem;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+</style>

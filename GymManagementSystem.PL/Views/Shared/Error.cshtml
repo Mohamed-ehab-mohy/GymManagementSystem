@@ -1,0 +1,171 @@
+@model GymManagementSystem.Models.ErrorViewModel
+@{
+    ViewData["Title"] = $"Error {Model.StatusCode}";
+    Layout = "_Layout";
+}
+
+<style>
+    .error-page {
+        min-height: 70vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .error-card {
+        background: var(--card-bg, #1a1a2e);
+        border: 1px solid var(--border-color, #2d2d4e);
+        border-radius: 20px;
+        padding: 3rem;
+        max-width: 680px;
+        width: 100%;
+        text-align: center;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        animation: slideUp 0.4s ease;
+    }
+
+    @@keyframes slideUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .error-icon-wrap {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        font-size: 2.8rem;
+        animation: pulse 2s infinite;
+    }
+
+    @@keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50%       { transform: scale(1.06); }
+    }
+
+    .status-code {
+        font-size: 5rem;
+        font-weight: 900;
+        line-height: 1;
+        letter-spacing: -2px;
+        background: linear-gradient(135deg, var(--status-color), #8b5cf6);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .error-title {
+        font-size: 1.6rem;
+        font-weight: 700;
+        margin: 0.5rem 0 1rem;
+    }
+
+    .error-message {
+        color: var(--text-secondary, #9ca3af);
+        font-size: 1rem;
+        line-height: 1.7;
+        margin-bottom: 2rem;
+    }
+
+    .error-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-error-primary {
+        background: linear-gradient(135deg, var(--status-color), #8b5cf6);
+        color: #fff;
+        border: none;
+        padding: 0.65rem 1.8rem;
+        border-radius: 10px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: opacity .2s, transform .2s;
+    }
+
+    .btn-error-primary:hover {
+        opacity: 0.88;
+        transform: translateY(-1px);
+        color: #fff;
+    }
+
+    .btn-error-outline {
+        background: transparent;
+        border: 1px solid var(--border-color, #2d2d4e);
+        color: var(--text-secondary, #9ca3af);
+        padding: 0.65rem 1.8rem;
+        border-radius: 10px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: border-color .2s, color .2s, transform .2s;
+    }
+
+    .btn-error-outline:hover {
+        border-color: var(--status-color);
+        color: var(--status-color);
+        transform: translateY(-1px);
+    }
+
+    .request-id {
+        font-size: 0.75rem;
+        color: var(--text-secondary, #9ca3af);
+        margin-top: 2rem;
+        font-family: monospace;
+    }
+
+    .exception-details {
+        background: rgba(239, 68, 68, 0.07);
+        border: 1px solid rgba(239, 68, 68, 0.25);
+        border-radius: 10px;
+        padding: 1rem;
+        margin-top: 1.5rem;
+        text-align: left;
+        font-family: monospace;
+        font-size: 0.78rem;
+        color: #fca5a5;
+        white-space: pre-wrap;
+        word-break: break-all;
+        max-height: 220px;
+        overflow-y: auto;
+    }
+</style>
+
+<div class="error-page" style="--status-color: @Model.StatusColor">
+    <div class="error-card">
+
+        <div class="error-icon-wrap" style="background: @(Model.StatusColor)22;">
+            <i class="bi @Model.StatusIcon" style="color: @Model.StatusColor"></i>
+        </div>
+
+        <div class="status-code">@Model.StatusCode</div>
+        <h1 class="error-title">@Model.Title</h1>
+        <p class="error-message">@Model.Message</p>
+
+        <div class="error-actions">
+            <a href="/" class="btn-error-primary">
+                <i class="bi bi-house me-1"></i> Go Home
+            </a>
+            <a href="javascript:history.back()" class="btn-error-outline">
+                <i class="bi bi-arrow-left me-1"></i> Go Back
+            </a>
+        </div>
+
+        @if (Model.ShowRequestId)
+        {
+            <div class="request-id">
+                Request ID: @Model.RequestId
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(Model.ExceptionDetails))
+        {
+            <div class="exception-details">@Model.ExceptionDetails</div>
+        }
+
+    </div>
+</div>

@@ -1,0 +1,91 @@
+@model IEnumerable<GymManagementSystem.PL.ViewModels.ClassSessionViewModel>
+
+@{
+    ViewData["Title"] = "Class Sessions";
+}
+
+<div class="container py-4">
+    <header class="d-flex justify-content-between mb-5 align-items-center flex-wrap gap-3 border-bottom pb-4" style="border-color: var(--border-color) !important;">
+        <div>
+            <h2 class="display-5 fw-bold mb-2">Class <span class="text-gradient">Sessions</span></h2>
+            <p class="text-secondary fs-5 mb-0">Schedule and manage group training sessions.</p>
+        </div>
+        <div>
+            <a asp-action="Create" class="btn btn-gradient btn-lg">
+                <i class="bi bi-calendar-plus me-2"></i> Schedule Session
+            </a>
+        </div>
+    </header>
+
+    <div class="premium-card p-4">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0" style="color: var(--text-color);">
+                <thead>
+                    <tr style="border-bottom: 2px solid var(--border-color);">
+                        <th class="py-3 px-4 fw-bold">Session Name</th>
+                        <th class="py-3 px-4 fw-bold">Schedule</th>
+                        <th class="py-3 px-4 fw-bold">Capacity</th>
+                        <th class="py-3 px-4 fw-bold">Trainer</th>
+                        <th class="py-3 px-4 fw-bold text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr style="border-bottom: 1px solid var(--border-color);">
+                                <td class="py-3 px-4">
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-primary text-white rounded d-flex justify-content-center align-items-center me-3" style="width: 45px; height: 45px; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)) !important;">
+                                            <i class="bi bi-stopwatch fs-4"></i>
+                                        </div>
+                                        <h6 class="mb-0 fw-bold">@item.Name</h6>
+                                    </div>
+                                </td>
+                                <td class="py-3 px-4">
+                                    <div class="d-flex flex-column">
+                                        <span class="text-white fw-medium mb-1"><i class="bi bi-calendar-event me-2 text-info"></i>@item.StartTime.ToString("MMM dd, yyyy")</span>
+                                        <span class="text-secondary"><i class="bi bi-clock me-2"></i>@item.StartTime.ToString("hh:mm tt") - @item.EndTime.ToString("hh:mm tt")</span>
+                                    </div>
+                                </td>
+                                <td class="py-3 px-4">
+                                    <span class="badge bg-dark border border-secondary px-3 py-2">
+                                        <i class="bi bi-people-fill me-2"></i> @item.Capacity
+                                    </span>
+                                </td>
+                                <td class="py-3 px-4">
+                                    <span class="text-secondary"><i class="bi bi-person-badge me-2"></i>@item.TrainerName</span>
+                                </td>
+                                <td class="py-3 px-4 text-end">
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info" title="Details">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-warning" title="Edit">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <form asp-action="Delete" asp-route-id="@item.Id" method="post" style="display:inline;">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Cancel Session" onclick="return confirm('Are you sure you want to cancel this session?');">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center py-5">
+                                <i class="bi bi-calendar-x display-4 text-secondary mb-3 d-block"></i>
+                                <h5 class="text-secondary">No sessions scheduled</h5>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
