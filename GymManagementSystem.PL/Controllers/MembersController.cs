@@ -1,7 +1,10 @@
+using GymManagementSystem.BLL.Export;
 using GymManagementSystem.BLL.Interfaces;
 using GymManagementSystem.DAL.Entities;
 using GymManagementSystem.PL.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,16 +13,18 @@ namespace GymManagementSystem.PL.Controllers;
 public class MembersController : Controller
 {
     private readonly IMemberService _memberService;
+    private readonly IExportService _exportService;
 
-    public MembersController(IMemberService memberService)
+    public MembersController(IMemberService memberService, IExportService exportService)
     {
         _memberService = memberService;
+        _exportService = exportService;
     }
 
-    public async Task<IActionResult> Index()
+    private async Task<IEnumerable<MemberViewModel>> GetMemberViewModelsAsync()
     {
         var members = await _memberService.GetAllMembersAsync();
-        var viewModels = members.Select(m => new MemberViewModel
+        return members.Select(m => new MemberViewModel
         {
             Id = m.Id,
             FirstName = m.FirstName,
@@ -33,7 +38,11 @@ public class MembersController : Controller
             EmergencyContactName = m.EmergencyContactName,
             EmergencyContactPhone = m.EmergencyContactPhone
         }).ToList();
+    }
 
+    public async Task<IActionResult> Index()
+    {
+        var viewModels = await GetMemberViewModelsAsync();
         return View(viewModels);
     }
 
@@ -162,5 +171,37 @@ public class MembersController : Controller
         // We'll use DeleteMemberAsync as a Soft Delete.
         await _memberService.DeleteMemberAsync(id);
         return RedirectToAction(nameof(Index));
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> ExportExcel()
+    {
+        var members = await GetMemberViewModelsAsync();
+        var columns = GetMemberColumnDefinitions();
+        var fileBytes = await _exportService.ExportAsync(members, columns, ExportFormat.Excel, "Gym Members Report");
+        var fileName = $"members_{DateTime.Now:yyyyMMdd_HHmm}.xlsx";
+        return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> ExportPdf()
+    {
+        var members = await GetMemberViewModelsAsync();
+        var columns = GetMemberColumnDefinitions();
+        var fileBytes = await _exportService.ExportAsync(members, columns, ExportFormat.Pdf, "Gym Members Report");
+        var fileName = $"members_{DateTime.Now:yyyyMMdd_HHmm}.pdf";
+        return File(fileBytes, "application/pdf", fileName);
+    }
+
+    private List<ColumnDefinition<MemberViewModel>> GetMemberColumnDefinitions()
+    {
+        return new List<ColumnDefinition<MemberViewModel>>
+        {
+            new() { HeaderName = "ID", ValueSelector = m => m.Id },
+            new() { HeaderName = "First Name", ValueSelector = m => m.FirstName },
+            new() { HeaderName = "Last Name", ValueSelector = m => m.LastName },
+            new() { HeaderName = "Email", ValueSelector = m => m.Email },
+            new() { HeaderName = "Phone Number", ValueSelector = m => m.PhoneNumber }
+        };
     }
 }
