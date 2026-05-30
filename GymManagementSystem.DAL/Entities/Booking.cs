@@ -11,4 +11,6 @@ public class Booking : BaseEntity
     public ClassSession ClassSession { get; set; } = null!;
 
     public DateTime BookingDate { get; set; }
+    public bool IsAttended { get; set; }
+    public DateTime? CheckedInAt { get; set; }
 }

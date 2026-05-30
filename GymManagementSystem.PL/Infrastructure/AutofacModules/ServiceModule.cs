@@ -2,6 +2,7 @@ using Autofac;
 using GymManagementSystem.BLL.Interfaces;
 using GymManagementSystem.BLL.Services;
 using GymManagementSystem.BLL.Export;
+using GymManagementSystem.BLL.Attendance;
 
 namespace GymManagementSystem.PL.Infrastructure.AutofacModules;
 
@@ -17,5 +18,6 @@ public class ServiceModule : Module
         builder.RegisterType<BookingService>().As<IBookingService>().InstancePerLifetimeScope();
         builder.RegisterType<HealthRecordService>().As<IHealthRecordService>().InstancePerLifetimeScope();
         builder.RegisterType<ExportService>().As<IExportService>().InstancePerLifetimeScope();
+        builder.RegisterType<AttendanceService>().As<IAttendanceService>().InstancePerLifetimeScope();
     }
 }
