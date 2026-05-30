@@ -1,0 +1,68 @@
+@{
+    ViewData["Title"] = "Reception Desk - Scan QR";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center">
+            <h2 class="fw-bold text-primary mb-3"><i class="bi bi-qr-code-scan"></i> Gymy Check-In Scanner</h2>
+            <p class="text-muted mb-4">Point the camera at the member's booking QR code.</p>
+
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success rounded-pill shadow-sm animate__animated animate__fadeIn" role="alert">
+                    @TempData["SuccessMessage"]
+                </div>
+            }
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger rounded-pill shadow-sm animate__animated animate__fadeIn" role="alert">
+                    @TempData["ErrorMessage"]
+                </div>
+            }
+            @if (TempData["WarningMessage"] != null)
+            {
+                <div class="alert alert-warning rounded-pill shadow-sm animate__animated animate__fadeIn" role="alert">
+                    @TempData["WarningMessage"]
+                </div>
+            }
+
+            <div id="qr-reader" class="shadow-lg border-0 rounded-4 overflow-hidden mb-4" style="width: 100%; background: #000;"></div>
+
+            <form id="checkInForm" asp-action="CheckIn" method="post" style="display:none;">
+                <input type="hidden" name="payload" id="payloadInput" />
+                @Html.AntiForgeryToken()
+            </form>
+
+            <a asp-controller="Member" asp-action="Index" class="btn btn-outline-secondary rounded-pill w-100">
+                Cancel and Return
+            </a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    
+    <script>
+        function onScanSuccess(decodedText, decodedResult) {
+            html5QrcodeScanner.clear();
+            document.getElementById('payloadInput').value = decodedText;
+            document.getElementById('checkInForm').submit();
+        }
+
+        function onScanFailure(error) {
+        }
+
+        let html5QrcodeScanner = new Html5QrcodeScanner(
+            "qr-reader", 
+            { 
+                fps: 15,          
+                qrbox: { width: 250, height: 250 }, 
+                rememberLastUsedCamera: true 
+            }, 
+            false);
+
+        html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+    </script>
+}
