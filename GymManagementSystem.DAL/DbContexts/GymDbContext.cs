@@ -14,6 +14,7 @@ public class GymDbContext : DbContext
     public DbSet<ClassSession> ClassSessions { get; set; }
     public DbSet<Membership> Memberships { get; set; }
     public DbSet<Booking> Bookings { get; set; }
+    public DbSet<Category> Categories { get; set; }
 
     public GymDbContext(DbContextOptions<GymDbContext> options) : base(options)
     {
@@ -29,5 +30,6 @@ public class GymDbContext : DbContext
         modelBuilder.ApplyConfiguration(new ClassSessionConfiguration());
         modelBuilder.ApplyConfiguration(new MembershipConfiguration());
         modelBuilder.ApplyConfiguration(new BookingConfiguration());
+        modelBuilder.ApplyConfiguration(new CategoryConfiguration());
     }
 }
