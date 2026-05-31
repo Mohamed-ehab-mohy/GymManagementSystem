@@ -33,6 +33,8 @@ public static class DatabaseSeeder
                 LastName = "Adel",
                 Email = "captain.adel@gymy.com",
                 PhoneNumber = "01123456789",
+                DateOfBirth = new DateTime(1985, 6, 15),
+                Gender = "Male",
                 Specialty = TrainerSpecialty.GeneralFitness,
                 HireDate = DateTime.Today,
                 Address = new Address { Street = "Gymy St", City = "Cairo", State = "Cairo", ZipCode = "12345" }
@@ -50,6 +52,9 @@ public static class DatabaseSeeder
                 LastName = "Ehab",
                 Email = "mohamed.ehab@gmail.com",
                 PhoneNumber = "01098765432",
+                DateOfBirth = new DateTime(1995, 3, 20),
+                Gender = "Male",
+                JoinDate = DateTime.Today,
                 EmergencyContactName = "Parent",
                 EmergencyContactPhone = "01234567890",
                 Address = new Address { Street = "Home St", City = "Giza", State = "Giza", ZipCode = "54321" }
@@ -67,6 +72,9 @@ public static class DatabaseSeeder
                 LastName = "Ashraf",
                 Email = "aly.ashraf@gmail.com",
                 PhoneNumber = "01012345678",
+                DateOfBirth = new DateTime(1998, 7, 10),
+                Gender = "Male",
+                JoinDate = DateTime.Today,
                 EmergencyContactName = "Friend",
                 EmergencyContactPhone = "01112223334",
                 Address = new Address { Street = "Rehab St", City = "Cairo", State = "Cairo", ZipCode = "11223" }
@@ -85,6 +93,7 @@ public static class DatabaseSeeder
                 StartTime = DateTime.Today.AddHours(9),
                 EndTime = DateTime.Today.AddHours(10),
                 Capacity = 20,
+                CategoryId = 5,
                 TrainerId = trainer.Id
             };
             await dbContext.ClassSessions.AddAsync(session);
