@@ -12,11 +12,13 @@ public class ClassSessionsController : Controller
 {
     private readonly IClassSessionService _classSessionService;
     private readonly ITrainerService _trainerService;
+    private readonly ICategoryService _categoryService;
 
-    public ClassSessionsController(IClassSessionService classSessionService, ITrainerService trainerService)
+    public ClassSessionsController(IClassSessionService classSessionService, ITrainerService trainerService, ICategoryService categoryService)
     {
         _classSessionService = classSessionService;
         _trainerService = trainerService;
+        _categoryService = categoryService;
     }
 
     public async Task<IActionResult> Index()
@@ -31,7 +33,9 @@ public class ClassSessionsController : Controller
             EndTime = cs.EndTime,
             Capacity = cs.Capacity,
             TrainerId = cs.TrainerId,
-            TrainerName = cs.Trainer?.FirstName + " " + cs.Trainer?.LastName
+            TrainerName = cs.Trainer?.FirstName + " " + cs.Trainer?.LastName,
+            CategoryId = cs.CategoryId,
+            CategoryName = cs.Category?.CategoryName
         }).OrderBy(cs => cs.StartTime).ToList();
 
         return View(viewModels);
@@ -41,7 +45,8 @@ public class ClassSessionsController : Controller
     {
         var model = new ClassSessionViewModel
         {
-            TrainersList = await GetTrainersSelectListAsync()
+            TrainersList = await GetTrainersSelectListAsync(),
+            CategoriesList = await GetCategoriesSelectListAsync()
         };
         return View(model);
     }
@@ -57,6 +62,7 @@ public class ClassSessionsController : Controller
             {
                 ModelState.AddModelError("EndTime", "End time must be after start time.");
                 model.TrainersList = await GetTrainersSelectListAsync();
+                model.CategoriesList = await GetCategoriesSelectListAsync();
                 return View(model);
             }
 
@@ -66,7 +72,8 @@ public class ClassSessionsController : Controller
                 StartTime = model.StartTime,
                 EndTime = model.EndTime,
                 Capacity = model.Capacity,
-                TrainerId = model.TrainerId
+                TrainerId = model.TrainerId,
+                CategoryId = model.CategoryId
             };
 
             await _classSessionService.AddClassSessionAsync(session);
@@ -91,7 +98,9 @@ public class ClassSessionsController : Controller
             EndTime = session.EndTime,
             Capacity = session.Capacity,
             TrainerId = session.TrainerId,
-            TrainersList = await GetTrainersSelectListAsync()
+            CategoryId = session.CategoryId,
+            TrainersList = await GetTrainersSelectListAsync(),
+            CategoriesList = await GetCategoriesSelectListAsync()
         };
 
         return View(model);
@@ -110,6 +119,7 @@ public class ClassSessionsController : Controller
             {
                 ModelState.AddModelError("EndTime", "End time must be after start time.");
                 model.TrainersList = await GetTrainersSelectListAsync();
+                model.CategoriesList = await GetCategoriesSelectListAsync();
                 return View(model);
             }
 
@@ -122,12 +132,14 @@ public class ClassSessionsController : Controller
             session.EndTime = model.EndTime;
             session.Capacity = model.Capacity;
             session.TrainerId = model.TrainerId;
+            session.CategoryId = model.CategoryId;
 
             await _classSessionService.UpdateClassSessionAsync(session);
             return RedirectToAction(nameof(Index));
         }
 
         model.TrainersList = await GetTrainersSelectListAsync();
+        model.CategoriesList = await GetCategoriesSelectListAsync();
         return View(model);
     }
 
@@ -145,7 +157,9 @@ public class ClassSessionsController : Controller
             EndTime = session.EndTime,
             Capacity = session.Capacity,
             TrainerId = session.TrainerId,
-            TrainerName = session.Trainer?.FirstName + " " + session.Trainer?.LastName
+            TrainerName = session.Trainer?.FirstName + " " + session.Trainer?.LastName,
+            CategoryId = session.CategoryId,
+            CategoryName = session.Category?.CategoryName
         };
 
         return View(model);
@@ -165,8 +179,14 @@ public class ClassSessionsController : Controller
         var trainerOptions = trainers.Select(t => new 
         { 
             Id = t.Id, 
-            FullName = $"{t.FirstName} {t.LastName} ({t.Specialization})" 
+            FullName = $"{t.FirstName} {t.LastName} ({t.Specialty})" 
         });
         return new SelectList(trainerOptions, "Id", "FullName");
+    }
+
+    private async Task<SelectList> GetCategoriesSelectListAsync()
+    {
+        var categories = await _categoryService.GetAllCategoriesAsync();
+        return new SelectList(categories, "Id", "CategoryName");
     }
 }

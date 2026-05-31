@@ -23,11 +23,13 @@ public class PlanConfiguration : IEntityTypeConfiguration<Plan>
 
         builder.Property(p => p.Price)
             .IsRequired()
-            .HasColumnType("decimal(18,2)");
+            .HasColumnType("decimal(10,2)");
 
         builder.Property(p => p.IsActive)
             .HasDefaultValue(true);
-            
+
+        builder.ToTable(t => t.HasCheckConstraint("CK_Plan_DurationDays", "DurationDays >= 1 AND DurationDays <= 365"));
+
         builder.HasQueryFilter(p => !p.IsDeleted);
     }
 }

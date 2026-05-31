@@ -28,7 +28,8 @@
                     @Model?.FirstName.Substring(0, 1)@Model?.LastName.Substring(0, 1)
                 </div>
                 <h3 class="fw-bold text-white mb-1">@Model?.FirstName @Model?.LastName</h3>
-                <p class="text-secondary mb-4">Gym Member</p>
+                <p class="text-secondary mb-2">Gym Member</p>
+                <small class="text-secondary">Joined: @Model?.JoinDate.ToString("MMM dd, yyyy")</small>
                 
                 <div class="d-grid gap-2 mt-auto">
                     <button class="btn btn-outline-info">
@@ -63,6 +64,24 @@
                                 <div class="detail-group">
                                     <label class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-telephone me-2"></i>Phone Number</label>
                                     <p class="fs-5 fw-medium text-white mb-0">@Model?.PhoneNumber</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="detail-group">
+                                    <label class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-calendar me-2"></i>Date of Birth</label>
+                                    <p class="fs-5 fw-medium text-white mb-0">@Model?.DateOfBirth.ToString("MMM dd, yyyy")</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="detail-group">
+                                    <label class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-person me-2"></i>Gender</label>
+                                    <p class="fs-5 fw-medium text-white mb-0">@Model?.Gender</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="detail-group">
+                                    <label class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-calendar-check me-2"></i>Join Date</label>
+                                    <p class="fs-5 fw-medium text-white mb-0">@Model?.JoinDate.ToString("MMM dd, yyyy")</p>
                                 </div>
                             </div>
                             

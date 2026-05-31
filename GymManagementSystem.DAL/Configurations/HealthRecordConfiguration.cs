@@ -17,9 +17,12 @@ public class HealthRecordConfiguration : IEntityTypeConfiguration<HealthRecord>
 
         builder.Property(hr => hr.BloodType).HasMaxLength(10);
         builder.Property(hr => hr.MedicalConditions).HasMaxLength(500);
+        builder.Property(hr => hr.Note).HasMaxLength(1000);
 
         builder.Property(hr => hr.Weight).HasColumnType("decimal(5,2)");
         builder.Property(hr => hr.Height).HasColumnType("decimal(5,2)");
+
+        builder.Property(hr => hr.LastUpdate).HasDefaultValueSql("GETDATE()");
 
         builder.HasQueryFilter(hr => !hr.IsDeleted);
     }

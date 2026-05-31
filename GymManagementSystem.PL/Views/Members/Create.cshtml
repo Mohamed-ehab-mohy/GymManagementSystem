@@ -45,6 +45,30 @@
                             <input asp-for="PhoneNumber" class="form-control form-control-lg premium-input" placeholder="01xxxxxxxxx" />
                             <span asp-validation-for="PhoneNumber" class="text-danger small mt-1"></span>
                         </div>
+                        <div class="col-md-6">
+                            <label asp-for="DateOfBirth" class="form-label text-secondary fw-semibold"></label>
+                            <input asp-for="DateOfBirth" class="form-control form-control-lg premium-input" type="date" />
+                            <span asp-validation-for="DateOfBirth" class="text-danger small mt-1"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Gender" class="form-label text-secondary fw-semibold"></label>
+                            <select asp-for="Gender" class="form-select form-select-lg premium-input">
+                                <option value="">-- Select Gender --</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                            <span asp-validation-for="Gender" class="text-danger small mt-1"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Photo" class="form-label text-secondary fw-semibold"></label>
+                            <input asp-for="Photo" class="form-control form-control-lg premium-input" placeholder="Photo URL" />
+                            <span asp-validation-for="Photo" class="text-danger small mt-1"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="JoinDate" class="form-label text-secondary fw-semibold"></label>
+                            <input asp-for="JoinDate" class="form-control form-control-lg premium-input" type="date" />
+                            <span asp-validation-for="JoinDate" class="text-danger small mt-1"></span>
+                        </div>
                     </div>
 
                     <h5 class="text-primary-theme fw-bold mb-4 border-bottom pb-2" style="border-color: var(--border-color) !important;">

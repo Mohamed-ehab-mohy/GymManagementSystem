@@ -26,11 +26,13 @@ public class TrainersController : Controller
             LastName = t.LastName,
             Email = t.Email,
             PhoneNumber = t.PhoneNumber,
+            DateOfBirth = t.DateOfBirth,
+            Gender = t.Gender,
             Street = t.Address?.Street ?? "",
             City = t.Address?.City ?? "",
             State = t.Address?.State ?? "",
             ZipCode = t.Address?.ZipCode ?? "",
-            Specialization = t.Specialization,
+            Specialty = t.Specialty,
             HireDate = t.HireDate.GetValueOrDefault(DateTime.Today)
         }).ToList();
 
@@ -54,6 +56,8 @@ public class TrainersController : Controller
                 LastName = model.LastName,
                 Email = model.Email,
                 PhoneNumber = model.PhoneNumber,
+                DateOfBirth = model.DateOfBirth,
+                Gender = model.Gender,
                 Address = new Address
                 {
                     Street = model.Street,
@@ -61,7 +65,7 @@ public class TrainersController : Controller
                     State = model.State,
                     ZipCode = model.ZipCode
                 },
-                Specialization = model.Specialization,
+                Specialty = model.Specialty,
                 HireDate = model.HireDate
             };
 
@@ -84,11 +88,13 @@ public class TrainersController : Controller
             LastName = trainer.LastName,
             Email = trainer.Email,
             PhoneNumber = trainer.PhoneNumber,
+            DateOfBirth = trainer.DateOfBirth,
+            Gender = trainer.Gender,
             Street = trainer.Address?.Street ?? "",
             City = trainer.Address?.City ?? "",
             State = trainer.Address?.State ?? "",
             ZipCode = trainer.Address?.ZipCode ?? "",
-            Specialization = trainer.Specialization,
+            Specialty = trainer.Specialty,
             HireDate = trainer.HireDate.GetValueOrDefault(DateTime.Today)
         };
 
@@ -112,7 +118,9 @@ public class TrainersController : Controller
             trainer.LastName = model.LastName;
             trainer.Email = model.Email;
             trainer.PhoneNumber = model.PhoneNumber;
-            
+            trainer.DateOfBirth = model.DateOfBirth;
+            trainer.Gender = model.Gender;
+
             if (trainer.Address == null)
                 trainer.Address = new Address();
 
@@ -121,7 +129,7 @@ public class TrainersController : Controller
             trainer.Address.State = model.State;
             trainer.Address.ZipCode = model.ZipCode;
 
-            trainer.Specialization = model.Specialization;
+            trainer.Specialty = model.Specialty;
             trainer.HireDate = model.HireDate;
 
             await _trainerService.UpdateTrainerAsync(trainer);
@@ -143,11 +151,13 @@ public class TrainersController : Controller
             LastName = trainer.LastName,
             Email = trainer.Email,
             PhoneNumber = trainer.PhoneNumber,
+            DateOfBirth = trainer.DateOfBirth,
+            Gender = trainer.Gender,
             Street = trainer.Address?.Street ?? "",
             City = trainer.Address?.City ?? "",
             State = trainer.Address?.State ?? "",
             ZipCode = trainer.Address?.ZipCode ?? "",
-            Specialization = trainer.Specialization,
+            Specialty = trainer.Specialty,
             HireDate = trainer.HireDate.GetValueOrDefault(DateTime.Today)
         };
 

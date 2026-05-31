@@ -18,6 +18,7 @@ public class RepositoryModule : Module
         builder.RegisterType<MembershipRepository>().As<IMembershipRepository>().InstancePerLifetimeScope();
         builder.RegisterType<BookingRepository>().As<IBookingRepository>().InstancePerLifetimeScope();
         builder.RegisterType<HealthRecordRepository>().As<IHealthRecordRepository>().InstancePerLifetimeScope();
+        builder.RegisterType<CategoryRepository>().As<ICategoryRepository>().InstancePerLifetimeScope();
 
         builder.RegisterType<UnitOfWork>().As<IUnitOfWork>().InstancePerLifetimeScope();
     }

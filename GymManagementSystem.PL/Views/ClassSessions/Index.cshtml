@@ -23,6 +23,7 @@
                 <thead>
                     <tr style="border-bottom: 2px solid var(--border-color);">
                         <th class="py-3 px-4 fw-bold">Session Name</th>
+                        <th class="py-3 px-4 fw-bold">Category</th>
                         <th class="py-3 px-4 fw-bold">Schedule</th>
                         <th class="py-3 px-4 fw-bold">Capacity</th>
                         <th class="py-3 px-4 fw-bold">Trainer</th>
@@ -42,6 +43,11 @@
                                         </div>
                                         <h6 class="mb-0 fw-bold">@item.Name</h6>
                                     </div>
+                                </td>
+                                <td class="py-3 px-4">
+                                    <span class="badge bg-info bg-opacity-10 text-info px-3 py-2">
+                                        <i class="bi bi-tag me-1"></i> @item.CategoryName
+                                    </span>
                                 </td>
                                 <td class="py-3 px-4">
                                     <div class="d-flex flex-column">
@@ -78,7 +84,7 @@
                     else
                     {
                         <tr>
-                            <td colspan="5" class="text-center py-5">
+                            <td colspan="6" class="text-center py-5">
                                 <i class="bi bi-calendar-x display-4 text-secondary mb-3 d-block"></i>
                                 <h5 class="text-secondary">No sessions scheduled</h5>
                             </td>

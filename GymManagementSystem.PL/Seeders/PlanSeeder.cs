@@ -15,7 +15,14 @@ public static class DatabaseSeeder
         using var scope = serviceProvider.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<GymDbContext>();
 
-        await dbContext.Database.MigrateAsync();
+        if (dbContext.Database.IsRelational())
+        {
+            await dbContext.Database.MigrateAsync();
+        }
+        else
+        {
+            await dbContext.Database.EnsureCreatedAsync();
+        }
 
         var trainer = await dbContext.Trainers.FirstOrDefaultAsync();
         if (trainer == null)
@@ -26,7 +33,7 @@ public static class DatabaseSeeder
                 LastName = "Adel",
                 Email = "captain.adel@gymy.com",
                 PhoneNumber = "01123456789",
-                Specialization = "Bodybuilding",
+                Specialty = TrainerSpecialty.GeneralFitness,
                 HireDate = DateTime.Today,
                 Address = new Address { Street = "Gymy St", City = "Cairo", State = "Cairo", ZipCode = "12345" }
             };
