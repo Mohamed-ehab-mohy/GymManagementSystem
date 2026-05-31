@@ -24,16 +24,20 @@ public class ClassSessionViewModel
     public DateTime EndTime { get; set; } = DateTime.Now.AddDays(1).AddHours(1);
 
     [Required(ErrorMessage = "Capacity is required.")]
-    [Range(1, 100, ErrorMessage = "Capacity must be between 1 and 100.")]
+    [Range(1, 25, ErrorMessage = "Capacity must be between 1 and 25.")]
     public int Capacity { get; set; }
 
     [Required(ErrorMessage = "Trainer is required.")]
     [Display(Name = "Trainer")]
     public int TrainerId { get; set; }
 
-    // For Display
-    public string? TrainerName { get; set; }
+    [Required(ErrorMessage = "Category is required.")]
+    [Display(Name = "Category")]
+    public int CategoryId { get; set; }
 
-    // For Dropdown selection in Create/Edit
+    public string? TrainerName { get; set; }
+    public string? CategoryName { get; set; }
+
     public IEnumerable<SelectListItem>? TrainersList { get; set; }
+    public IEnumerable<SelectListItem>? CategoriesList { get; set; }
 }
