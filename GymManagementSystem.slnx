@@ -1,5 +1,7 @@
 <Solution>
   <Project Path="GymManagementSystem.BLL/GymManagementSystem.BLL.csproj" />
+  <Project Path="GymManagementSystem.BLL.Tests/GymManagementSystem.BLL.Tests.csproj" />
   <Project Path="GymManagementSystem.DAL/GymManagementSystem.DAL.csproj" />
   <Project Path="GymManagementSystem.PL/GymManagementSystem.PL.csproj" />
+  <Project Path="GymManagementSystem.PL.Tests/GymManagementSystem.PL.Tests.csproj" />
 </Solution>

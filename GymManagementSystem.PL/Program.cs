@@ -19,9 +19,17 @@ Log.Information("GymManagementSystem starting up...");
 try
 {
     var contentRoot = AppContext.BaseDirectory;
-    while (!Directory.Exists(Path.Combine(contentRoot, "wwwroot")) && Directory.GetParent(contentRoot) != null)
+    while (!Directory.Exists(Path.Combine(contentRoot, "wwwroot")) && 
+           !Directory.Exists(Path.Combine(contentRoot, "GymManagementSystem.PL", "wwwroot")) && 
+           Directory.GetParent(contentRoot) != null)
     {
         contentRoot = Directory.GetParent(contentRoot)!.FullName;
+    }
+
+    if (!Directory.Exists(Path.Combine(contentRoot, "wwwroot")) && 
+        Directory.Exists(Path.Combine(contentRoot, "GymManagementSystem.PL", "wwwroot")))
+    {
+        contentRoot = Path.Combine(contentRoot, "GymManagementSystem.PL");
     }
 
     var options = new WebApplicationOptions { Args = args };
@@ -54,11 +62,18 @@ try
 
     builder.Services.AddDbContext<GymDbContext>((sp, opts) =>
     {
-        opts.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
-            .AddInterceptors(
-                sp.GetRequiredService<AuditInterceptor>(),
-                sp.GetRequiredService<SoftDeleteInterceptor>()
-            );
+        if (builder.Environment.IsEnvironment("Testing"))
+        {
+            opts.UseInMemoryDatabase("GymSystemTestDb");
+        }
+        else
+        {
+            opts.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+                .AddInterceptors(
+                    sp.GetRequiredService<AuditInterceptor>(),
+                    sp.GetRequiredService<SoftDeleteInterceptor>()
+                );
+        }
     });
 
     builder.Services.AddSingleton<ISingletonService, SingletonService>();
@@ -104,9 +119,13 @@ try
 catch (Exception ex) when (ex is not HostAbortedException)
 {
     Log.Fatal(ex, "GymManagementSystem terminated unexpectedly.");
+    throw;
 }
 finally
 {
     Log.Information("GymManagementSystem shut down.");
     await Log.CloseAndFlushAsync();
 }
+
+public partial class Program { }
+
