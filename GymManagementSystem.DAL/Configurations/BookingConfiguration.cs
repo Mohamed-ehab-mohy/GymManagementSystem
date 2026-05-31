@@ -20,7 +20,6 @@ public class BookingConfiguration : IEntityTypeConfiguration<Booking>
             .HasForeignKey(b => b.ClassSessionId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        // Unique Index to prevent double booking of the same session by the same member
         builder.HasIndex(b => new { b.MemberId, b.ClassSessionId }).IsUnique();
 
         builder.HasQueryFilter(b => !b.IsDeleted);

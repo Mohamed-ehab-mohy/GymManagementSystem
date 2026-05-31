@@ -187,8 +187,6 @@ public class MembersController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ToggleActive(int id)
     {
-        // For Members, "IsActive" might translate to deleting or not.
-        // We'll use DeleteMemberAsync as a Soft Delete.
         await _memberService.DeleteMemberAsync(id);
         return RedirectToAction(nameof(Index));
     }

@@ -27,7 +27,6 @@ public class AuditInterceptor : SaveChangesInterceptor
 
         var entries = context.ChangeTracker.Entries<BaseEntity>();
 
-        // TODO: In the future, inject IHttpContextAccessor to get the actual logged-in user's name/ID
         string currentUser = "System";
 
         foreach (var entry in entries)

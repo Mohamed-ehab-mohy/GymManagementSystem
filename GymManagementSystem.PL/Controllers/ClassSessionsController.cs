@@ -57,7 +57,6 @@ public class ClassSessionsController : Controller
     {
         if (ModelState.IsValid)
         {
-            // Custom validation: End time must be after start time
             if (model.EndTime <= model.StartTime)
             {
                 ModelState.AddModelError("EndTime", "End time must be after start time.");

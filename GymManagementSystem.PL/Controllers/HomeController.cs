@@ -32,7 +32,6 @@ public class HomeController : Controller
             RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
         };
 
-        // ── Handle HTTP status code errors (404, 403, etc.) ──────────────────
         if (statusCode.HasValue)
         {
             model.StatusCode = statusCode.Value;
@@ -52,7 +51,6 @@ public class HomeController : Controller
         }
         else
         {
-            // ── Handle unhandled exceptions ──────────────────────────────────
             var exceptionFeature = HttpContext.Features.Get<IExceptionHandlerFeature>();
 
             if (exceptionFeature?.Error is not null)
@@ -64,7 +62,6 @@ public class HomeController : Controller
 
                 _logger.LogError(ex, "Unhandled exception for request {RequestId}", model.RequestId);
 
-                // Only expose details in Development
                 if (HttpContext.RequestServices
                         .GetRequiredService<IWebHostEnvironment>()
                         .IsDevelopment())
