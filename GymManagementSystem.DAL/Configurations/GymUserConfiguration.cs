@@ -55,13 +55,6 @@ public class GymUserConfiguration : IEntityTypeConfiguration<GymUser>
             a.Property(p => p.ZipCode).HasMaxLength(20);
         });
 
-        builder.Property(typeof(Member), nameof(Member.Photo)).HasMaxLength(500);
-        builder.Property(typeof(Member), nameof(Member.JoinDate)).HasDefaultValueSql("GETDATE()");
-
-        builder.Property(typeof(Trainer), nameof(Trainer.Specialty))
-            .HasConversion<string>()
-            .HasMaxLength(50);
-
         builder.HasQueryFilter(u => !u.IsDeleted);
     }
 }
