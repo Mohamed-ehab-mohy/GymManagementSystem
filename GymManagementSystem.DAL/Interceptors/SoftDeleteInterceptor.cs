@@ -20,10 +20,6 @@ public class SoftDeleteInterceptor : SaveChangesInterceptor
         return base.SavingChangesAsync(eventData, result, cancellationToken);
     }
 
-    /// <summary>
-    /// Intercepts entity deletions and converts them to soft-updates if the entity has an IsDeleted property.
-    /// Also protects owned entities from being marked as deleted.
-    /// </summary>
     private void HandleSoftDelete(DbContext? context)
     {
         if (context == null) return;

@@ -67,27 +67,27 @@ namespace GymManagementSystem.PL.Controllers
             switch (result)
             {
                 case AttendanceResult.Success:
-                    TempData["SuccessMessage"] = $"✅ Check-In Successful! Welcome {memberName} to the session '{sessionName}'.";
+                    TempData["SuccessMessage"] = $"Check-In Successful! Welcome {memberName} to the session '{sessionName}'.";
                     break;
 
                 case AttendanceResult.NotFound:
-                    TempData["ErrorMessage"] = "❌ Error: Booking record not found in the system.";
+                    TempData["ErrorMessage"] = "Error: Booking record not found in the system.";
                     break;
 
                 case AttendanceResult.AlreadyAttended:
-                    TempData["WarningMessage"] = $"⚠️ Attendance Warning: {memberName} has already checked in for '{sessionName}'.";
+                    TempData["WarningMessage"] = $"Attendance Warning: {memberName} has already checked in for '{sessionName}'.";
                     break;
 
                 case AttendanceResult.InvalidSignature:
-                    TempData["ErrorMessage"] = "🔒 Security Alert: Tampered or invalid QR signature detected!";
+                    TempData["ErrorMessage"] = "Security Alert: Tampered or invalid QR signature detected!";
                     break;
 
                 case AttendanceResult.InvalidFormat:
-                    TempData["ErrorMessage"] = "🚫 Error: Scanned QR format is not recognized by Gymy.";
+                    TempData["ErrorMessage"] = "Error: Scanned QR format is not recognized by Gymy.";
                     break;
 
                 case AttendanceResult.SessionNotToday:
-                    TempData["ErrorMessage"] = $"📅 Rejected: This session '{sessionName}' is not scheduled for today!";
+                    TempData["ErrorMessage"] = $"Rejected: This session '{sessionName}' is not scheduled for today!";
                     break;
             }
 

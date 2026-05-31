@@ -20,8 +20,6 @@ public class MembershipConfiguration : IEntityTypeConfiguration<Membership>
             .HasForeignKey(m => m.PlanId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        // Unique Index to prevent double enrollment in the exact same plan at the same time
-        // Note: For a real gym, a user might renew a plan, but usually we handle that differently.
         builder.HasIndex(m => new { m.MemberId, m.PlanId }).IsUnique();
 
         builder.HasQueryFilter(m => !m.IsDeleted);

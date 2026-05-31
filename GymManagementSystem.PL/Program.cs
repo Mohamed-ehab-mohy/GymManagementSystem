@@ -9,7 +9,6 @@ using Autofac.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
-// ── Bootstrap logger (catches crashes before full config loads) ──────────────
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
     .CreateBootstrapLogger();
@@ -86,7 +85,6 @@ try
 
     var app = builder.Build();
 
-    // ── Middleware pipeline ───────────────────────────────────────────────────
     if (app.Environment.IsDevelopment())
     {
         app.UseDeveloperExceptionPage();
@@ -98,7 +96,6 @@ try
         app.UseHsts();
     }
 
-    // Log every HTTP request/response via Serilog
     app.UseSerilogRequestLogging(opts =>
     {
         opts.MessageTemplate = "HTTP {RequestMethod} {RequestPath} responded {StatusCode} in {Elapsed:0.0000} ms";
