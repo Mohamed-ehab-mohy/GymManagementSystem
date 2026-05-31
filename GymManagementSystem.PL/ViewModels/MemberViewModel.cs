@@ -36,6 +36,15 @@ public class MemberViewModel
     [StringLength(10, ErrorMessage = "Gender cannot exceed 10 characters.")]
     public string Gender { get; set; } = null!;
 
+    [Display(Name = "Photo URL")]
+    [StringLength(500, ErrorMessage = "Photo URL cannot exceed 500 characters.")]
+    public string? Photo { get; set; }
+
+    [Required(ErrorMessage = "Join Date is required.")]
+    [Display(Name = "Join Date")]
+    [DataType(DataType.Date)]
+    public DateTime JoinDate { get; set; } = DateTime.Today;
+
     [Required(ErrorMessage = "Street is required.")]
     [StringLength(100, ErrorMessage = "Street cannot exceed 100 characters.")]
     public string Street { get; set; } = null!;

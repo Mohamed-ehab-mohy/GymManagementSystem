@@ -59,6 +59,16 @@
                             </select>
                             <span asp-validation-for="Gender" class="text-danger small mt-1"></span>
                         </div>
+                        <div class="col-md-6">
+                            <label asp-for="Photo" class="form-label text-secondary fw-semibold"></label>
+                            <input asp-for="Photo" class="form-control form-control-lg premium-input" placeholder="Photo URL" />
+                            <span asp-validation-for="Photo" class="text-danger small mt-1"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="JoinDate" class="form-label text-secondary fw-semibold"></label>
+                            <input asp-for="JoinDate" class="form-control form-control-lg premium-input" type="date" />
+                            <span asp-validation-for="JoinDate" class="text-danger small mt-1"></span>
+                        </div>
                     </div>
 
                     <h5 class="text-primary-theme fw-bold mb-4 border-bottom pb-2" style="border-color: var(--border-color) !important;">

@@ -33,6 +33,8 @@ public class MembersController : Controller
             PhoneNumber = m.PhoneNumber,
             DateOfBirth = m.DateOfBirth,
             Gender = m.Gender,
+            Photo = m.Photo,
+            JoinDate = m.JoinDate,
             Street = m.Address?.Street ?? "",
             City = m.Address?.City ?? "",
             State = m.Address?.State ?? "",
@@ -67,6 +69,8 @@ public class MembersController : Controller
                 PhoneNumber = model.PhoneNumber,
                 DateOfBirth = model.DateOfBirth,
                 Gender = model.Gender,
+                Photo = model.Photo,
+                JoinDate = model.JoinDate,
                 Address = new Address
                 {
                     Street = model.Street,
@@ -99,6 +103,8 @@ public class MembersController : Controller
             PhoneNumber = member.PhoneNumber,
             DateOfBirth = member.DateOfBirth,
             Gender = member.Gender,
+            Photo = member.Photo,
+            JoinDate = member.JoinDate,
             Street = member.Address?.Street ?? "",
             City = member.Address?.City ?? "",
             State = member.Address?.State ?? "",
@@ -129,6 +135,8 @@ public class MembersController : Controller
             member.PhoneNumber = model.PhoneNumber;
             member.DateOfBirth = model.DateOfBirth;
             member.Gender = model.Gender;
+            member.Photo = model.Photo;
+            member.JoinDate = model.JoinDate;
 
             if (member.Address == null)
                 member.Address = new Address();
@@ -162,6 +170,8 @@ public class MembersController : Controller
             PhoneNumber = member.PhoneNumber,
             DateOfBirth = member.DateOfBirth,
             Gender = member.Gender,
+            Photo = member.Photo,
+            JoinDate = member.JoinDate,
             Street = member.Address?.Street ?? "",
             City = member.Address?.City ?? "",
             State = member.Address?.State ?? "",
