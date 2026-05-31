@@ -65,6 +65,18 @@
                                     <p class="fs-5 fw-medium text-white mb-0">@Model?.PhoneNumber</p>
                                 </div>
                             </div>
+                            <div class="col-md-6">
+                                <div class="detail-group">
+                                    <label class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-calendar me-2"></i>Date of Birth</label>
+                                    <p class="fs-5 fw-medium text-white mb-0">@Model?.DateOfBirth.ToString("MMM dd, yyyy")</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="detail-group">
+                                    <label class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-person me-2"></i>Gender</label>
+                                    <p class="fs-5 fw-medium text-white mb-0">@Model?.Gender</p>
+                                </div>
+                            </div>
                             
                             <div class="col-12">
                                 <hr style="border-color: var(--border-color);" />

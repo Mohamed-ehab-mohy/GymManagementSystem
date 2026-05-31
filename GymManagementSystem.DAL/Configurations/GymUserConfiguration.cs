@@ -24,18 +24,29 @@ public class GymUserConfiguration : IEntityTypeConfiguration<GymUser>
 
         builder.Property(u => u.PhoneNumber)
             .IsRequired()
-            .HasMaxLength(20);
+            .HasMaxLength(11);
 
-        // Check Constraint for Email and Phone
-        builder.HasCheckConstraint("CK_GymUser_Email", "Email LIKE '%_@__%.__%'");
-        builder.HasCheckConstraint("CK_GymUser_Phone", "PhoneNumber NOT LIKE '%[^0-9]%'");
+        builder.Property(u => u.DateOfBirth)
+            .IsRequired()
+            .HasColumnType("date");
 
-        // TPH Configuration
+        builder.Property(u => u.Gender)
+            .IsRequired()
+            .HasMaxLength(10);
+
+        builder.HasIndex(u => u.Email).IsUnique();
+        builder.HasIndex(u => u.PhoneNumber).IsUnique();
+
+        builder.ToTable(t =>
+        {
+            t.HasCheckConstraint("CK_GymUser_Email", "Email LIKE '%_@__%.__%'");
+            t.HasCheckConstraint("CK_GymUser_Phone", "PhoneNumber LIKE '010[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]' OR PhoneNumber LIKE '011[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]' OR PhoneNumber LIKE '012[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]' OR PhoneNumber LIKE '015[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'");
+        });
+
         builder.HasDiscriminator<string>("UserType")
             .HasValue<Member>("Member")
             .HasValue<Trainer>("Trainer");
 
-        // Owned Type
         builder.OwnsOne(u => u.Address, a =>
         {
             a.Property(p => p.Street).HasMaxLength(100);
@@ -44,7 +55,6 @@ public class GymUserConfiguration : IEntityTypeConfiguration<GymUser>
             a.Property(p => p.ZipCode).HasMaxLength(20);
         });
 
-        // Global Query Filter for Soft Delete
         builder.HasQueryFilter(u => !u.IsDeleted);
     }
 }

@@ -26,6 +26,8 @@ public class TrainersController : Controller
             LastName = t.LastName,
             Email = t.Email,
             PhoneNumber = t.PhoneNumber,
+            DateOfBirth = t.DateOfBirth,
+            Gender = t.Gender,
             Street = t.Address?.Street ?? "",
             City = t.Address?.City ?? "",
             State = t.Address?.State ?? "",
@@ -54,6 +56,8 @@ public class TrainersController : Controller
                 LastName = model.LastName,
                 Email = model.Email,
                 PhoneNumber = model.PhoneNumber,
+                DateOfBirth = model.DateOfBirth,
+                Gender = model.Gender,
                 Address = new Address
                 {
                     Street = model.Street,
@@ -84,6 +88,8 @@ public class TrainersController : Controller
             LastName = trainer.LastName,
             Email = trainer.Email,
             PhoneNumber = trainer.PhoneNumber,
+            DateOfBirth = trainer.DateOfBirth,
+            Gender = trainer.Gender,
             Street = trainer.Address?.Street ?? "",
             City = trainer.Address?.City ?? "",
             State = trainer.Address?.State ?? "",
@@ -112,7 +118,9 @@ public class TrainersController : Controller
             trainer.LastName = model.LastName;
             trainer.Email = model.Email;
             trainer.PhoneNumber = model.PhoneNumber;
-            
+            trainer.DateOfBirth = model.DateOfBirth;
+            trainer.Gender = model.Gender;
+
             if (trainer.Address == null)
                 trainer.Address = new Address();
 
@@ -143,6 +151,8 @@ public class TrainersController : Controller
             LastName = trainer.LastName,
             Email = trainer.Email,
             PhoneNumber = trainer.PhoneNumber,
+            DateOfBirth = trainer.DateOfBirth,
+            Gender = trainer.Gender,
             Street = trainer.Address?.Street ?? "",
             City = trainer.Address?.City ?? "",
             State = trainer.Address?.State ?? "",
