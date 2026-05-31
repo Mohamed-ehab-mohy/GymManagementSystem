@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using GymManagementSystem.DAL.DbContexts;
 using GymManagementSystem.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -59,5 +60,19 @@ public class BookingRepository : Repository<Booking>, IBookingRepository
         }
 
         return booking;
+    }
+
+    public async Task<IEnumerable<Booking>> GetBySessionIdAsync(int sessionId)
+    {
+        return await _context.Bookings
+            .Where(b => b.ClassSessionId == sessionId)
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<Booking>> GetByMemberIdAsync(int memberId)
+    {
+        return await _context.Bookings
+            .Where(b => b.MemberId == memberId)
+            .ToListAsync();
     }
 }

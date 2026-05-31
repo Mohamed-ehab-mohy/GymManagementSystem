@@ -168,7 +168,11 @@ public class ClassSessionsController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(int id)
     {
-        await _classSessionService.DeleteClassSessionAsync(id);
+        var (success, message) = await _classSessionService.DeleteClassSessionAsync(id);
+        if (success)
+            TempData["SuccessMessage"] = message;
+        else
+            TempData["ErrorMessage"] = message;
         return RedirectToAction(nameof(Index));
     }
 

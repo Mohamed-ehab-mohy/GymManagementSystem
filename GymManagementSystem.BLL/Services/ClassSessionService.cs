@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using GymManagementSystem.BLL.Interfaces;
 using GymManagementSystem.DAL.Entities;
@@ -9,11 +11,13 @@ namespace GymManagementSystem.BLL.Services;
 public class ClassSessionService : IClassSessionService
 {
     private readonly IClassSessionRepository _classSessionRepository;
+    private readonly IBookingRepository _bookingRepository;
     private readonly IUnitOfWork _unitOfWork;
 
-    public ClassSessionService(IClassSessionRepository repository, IUnitOfWork unitOfWork)
+    public ClassSessionService(IClassSessionRepository repository, IBookingRepository bookingRepository, IUnitOfWork unitOfWork)
     {
         _classSessionRepository = repository;
+        _bookingRepository = bookingRepository;
         _unitOfWork = unitOfWork;
     }
 
@@ -39,13 +43,18 @@ public class ClassSessionService : IClassSessionService
         await _unitOfWork.CompleteAsync();
     }
 
-    public async Task DeleteClassSessionAsync(int id)
+    public async Task<(bool Success, string Message)> DeleteClassSessionAsync(int id)
     {
         var entity = await _classSessionRepository.GetByIdAsync(id);
-        if (entity != null)
-        {
-            _classSessionRepository.Delete(entity);
-            await _unitOfWork.CompleteAsync();
-        }
+        if (entity == null)
+            return (false, "Session not found.");
+
+        var bookings = await _bookingRepository.GetBySessionIdAsync(id);
+        if (bookings.Any())
+            return (false, "Cannot delete session. Active bookings found.");
+
+        _classSessionRepository.Delete(entity);
+        await _unitOfWork.CompleteAsync();
+        return (true, "Session deleted successfully.");
     }
 }

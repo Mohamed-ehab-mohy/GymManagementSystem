@@ -1,6 +1,7 @@
-using GymManagementSystem.DAL.Entities;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using GymManagementSystem.DAL.Entities;
 
 namespace GymManagementSystem.BLL.Interfaces;
 
@@ -11,4 +12,5 @@ public interface IPlanService
     Task CreatePlanAsync(Plan plan);
     Task UpdatePlanAsync(Plan plan);
     Task DeletePlanAsync(int id);
+    Task<(bool Success, string Message)> ToggleActiveAsync(int id);
 }

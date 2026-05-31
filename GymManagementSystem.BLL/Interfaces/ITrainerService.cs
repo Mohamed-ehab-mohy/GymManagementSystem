@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using GymManagementSystem.DAL.Entities;
@@ -10,5 +11,5 @@ public interface ITrainerService
     Task<Trainer?> GetTrainerByIdAsync(int id);
     Task AddTrainerAsync(Trainer trainer);
     Task UpdateTrainerAsync(Trainer trainer);
-    Task DeleteTrainerAsync(int id);
+    Task<(bool Success, string Message)> DeleteTrainerAsync(int id);
 }

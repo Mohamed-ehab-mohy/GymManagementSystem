@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using GymManagementSystem.BLL.Interfaces;
 using GymManagementSystem.DAL.Entities;
@@ -9,11 +11,13 @@ namespace GymManagementSystem.BLL.Services;
 public class TrainerService : ITrainerService
 {
     private readonly ITrainerRepository _trainerRepository;
+    private readonly IClassSessionRepository _classSessionRepository;
     private readonly IUnitOfWork _unitOfWork;
 
-    public TrainerService(ITrainerRepository repository, IUnitOfWork unitOfWork)
+    public TrainerService(ITrainerRepository repository, IClassSessionRepository classSessionRepository, IUnitOfWork unitOfWork)
     {
         _trainerRepository = repository;
+        _classSessionRepository = classSessionRepository;
         _unitOfWork = unitOfWork;
     }
 
@@ -39,13 +43,18 @@ public class TrainerService : ITrainerService
         await _unitOfWork.CompleteAsync();
     }
 
-    public async Task DeleteTrainerAsync(int id)
+    public async Task<(bool Success, string Message)> DeleteTrainerAsync(int id)
     {
         var entity = await _trainerRepository.GetByIdAsync(id);
-        if (entity != null)
-        {
-            _trainerRepository.Delete(entity);
-            await _unitOfWork.CompleteAsync();
-        }
+        if (entity == null)
+            return (false, "Trainer not found.");
+
+        var activeSessions = await _classSessionRepository.GetByTrainerIdAsync(id);
+        if (activeSessions.Any())
+            return (false, "Cannot delete trainer. Active class sessions found.");
+
+        _trainerRepository.Delete(entity);
+        await _unitOfWork.CompleteAsync();
+        return (true, "Trainer deleted successfully.");
     }
 }

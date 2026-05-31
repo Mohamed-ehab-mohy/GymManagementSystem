@@ -1,9 +1,10 @@
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 using GymManagementSystem.BLL.Interfaces;
 using GymManagementSystem.DAL.Entities;
 using GymManagementSystem.PL.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GymManagementSystem.PL.Controllers;
 
@@ -70,6 +71,7 @@ public class TrainersController : Controller
             };
 
             await _trainerService.AddTrainerAsync(trainer);
+            TempData["SuccessMessage"] = "Trainer created successfully.";
             return RedirectToAction(nameof(Index));
         }
         return View(model);
@@ -133,6 +135,7 @@ public class TrainersController : Controller
             trainer.HireDate = model.HireDate;
 
             await _trainerService.UpdateTrainerAsync(trainer);
+            TempData["SuccessMessage"] = "Trainer updated successfully.";
             return RedirectToAction(nameof(Index));
         }
         return View(model);
@@ -166,9 +169,13 @@ public class TrainersController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> ToggleActive(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        await _trainerService.DeleteTrainerAsync(id);
+        var (success, message) = await _trainerService.DeleteTrainerAsync(id);
+        if (success)
+            TempData["SuccessMessage"] = message;
+        else
+            TempData["ErrorMessage"] = message;
         return RedirectToAction(nameof(Index));
     }
 }

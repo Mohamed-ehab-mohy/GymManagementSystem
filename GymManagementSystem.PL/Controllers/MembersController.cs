@@ -3,10 +3,13 @@ using GymManagementSystem.BLL.Interfaces;
 using GymManagementSystem.DAL.Entities;
 using GymManagementSystem.PL.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Hosting;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using GymManagementSystem.DAL.Repositories;
 
 namespace GymManagementSystem.PL.Controllers;
 
@@ -14,11 +17,15 @@ public class MembersController : Controller
 {
     private readonly IMemberService _memberService;
     private readonly IExportService _exportService;
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IWebHostEnvironment _env;
 
-    public MembersController(IMemberService memberService, IExportService exportService)
+    public MembersController(IMemberService memberService, IExportService exportService, IUnitOfWork unitOfWork, IWebHostEnvironment env)
     {
         _memberService = memberService;
         _exportService = exportService;
+        _unitOfWork = unitOfWork;
+        _env = env;
     }
 
     private async Task<IEnumerable<MemberViewModel>> GetMemberViewModelsAsync()
@@ -40,8 +47,32 @@ public class MembersController : Controller
             State = m.Address?.State ?? "",
             ZipCode = m.Address?.ZipCode ?? "",
             EmergencyContactName = m.EmergencyContactName,
-            EmergencyContactPhone = m.EmergencyContactPhone
+            EmergencyContactPhone = m.EmergencyContactPhone,
+            Height = m.HealthRecord?.Height ?? 0,
+            Weight = m.HealthRecord?.Weight ?? 0,
+            BloodType = m.HealthRecord?.BloodType ?? "",
+            Note = m.HealthRecord?.Note
         }).ToList();
+    }
+
+    private async Task<string?> SavePhotoAsync(int memberId, Microsoft.AspNetCore.Http.IFormFile? photoFile)
+    {
+        if (photoFile == null || photoFile.Length == 0)
+            return null;
+
+        var uploadsDir = Path.Combine(_env.WebRootPath, "uploads");
+        Directory.CreateDirectory(uploadsDir);
+
+        var ext = Path.GetExtension(photoFile.FileName);
+        var fileName = $"member_{memberId}_{DateTime.Now:yyyyMMdd_HHmmss}{ext}";
+        var filePath = Path.Combine(uploadsDir, fileName);
+
+        using (var stream = new FileStream(filePath, FileMode.Create))
+        {
+            await photoFile.CopyToAsync(stream);
+        }
+
+        return $"/uploads/{fileName}";
     }
 
     public async Task<IActionResult> Index()
@@ -69,8 +100,7 @@ public class MembersController : Controller
                 PhoneNumber = model.PhoneNumber,
                 DateOfBirth = model.DateOfBirth,
                 Gender = model.Gender,
-                Photo = model.Photo,
-                JoinDate = model.JoinDate,
+                JoinDate = DateTime.Today,
                 Address = new Address
                 {
                     Street = model.Street,
@@ -79,10 +109,26 @@ public class MembersController : Controller
                     ZipCode = model.ZipCode
                 },
                 EmergencyContactName = model.EmergencyContactName ?? "",
-                EmergencyContactPhone = model.EmergencyContactPhone ?? ""
+                EmergencyContactPhone = model.EmergencyContactPhone ?? "",
+                HealthRecord = new HealthRecord
+                {
+                    Height = model.Height,
+                    Weight = model.Weight,
+                    BloodType = model.BloodType,
+                    Note = model.Note,
+                    LastUpdate = DateTime.Now
+                }
             };
 
             await _memberService.AddMemberAsync(member);
+
+            if (model.PhotoFile != null && model.PhotoFile.Length > 0)
+            {
+                member.Photo = await SavePhotoAsync(member.Id, model.PhotoFile);
+                await _memberService.UpdateMemberAsync(member);
+            }
+
+            TempData["SuccessMessage"] = "Member created successfully.";
             return RedirectToAction(nameof(Index));
         }
         return View(model);
@@ -110,7 +156,11 @@ public class MembersController : Controller
             State = member.Address?.State ?? "",
             ZipCode = member.Address?.ZipCode ?? "",
             EmergencyContactName = member.EmergencyContactName,
-            EmergencyContactPhone = member.EmergencyContactPhone
+            EmergencyContactPhone = member.EmergencyContactPhone,
+            Height = member.HealthRecord?.Height ?? 0,
+            Weight = member.HealthRecord?.Weight ?? 0,
+            BloodType = member.HealthRecord?.BloodType ?? "",
+            Note = member.HealthRecord?.Note
         };
 
         return View(model);
@@ -135,8 +185,18 @@ public class MembersController : Controller
             member.PhoneNumber = model.PhoneNumber;
             member.DateOfBirth = model.DateOfBirth;
             member.Gender = model.Gender;
-            member.Photo = model.Photo;
             member.JoinDate = model.JoinDate;
+
+            if (model.PhotoFile != null && model.PhotoFile.Length > 0)
+            {
+                if (!string.IsNullOrEmpty(member.Photo))
+                {
+                    var oldPath = Path.Combine(_env.WebRootPath, member.Photo.TrimStart('/'));
+                    if (System.IO.File.Exists(oldPath))
+                        System.IO.File.Delete(oldPath);
+                }
+                member.Photo = await SavePhotoAsync(member.Id, model.PhotoFile);
+            }
 
             if (member.Address == null)
                 member.Address = new Address();
@@ -149,7 +209,17 @@ public class MembersController : Controller
             member.EmergencyContactName = model.EmergencyContactName ?? "";
             member.EmergencyContactPhone = model.EmergencyContactPhone ?? "";
 
+            if (member.HealthRecord == null)
+                member.HealthRecord = new HealthRecord();
+
+            member.HealthRecord.Height = model.Height;
+            member.HealthRecord.Weight = model.Weight;
+            member.HealthRecord.BloodType = model.BloodType;
+            member.HealthRecord.Note = model.Note;
+            member.HealthRecord.LastUpdate = DateTime.Now;
+
             await _memberService.UpdateMemberAsync(member);
+            TempData["SuccessMessage"] = "Member updated successfully.";
             return RedirectToAction(nameof(Index));
         }
         return View(model);
@@ -177,7 +247,11 @@ public class MembersController : Controller
             State = member.Address?.State ?? "",
             ZipCode = member.Address?.ZipCode ?? "",
             EmergencyContactName = member.EmergencyContactName,
-            EmergencyContactPhone = member.EmergencyContactPhone
+            EmergencyContactPhone = member.EmergencyContactPhone,
+            Height = member.HealthRecord?.Height ?? 0,
+            Weight = member.HealthRecord?.Weight ?? 0,
+            BloodType = member.HealthRecord?.BloodType ?? "",
+            Note = member.HealthRecord?.Note
         };
 
         return View(model);
@@ -185,9 +259,13 @@ public class MembersController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> ToggleActive(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        await _memberService.DeleteMemberAsync(id);
+        var (success, message) = await _memberService.DeleteMemberAsync(id);
+        if (success)
+            TempData["SuccessMessage"] = message;
+        else
+            TempData["ErrorMessage"] = message;
         return RedirectToAction(nameof(Index));
     }
 

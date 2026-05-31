@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using GymManagementSystem.DAL.Entities;
@@ -10,5 +11,5 @@ public interface IClassSessionService
     Task<ClassSession?> GetClassSessionByIdAsync(int id);
     Task AddClassSessionAsync(ClassSession classSession);
     Task UpdateClassSessionAsync(ClassSession classSession);
-    Task DeleteClassSessionAsync(int id);
+    Task<(bool Success, string Message)> DeleteClassSessionAsync(int id);
 }

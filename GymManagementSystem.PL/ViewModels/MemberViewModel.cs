@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
 
 namespace GymManagementSystem.PL.ViewModels;
 
@@ -36,11 +37,12 @@ public class MemberViewModel
     [StringLength(10, ErrorMessage = "Gender cannot exceed 10 characters.")]
     public string Gender { get; set; } = null!;
 
-    [Display(Name = "Photo URL")]
-    [StringLength(500, ErrorMessage = "Photo URL cannot exceed 500 characters.")]
+    [Display(Name = "Photo")]
     public string? Photo { get; set; }
 
-    [Required(ErrorMessage = "Join Date is required.")]
+    [Display(Name = "Photo")]
+    public IFormFile? PhotoFile { get; set; }
+
     [Display(Name = "Join Date")]
     [DataType(DataType.Date)]
     public DateTime JoinDate { get; set; } = DateTime.Today;
@@ -68,4 +70,23 @@ public class MemberViewModel
     [Phone(ErrorMessage = "Invalid Emergency Contact Phone Number.")]
     [Display(Name = "Emergency Contact Phone")]
     public string? EmergencyContactPhone { get; set; }
+
+    [Required(ErrorMessage = "Height is required.")]
+    [Range(50, 300, ErrorMessage = "Height must be between 50 and 300 cm.")]
+    [Display(Name = "Height (cm)")]
+    public decimal Height { get; set; }
+
+    [Required(ErrorMessage = "Weight is required.")]
+    [Range(10, 500, ErrorMessage = "Weight must be between 10 and 500 kg.")]
+    [Display(Name = "Weight (kg)")]
+    public decimal Weight { get; set; }
+
+    [Required(ErrorMessage = "Blood Type is required.")]
+    [StringLength(5, ErrorMessage = "Blood Type cannot exceed 5 characters.")]
+    [Display(Name = "Blood Type")]
+    public string BloodType { get; set; } = null!;
+
+    [Display(Name = "Health Notes")]
+    [StringLength(500, ErrorMessage = "Note cannot exceed 500 characters.")]
+    public string? Note { get; set; }
 }
