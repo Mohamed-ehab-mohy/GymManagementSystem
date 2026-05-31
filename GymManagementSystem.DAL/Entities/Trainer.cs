@@ -5,9 +5,8 @@ namespace GymManagementSystem.DAL.Entities;
 
 public class Trainer : GymUser
 {
-    public string Specialization { get; set; } = null!;
+    public TrainerSpecialty Specialty { get; set; }
     public DateTime? HireDate { get; set; }
 
-    // Navigation Properties
     public ICollection<ClassSession> ClassSessions { get; set; } = new List<ClassSession>();
 }

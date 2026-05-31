@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using GymManagementSystem.DAL.Entities;
 
 namespace GymManagementSystem.PL.ViewModels;
 
@@ -54,9 +55,9 @@ public class TrainerViewModel
     [Display(Name = "Zip Code")]
     public string ZipCode { get; set; } = null!;
 
-    [Required(ErrorMessage = "Specialization is required.")]
-    [StringLength(100, ErrorMessage = "Specialization cannot exceed 100 characters.")]
-    public string Specialization { get; set; } = null!;
+    [Required(ErrorMessage = "Specialty is required.")]
+    [Display(Name = "Specialty")]
+    public TrainerSpecialty Specialty { get; set; }
 
     [Required(ErrorMessage = "Hire Date is required.")]
     [Display(Name = "Hire Date")]

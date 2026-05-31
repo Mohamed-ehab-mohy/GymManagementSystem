@@ -179,7 +179,7 @@ public class ClassSessionsController : Controller
         var trainerOptions = trainers.Select(t => new 
         { 
             Id = t.Id, 
-            FullName = $"{t.FirstName} {t.LastName} ({t.Specialization})" 
+            FullName = $"{t.FirstName} {t.LastName} ({t.Specialty})" 
         });
         return new SelectList(trainerOptions, "Id", "FullName");
     }

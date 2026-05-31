@@ -32,7 +32,7 @@ public class TrainersController : Controller
             City = t.Address?.City ?? "",
             State = t.Address?.State ?? "",
             ZipCode = t.Address?.ZipCode ?? "",
-            Specialization = t.Specialization,
+            Specialty = t.Specialty,
             HireDate = t.HireDate.GetValueOrDefault(DateTime.Today)
         }).ToList();
 
@@ -65,7 +65,7 @@ public class TrainersController : Controller
                     State = model.State,
                     ZipCode = model.ZipCode
                 },
-                Specialization = model.Specialization,
+                Specialty = model.Specialty,
                 HireDate = model.HireDate
             };
 
@@ -94,7 +94,7 @@ public class TrainersController : Controller
             City = trainer.Address?.City ?? "",
             State = trainer.Address?.State ?? "",
             ZipCode = trainer.Address?.ZipCode ?? "",
-            Specialization = trainer.Specialization,
+            Specialty = trainer.Specialty,
             HireDate = trainer.HireDate.GetValueOrDefault(DateTime.Today)
         };
 
@@ -129,7 +129,7 @@ public class TrainersController : Controller
             trainer.Address.State = model.State;
             trainer.Address.ZipCode = model.ZipCode;
 
-            trainer.Specialization = model.Specialization;
+            trainer.Specialty = model.Specialty;
             trainer.HireDate = model.HireDate;
 
             await _trainerService.UpdateTrainerAsync(trainer);
@@ -157,7 +157,7 @@ public class TrainersController : Controller
             City = trainer.Address?.City ?? "",
             State = trainer.Address?.State ?? "",
             ZipCode = trainer.Address?.ZipCode ?? "",
-            Specialization = trainer.Specialization,
+            Specialty = trainer.Specialty,
             HireDate = trainer.HireDate.GetValueOrDefault(DateTime.Today)
         };
 

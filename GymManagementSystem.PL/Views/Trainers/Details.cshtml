@@ -1,3 +1,4 @@
+@using GymManagementSystem.DAL.Entities
 @model GymManagementSystem.PL.ViewModels.TrainerViewModel
 
 @{
@@ -28,7 +29,7 @@
                     @Model?.FirstName.Substring(0, 1)@Model?.LastName.Substring(0, 1)
                 </div>
                 <h3 class="fw-bold text-white mb-1">@Model?.FirstName @Model?.LastName</h3>
-                <span class="badge bg-secondary mb-3 px-3 py-2 fs-6">@Model?.Specialization</span>
+                <span class="badge bg-secondary mb-3 px-3 py-2 fs-6">@Model?.Specialty</span>
                 
                 <div class="d-grid gap-2 mt-auto">
                     <button class="btn btn-outline-info">
