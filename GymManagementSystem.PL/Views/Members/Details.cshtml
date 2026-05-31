@@ -27,7 +27,7 @@
                 <div class="bg-primary text-white rounded-circle d-flex justify-content-center align-items-center mx-auto mb-4" style="width: 120px; height: 120px; font-size: 3rem; font-weight: bold; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)) !important;">
                     @Model?.FirstName.Substring(0, 1)@Model?.LastName.Substring(0, 1)
                 </div>
-                <h3 class="fw-bold text-white mb-1">@Model?.FirstName @Model?.LastName</h3>
+                <h3 class="fw-bold mb-1">@Model?.FirstName @Model?.LastName</h3>
                 <p class="text-secondary mb-2">Gym Member</p>
                 <small class="text-secondary">Joined: @Model?.JoinDate.ToString("MMM dd, yyyy")</small>
                 
@@ -57,31 +57,31 @@
                             <div class="col-md-6">
                                 <div class="detail-group">
                                     <label class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-envelope me-2"></i>Email Address</label>
-                                    <p class="fs-5 fw-medium text-white mb-0">@Model?.Email</p>
+                                    <p class="fs-5 fw-medium mb-0">@Model?.Email</p>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="detail-group">
                                     <label class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-telephone me-2"></i>Phone Number</label>
-                                    <p class="fs-5 fw-medium text-white mb-0">@Model?.PhoneNumber</p>
+                                    <p class="fs-5 fw-medium mb-0">@Model?.PhoneNumber</p>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="detail-group">
                                     <label class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-calendar me-2"></i>Date of Birth</label>
-                                    <p class="fs-5 fw-medium text-white mb-0">@Model?.DateOfBirth.ToString("MMM dd, yyyy")</p>
+                                    <p class="fs-5 fw-medium mb-0">@Model?.DateOfBirth.ToString("MMM dd, yyyy")</p>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="detail-group">
                                     <label class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-person me-2"></i>Gender</label>
-                                    <p class="fs-5 fw-medium text-white mb-0">@Model?.Gender</p>
+                                    <p class="fs-5 fw-medium mb-0">@Model?.Gender</p>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="detail-group">
                                     <label class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-calendar-check me-2"></i>Join Date</label>
-                                    <p class="fs-5 fw-medium text-white mb-0">@Model?.JoinDate.ToString("MMM dd, yyyy")</p>
+                                    <p class="fs-5 fw-medium mb-0">@Model?.JoinDate.ToString("MMM dd, yyyy")</p>
                                 </div>
                             </div>
                             
@@ -92,7 +92,7 @@
                             <div class="col-12">
                                 <div class="detail-group">
                                     <label class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-geo-alt me-2"></i>Address</label>
-                                    <p class="fs-5 fw-medium text-white mb-0">@Model?.Street, @Model?.City, @Model?.State @Model?.ZipCode</p>
+                                    <p class="fs-5 fw-medium mb-0">@Model?.Street, @Model?.City, @Model?.State @Model?.ZipCode</p>
                                 </div>
                             </div>
 
@@ -103,13 +103,13 @@
                             <div class="col-md-6">
                                 <div class="detail-group">
                                     <label class="text-warning small text-uppercase fw-bold mb-1"><i class="bi bi-heart-pulse me-2"></i>Emergency Contact</label>
-                                    <p class="fs-5 fw-medium text-white mb-0">@(string.IsNullOrEmpty(Model?.EmergencyContactName) ? "N/A" : Model.EmergencyContactName)</p>
+                                    <p class="fs-5 fw-medium mb-0">@(string.IsNullOrEmpty(Model?.EmergencyContactName) ? "N/A" : Model.EmergencyContactName)</p>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="detail-group">
                                     <label class="text-warning small text-uppercase fw-bold mb-1"><i class="bi bi-telephone-fill me-2"></i>Emergency Phone</label>
-                                    <p class="fs-5 fw-medium text-white mb-0">@(string.IsNullOrEmpty(Model?.EmergencyContactPhone) ? "N/A" : Model.EmergencyContactPhone)</p>
+                                    <p class="fs-5 fw-medium mb-0">@(string.IsNullOrEmpty(Model?.EmergencyContactPhone) ? "N/A" : Model.EmergencyContactPhone)</p>
                                 </div>
                             </div>
                         </div>
@@ -119,32 +119,3 @@
         </div>
     </div>
 </div>
-
-<style>
-    .custom-tabs {
-        border-bottom: 1px solid var(--border-color);
-    }
-    .custom-tabs .nav-link {
-        color: var(--text-color);
-        background: transparent;
-        border: none;
-        border-bottom: 2px solid transparent;
-        font-weight: 600;
-        padding: 0.75rem 1.5rem;
-    }
-    .custom-tabs .nav-link:hover {
-        border-color: transparent;
-        color: var(--primary-color);
-    }
-    .custom-tabs .nav-link.active {
-        color: var(--primary-color);
-        background: transparent;
-        border-color: var(--primary-color);
-    }
-    .detail-group {
-        background: rgba(255, 255, 255, 0.02);
-        padding: 1rem;
-        border-radius: 8px;
-        border: 1px solid rgba(255, 255, 255, 0.05);
-    }
-</style>
