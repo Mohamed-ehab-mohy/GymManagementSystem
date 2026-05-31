@@ -2,38 +2,44 @@
    PREMIUM GYM DESIGN SYSTEM (REFINED)
    ========================================= */
 :root {
-    /* Light Mode Variables - Soft & Clean */
     --bg-color: #f8fafc;
     --bg-secondary: #ffffff;
     --bg-glass: rgba(255, 255, 255, 0.85);
     --text-primary: #0f172a;
     --text-secondary: #475569;
+    --text-color: #0f172a;
     --border-color: rgba(15, 23, 42, 0.08);
-    
-    /* Brand Colors - Elegant Deep Blue */
+    --info-color: #0ea5e9;
+    --success-color: #10b981;
+    --warning-color: #f59e0b;
+    --danger-color: #ef4444;
+
     --primary-color: #2563eb;
     --primary-glow: rgba(37, 99, 235, 0.25);
     --secondary-color: #4f46e5;
     --accent-color: #f43f5e;
-    
+
     --card-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
-    --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); /* Smoother Apple-like easing */
+    --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 [data-theme="dark"] {
-    /* Dark Mode Variables - Easy on eyes */
-    --bg-color: #0f172a; /* Slate 900 - much softer than black */
-    --bg-secondary: #1e293b; /* Slate 800 */
+    --bg-color: #0f172a;
+    --bg-secondary: #1e293b;
     --bg-glass: rgba(30, 41, 59, 0.85);
     --text-primary: #f8fafc;
     --text-secondary: #94a3b8;
+    --text-color: #f8fafc;
     --border-color: rgba(255, 255, 255, 0.06);
-    
-    /* Brand Colors - Vibrant but not blinding */
-    --primary-color: #38bdf8; /* Sky 400 */
-    --primary-glow: rgba(56, 189, 248, 0.12); /* Subtle glow */
-    --secondary-color: #818cf8; /* Indigo 400 */
-    
+    --info-color: #38bdf8;
+    --success-color: #34d399;
+    --warning-color: #fbbf24;
+    --danger-color: #f87171;
+
+    --primary-color: #38bdf8;
+    --primary-glow: rgba(56, 189, 248, 0.12);
+    --secondary-color: #818cf8;
+
     --card-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.3);
 }
 
@@ -308,7 +314,7 @@ a:hover {
     background-color: var(--bg-secondary) !important;
 }
 
-.form-control, .form-select {
+.form-control, .form-select, .premium-input {
     background-color: var(--bg-color);
     border: 1px solid var(--border-color);
     color: var(--text-primary);
@@ -317,11 +323,79 @@ a:hover {
     transition: var(--transition);
 }
 
-.form-control:focus, .form-select:focus {
+.form-control:focus, .form-select:focus, .premium-input:focus {
     background-color: var(--bg-color);
     color: var(--text-primary);
     border-color: var(--primary-color);
     box-shadow: 0 0 0 4px var(--primary-glow);
+}
+
+.form-label {
+    color: var(--text-secondary);
+}
+
+.table {
+    color: var(--text-primary);
+}
+
+.table > :not(caption) > * > * {
+    background-color: transparent;
+    color: var(--text-primary);
+    border-bottom-color: var(--border-color);
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(128, 128, 128, 0.03);
+}
+
+.detail-group {
+    background: color-mix(in srgb, var(--text-primary) 3%, transparent);
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid color-mix(in srgb, var(--text-primary) 6%, transparent);
+}
+
+.detail-group p, .detail-group .fw-medium {
+    color: var(--text-primary);
+}
+
+.custom-tabs {
+    border-bottom: 1px solid var(--border-color);
+}
+
+.custom-tabs .nav-link {
+    color: var(--text-secondary);
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    transition: var(--transition);
+}
+
+.custom-tabs .nav-link:hover {
+    border-color: transparent;
+    color: var(--primary-color);
+}
+
+.custom-tabs .nav-link.active {
+    color: var(--primary-color);
+    background: transparent;
+    border-color: var(--primary-color);
+}
+
+.text-white {
+    color: var(--text-primary) !important;
+}
+
+.badge.bg-dark {
+    background-color: var(--bg-color) !important;
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.text-muted {
+    color: var(--text-secondary) !important;
 }
 
 /* Badges */

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using GymManagementSystem.DAL.Entities;
@@ -10,5 +11,5 @@ public interface IMemberService
     Task<Member?> GetMemberByIdAsync(int id);
     Task AddMemberAsync(Member member);
     Task UpdateMemberAsync(Member member);
-    Task DeleteMemberAsync(int id);
+    Task<(bool Success, string Message)> DeleteMemberAsync(int id);
 }

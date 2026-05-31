@@ -24,13 +24,20 @@
         <!-- Profile Card -->
         <div class="col-12 col-lg-4">
             <div class="premium-card p-4 text-center h-100 d-flex flex-column justify-content-center">
-                <div class="bg-primary text-white rounded-circle d-flex justify-content-center align-items-center mx-auto mb-4" style="width: 120px; height: 120px; font-size: 3rem; font-weight: bold; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)) !important;">
-                    @Model?.FirstName.Substring(0, 1)@Model?.LastName.Substring(0, 1)
-                </div>
-                <h3 class="fw-bold text-white mb-1">@Model?.FirstName @Model?.LastName</h3>
+                @if (!string.IsNullOrEmpty(Model?.Photo))
+                {
+                    <img src="@Model.Photo" alt="@Model.FirstName @Model.LastName" class="rounded-circle mx-auto mb-4" style="width: 120px; height: 120px; object-fit: cover;" />
+                }
+                else
+                {
+                    <div class="bg-primary text-white rounded-circle d-flex justify-content-center align-items-center mx-auto mb-4" style="width: 120px; height: 120px; font-size: 3rem; font-weight: bold; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)) !important;">
+                        @Model?.FirstName.Substring(0, 1)@Model?.LastName.Substring(0, 1)
+                    </div>
+                }
+                <h3 class="fw-bold mb-1">@Model?.FirstName @Model?.LastName</h3>
                 <p class="text-secondary mb-2">Gym Member</p>
                 <small class="text-secondary">Joined: @Model?.JoinDate.ToString("MMM dd, yyyy")</small>
-                
+
                 <div class="d-grid gap-2 mt-auto">
                     <button class="btn btn-outline-info">
                         <i class="bi bi-envelope me-2"></i> Send Email
@@ -45,71 +52,99 @@
         <!-- Details Card -->
         <div class="col-12 col-lg-8">
             <div class="premium-card p-4 h-100">
-                <ul class="nav nav-tabs custom-tabs mb-4" id="memberTabs" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab" aria-selected="true">Overview</button>
-                    </li>
-                </ul>
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="detail-group">
+                            <label class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-envelope me-2"></i>Email Address</label>
+                            <p class="fs-5 fw-medium mb-0">@Model?.Email</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="detail-group">
+                            <label class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-telephone me-2"></i>Phone Number</label>
+                            <p class="fs-5 fw-medium mb-0">@Model?.PhoneNumber</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="detail-group">
+                            <label class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-calendar me-2"></i>Date of Birth</label>
+                            <p class="fs-5 fw-medium mb-0">@Model?.DateOfBirth.ToString("MMM dd, yyyy")</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="detail-group">
+                            <label class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-person me-2"></i>Gender</label>
+                            <p class="fs-5 fw-medium mb-0">@Model?.Gender</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="detail-group">
+                            <label class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-calendar-check me-2"></i>Join Date</label>
+                            <p class="fs-5 fw-medium mb-0">@Model?.JoinDate.ToString("MMM dd, yyyy")</p>
+                        </div>
+                    </div>
 
-                <div class="tab-content" id="memberTabsContent">
-                    <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
-                        <div class="row g-4">
-                            <div class="col-md-6">
-                                <div class="detail-group">
-                                    <label class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-envelope me-2"></i>Email Address</label>
-                                    <p class="fs-5 fw-medium text-white mb-0">@Model?.Email</p>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="detail-group">
-                                    <label class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-telephone me-2"></i>Phone Number</label>
-                                    <p class="fs-5 fw-medium text-white mb-0">@Model?.PhoneNumber</p>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="detail-group">
-                                    <label class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-calendar me-2"></i>Date of Birth</label>
-                                    <p class="fs-5 fw-medium text-white mb-0">@Model?.DateOfBirth.ToString("MMM dd, yyyy")</p>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="detail-group">
-                                    <label class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-person me-2"></i>Gender</label>
-                                    <p class="fs-5 fw-medium text-white mb-0">@Model?.Gender</p>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="detail-group">
-                                    <label class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-calendar-check me-2"></i>Join Date</label>
-                                    <p class="fs-5 fw-medium text-white mb-0">@Model?.JoinDate.ToString("MMM dd, yyyy")</p>
-                                </div>
-                            </div>
-                            
-                            <div class="col-12">
-                                <hr style="border-color: var(--border-color);" />
-                            </div>
+                    <div class="col-12">
+                        <hr style="border-color: var(--border-color);" />
+                    </div>
 
-                            <div class="col-12">
-                                <div class="detail-group">
-                                    <label class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-geo-alt me-2"></i>Address</label>
-                                    <p class="fs-5 fw-medium text-white mb-0">@Model?.Street, @Model?.City, @Model?.State @Model?.ZipCode</p>
-                                </div>
-                            </div>
+                    <div class="col-12">
+                        <div class="detail-group">
+                            <label class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-geo-alt me-2"></i>Address</label>
+                            <p class="fs-5 fw-medium mb-0">@Model?.Street, @Model?.City, @Model?.State @Model?.ZipCode</p>
+                        </div>
+                    </div>
 
-                            <div class="col-12">
-                                <hr style="border-color: var(--border-color);" />
-                            </div>
+                    <div class="col-12">
+                        <hr style="border-color: var(--border-color);" />
+                    </div>
 
-                            <div class="col-md-6">
-                                <div class="detail-group">
-                                    <label class="text-warning small text-uppercase fw-bold mb-1"><i class="bi bi-heart-pulse me-2"></i>Emergency Contact</label>
-                                    <p class="fs-5 fw-medium text-white mb-0">@(string.IsNullOrEmpty(Model?.EmergencyContactName) ? "N/A" : Model.EmergencyContactName)</p>
+                    <div class="col-md-6">
+                        <div class="detail-group">
+                            <label class="text-warning small text-uppercase fw-bold mb-1"><i class="bi bi-heart-pulse me-2"></i>Emergency Contact</label>
+                            <p class="fs-5 fw-medium mb-0">@(string.IsNullOrEmpty(Model?.EmergencyContactName) ? "N/A" : Model.EmergencyContactName)</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="detail-group">
+                            <label class="text-warning small text-uppercase fw-bold mb-1"><i class="bi bi-telephone-fill me-2"></i>Emergency Phone</label>
+                            <p class="fs-5 fw-medium mb-0">@(string.IsNullOrEmpty(Model?.EmergencyContactPhone) ? "N/A" : Model.EmergencyContactPhone)</p>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <hr style="border-color: var(--border-color);" />
+                        <div class="border-bottom pb-2 mb-3 d-flex align-items-center justify-content-between" style="border-color: var(--border-color) !important; cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#healthDataSection" aria-expanded="false">
+                            <h5 class="text-danger fw-bold mb-0">
+                                <i class="bi bi-heart-pulse me-2"></i>Health Data
+                            </h5>
+                            <small class="text-secondary"><i class="bi bi-chevron-down"></i> Click to expand</small>
+                        </div>
+                        <div class="collapse" id="healthDataSection">
+                            <div class="row g-4">
+                                <div class="col-md-4">
+                                    <div class="detail-group">
+                                        <label class="text-danger small text-uppercase fw-bold mb-1"><i class="bi bi-rulers me-2"></i>Height</label>
+                                        <p class="fs-5 fw-medium mb-0">@Model?.Height cm</p>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="detail-group">
-                                    <label class="text-warning small text-uppercase fw-bold mb-1"><i class="bi bi-telephone-fill me-2"></i>Emergency Phone</label>
-                                    <p class="fs-5 fw-medium text-white mb-0">@(string.IsNullOrEmpty(Model?.EmergencyContactPhone) ? "N/A" : Model.EmergencyContactPhone)</p>
+                                <div class="col-md-4">
+                                    <div class="detail-group">
+                                        <label class="text-danger small text-uppercase fw-bold mb-1"><i class="bi bi-weight me-2"></i>Weight</label>
+                                        <p class="fs-5 fw-medium mb-0">@Model?.Weight kg</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="detail-group">
+                                        <label class="text-danger small text-uppercase fw-bold mb-1"><i class="bi bi-droplet me-2"></i>Blood Type</label>
+                                        <p class="fs-5 fw-medium mb-0">@Model?.BloodType</p>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="detail-group">
+                                        <label class="text-danger small text-uppercase fw-bold mb-1"><i class="bi bi-chat me-2"></i>Health Notes</label>
+                                        <p class="fs-5 fw-medium mb-0">@(string.IsNullOrEmpty(Model?.Note) ? "None" : Model.Note)</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -119,32 +154,3 @@
         </div>
     </div>
 </div>
-
-<style>
-    .custom-tabs {
-        border-bottom: 1px solid var(--border-color);
-    }
-    .custom-tabs .nav-link {
-        color: var(--text-color);
-        background: transparent;
-        border: none;
-        border-bottom: 2px solid transparent;
-        font-weight: 600;
-        padding: 0.75rem 1.5rem;
-    }
-    .custom-tabs .nav-link:hover {
-        border-color: transparent;
-        color: var(--primary-color);
-    }
-    .custom-tabs .nav-link.active {
-        color: var(--primary-color);
-        background: transparent;
-        border-color: var(--primary-color);
-    }
-    .detail-group {
-        background: rgba(255, 255, 255, 0.02);
-        padding: 1rem;
-        border-radius: 8px;
-        border: 1px solid rgba(255, 255, 255, 0.05);
-    }
-</style>

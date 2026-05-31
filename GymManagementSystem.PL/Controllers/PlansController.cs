@@ -82,6 +82,7 @@ public class PlansController : Controller
             };
 
             await _planService.CreatePlanAsync(plan);
+            TempData["SuccessMessage"] = "Plan created successfully.";
             return RedirectToAction(nameof(Index));
         }
         return View(viewModel);
@@ -125,7 +126,7 @@ public class PlansController : Controller
             plan.IsActive = viewModel.IsActive;
 
             await _planService.UpdatePlanAsync(plan);
-            
+            TempData["SuccessMessage"] = "Plan updated successfully.";
             return RedirectToAction(nameof(Index));
         }
         return View(viewModel);
@@ -135,12 +136,11 @@ public class PlansController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ToggleActive(int id)
     {
-        var plan = await _planService.GetPlanByIdAsync(id);
-        if (plan != null)
-        {
-            plan.IsActive = !plan.IsActive;
-            await _planService.UpdatePlanAsync(plan);
-        }
+        var (success, message) = await _planService.ToggleActiveAsync(id);
+        if (success)
+            TempData["SuccessMessage"] = message;
+        else
+            TempData["ErrorMessage"] = message;
         return RedirectToAction(nameof(Index));
     }
 
