@@ -20,5 +20,9 @@ public class ServiceModule : Module
         builder.RegisterType<ExportService>().As<IExportService>().InstancePerLifetimeScope();
         builder.RegisterType<AttendanceService>().As<IAttendanceService>().InstancePerLifetimeScope();
         builder.RegisterType<CategoryService>().As<ICategoryService>().InstancePerLifetimeScope();
+        builder.RegisterType<AttachmentService>().As<IAttachmentService>().InstancePerLifetimeScope()
+            .WithParameter(
+                (pi, ctx) => pi.Name == "webRootPath",
+                (pi, ctx) => ctx.Resolve<IWebHostEnvironment>().WebRootPath);
     }
 }

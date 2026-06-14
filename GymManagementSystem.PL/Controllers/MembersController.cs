@@ -3,10 +3,8 @@ using GymManagementSystem.BLL.Interfaces;
 using GymManagementSystem.DAL.Entities;
 using GymManagementSystem.PL.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Hosting;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using GymManagementSystem.DAL.Repositories;
@@ -18,14 +16,14 @@ public class MembersController : Controller
     private readonly IMemberService _memberService;
     private readonly IExportService _exportService;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IWebHostEnvironment _env;
+    private readonly IAttachmentService _attachmentService;
 
-    public MembersController(IMemberService memberService, IExportService exportService, IUnitOfWork unitOfWork, IWebHostEnvironment env)
+    public MembersController(IMemberService memberService, IExportService exportService, IUnitOfWork unitOfWork, IAttachmentService attachmentService)
     {
         _memberService = memberService;
         _exportService = exportService;
         _unitOfWork = unitOfWork;
-        _env = env;
+        _attachmentService = attachmentService;
     }
 
     private static void SplitName(string fullName, out string firstName, out string lastName)
@@ -60,26 +58,6 @@ public class MembersController : Controller
             BloodType = m.HealthRecord?.BloodType ?? "",
             Note = m.HealthRecord?.Note
         }).ToList();
-    }
-
-    private async Task<string?> SavePhotoAsync(int memberId, Microsoft.AspNetCore.Http.IFormFile? photoFile)
-    {
-        if (photoFile == null || photoFile.Length == 0)
-            return null;
-
-        var uploadsDir = Path.Combine(_env.WebRootPath, "uploads");
-        Directory.CreateDirectory(uploadsDir);
-
-        var ext = Path.GetExtension(photoFile.FileName);
-        var fileName = $"member_{memberId}_{DateTime.Now:yyyyMMdd_HHmmss}{ext}";
-        var filePath = Path.Combine(uploadsDir, fileName);
-
-        using (var stream = new FileStream(filePath, FileMode.Create))
-        {
-            await photoFile.CopyToAsync(stream);
-        }
-
-        return $"/uploads/{fileName}";
     }
 
     public async Task<IActionResult> Index()
@@ -133,7 +111,8 @@ public class MembersController : Controller
 
             if (model.PhotoFile != null && model.PhotoFile.Length > 0)
             {
-                member.Photo = await SavePhotoAsync(member.Id, model.PhotoFile);
+                using var stream = model.PhotoFile.OpenReadStream();
+                member.Photo = await _attachmentService.SaveFileAsync("uploads", member.Id, model.PhotoFile.FileName, stream);
                 await _memberService.UpdateMemberAsync(member);
             }
 
@@ -190,12 +169,10 @@ public class MembersController : Controller
             if (model.PhotoFile != null && model.PhotoFile.Length > 0)
             {
                 if (!string.IsNullOrEmpty(member.Photo))
-                {
-                    var oldPath = Path.Combine(_env.WebRootPath, member.Photo.TrimStart('/'));
-                    if (System.IO.File.Exists(oldPath))
-                        System.IO.File.Delete(oldPath);
-                }
-                member.Photo = await SavePhotoAsync(member.Id, model.PhotoFile);
+                    await _attachmentService.DeleteFileAsync(member.Photo);
+
+                using var stream = model.PhotoFile.OpenReadStream();
+                member.Photo = await _attachmentService.SaveFileAsync("uploads", member.Id, model.PhotoFile.FileName, stream);
             }
 
             if (member.Address == null)
