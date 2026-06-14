@@ -28,6 +28,13 @@ public class MembersController : Controller
         _env = env;
     }
 
+    private static void SplitName(string fullName, out string firstName, out string lastName)
+    {
+        var parts = fullName.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
+        firstName = parts[0];
+        lastName = parts.Length > 1 ? parts[1] : "";
+    }
+
     private async Task<IEnumerable<MemberViewModel>> GetMemberViewModelsAsync()
     {
         var members = await _memberService.GetAllMembersAsync();
@@ -83,19 +90,21 @@ public class MembersController : Controller
 
     public IActionResult Create()
     {
-        return View(new MemberViewModel());
+        return View(new CreateMemberViewModel());
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(MemberViewModel model)
+    public async Task<IActionResult> Create(CreateMemberViewModel model)
     {
         if (ModelState.IsValid)
         {
+            SplitName(model.Name, out var firstName, out var lastName);
+
             var member = new Member
             {
-                FirstName = model.FirstName,
-                LastName = model.LastName,
+                FirstName = firstName,
+                LastName = lastName,
                 Email = model.Email,
                 PhoneNumber = model.PhoneNumber,
                 DateOfBirth = model.DateOfBirth,
@@ -103,19 +112,19 @@ public class MembersController : Controller
                 JoinDate = DateTime.Today,
                 Address = new Address
                 {
-                    Street = model.Street,
+                    Street = $"{model.BuildingNumber} {model.Street}",
                     City = model.City,
-                    State = model.State,
-                    ZipCode = model.ZipCode
+                    State = "",
+                    ZipCode = ""
                 },
-                EmergencyContactName = model.EmergencyContactName ?? "",
-                EmergencyContactPhone = model.EmergencyContactPhone ?? "",
+                EmergencyContactName = "",
+                EmergencyContactPhone = "",
                 HealthRecord = new HealthRecord
                 {
-                    Height = model.Height,
-                    Weight = model.Weight,
-                    BloodType = model.BloodType,
-                    Note = model.Note,
+                    Height = model.HealthRecord.Height,
+                    Weight = model.HealthRecord.Weight,
+                    BloodType = model.HealthRecord.BloodType,
+                    Note = model.HealthRecord.Note,
                     LastUpdate = DateTime.Now
                 }
             };
@@ -140,27 +149,20 @@ public class MembersController : Controller
         if (member == null)
             return NotFound();
 
-        var model = new MemberViewModel
+        var addressParts = (member.Address?.Street ?? "").Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
+        var buildingNumber = addressParts.Length > 0 ? addressParts[0] : "";
+        var street = addressParts.Length > 1 ? addressParts[1] : (member.Address?.Street ?? "");
+
+        var model = new MemberToUpdateViewModel
         {
             Id = member.Id,
-            FirstName = member.FirstName,
-            LastName = member.LastName,
+            Name = $"{member.FirstName} {member.LastName}",
+            Photo = member.Photo,
             Email = member.Email,
             PhoneNumber = member.PhoneNumber,
-            DateOfBirth = member.DateOfBirth,
-            Gender = member.Gender,
-            Photo = member.Photo,
-            JoinDate = member.JoinDate,
-            Street = member.Address?.Street ?? "",
-            City = member.Address?.City ?? "",
-            State = member.Address?.State ?? "",
-            ZipCode = member.Address?.ZipCode ?? "",
-            EmergencyContactName = member.EmergencyContactName,
-            EmergencyContactPhone = member.EmergencyContactPhone,
-            Height = member.HealthRecord?.Height ?? 0,
-            Weight = member.HealthRecord?.Weight ?? 0,
-            BloodType = member.HealthRecord?.BloodType ?? "",
-            Note = member.HealthRecord?.Note
+            BuildingNumber = buildingNumber,
+            Street = street,
+            City = member.Address?.City ?? ""
         };
 
         return View(model);
@@ -168,7 +170,7 @@ public class MembersController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, MemberViewModel model)
+    public async Task<IActionResult> Edit(int id, MemberToUpdateViewModel model)
     {
         if (id != model.Id)
             return BadRequest();
@@ -179,13 +181,11 @@ public class MembersController : Controller
             if (member == null)
                 return NotFound();
 
-            member.FirstName = model.FirstName;
-            member.LastName = model.LastName;
+            SplitName(model.Name, out var firstName, out var lastName);
+            member.FirstName = firstName;
+            member.LastName = lastName;
             member.Email = model.Email;
             member.PhoneNumber = model.PhoneNumber;
-            member.DateOfBirth = model.DateOfBirth;
-            member.Gender = model.Gender;
-            member.JoinDate = model.JoinDate;
 
             if (model.PhotoFile != null && model.PhotoFile.Length > 0)
             {
@@ -201,22 +201,8 @@ public class MembersController : Controller
             if (member.Address == null)
                 member.Address = new Address();
 
-            member.Address.Street = model.Street;
+            member.Address.Street = $"{model.BuildingNumber} {model.Street}";
             member.Address.City = model.City;
-            member.Address.State = model.State;
-            member.Address.ZipCode = model.ZipCode;
-
-            member.EmergencyContactName = model.EmergencyContactName ?? "";
-            member.EmergencyContactPhone = model.EmergencyContactPhone ?? "";
-
-            if (member.HealthRecord == null)
-                member.HealthRecord = new HealthRecord();
-
-            member.HealthRecord.Height = model.Height;
-            member.HealthRecord.Weight = model.Weight;
-            member.HealthRecord.BloodType = model.BloodType;
-            member.HealthRecord.Note = model.Note;
-            member.HealthRecord.LastUpdate = DateTime.Now;
 
             await _memberService.UpdateMemberAsync(member);
             TempData["SuccessMessage"] = "Member updated successfully.";
