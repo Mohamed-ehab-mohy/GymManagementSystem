@@ -1,4 +1,4 @@
-@model GymManagementSystem.PL.ViewModels.ClassSessionViewModel
+@model GymManagementSystem.PL.ViewModels.SessionViewModel
 
 @{
     ViewData["Title"] = "Class Session Details";
@@ -22,8 +22,11 @@
                 <div class="bg-primary text-white rounded-circle d-flex justify-content-center align-items-center mx-auto" style="width: 120px; height: 120px; font-size: 3rem; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)) !important;">
                     <i class="bi bi-stopwatch"></i>
                 </div>
-                <h4 class="mt-3 fw-bold">@Model.Name</h4>
-                <small class="text-secondary">Capacity: @Model.Capacity</small>
+                <h4 class="mt-3 fw-bold">@Model.Description</h4>
+                <span class="badge @(Model.Status == "Upcoming" ? "bg-success" : Model.Status == "Ongoing" ? "bg-warning text-dark" : "bg-secondary") px-3 py-2 mt-2">
+                    @Model.Status
+                </span>
+                <small class="text-secondary d-block mt-2">Capacity: @Model.Capacity</small>
             </div>
             <div class="col-md-8">
                 <dl class="row">
@@ -33,10 +36,17 @@
                     <dt class="col-sm-4 fw-bold">Category</dt>
                     <dd class="col-sm-8">@Model.CategoryName</dd>
 
-                    <dt class="col-sm-4 fw-bold">Schedule</dt>
-                    <dd class="col-sm-8">
-                        @Model.StartTime.ToString("MMM dd, yyyy hh:mm tt") – @Model.EndTime.ToString("hh:mm tt")
-                    </dd>
+                    <dt class="col-sm-4 fw-bold">Date</dt>
+                    <dd class="col-sm-8">@Model.DateDisplay</dd>
+
+                    <dt class="col-sm-4 fw-bold">Time</dt>
+                    <dd class="col-sm-8">@Model.TimeRangeDisplay</dd>
+
+                    <dt class="col-sm-4 fw-bold">Duration</dt>
+                    <dd class="col-sm-8">@Model.Duration.ToString(@"h\h\ m\m")</dd>
+
+                    <dt class="col-sm-4 fw-bold">Available Slots</dt>
+                    <dd class="col-sm-8">@Model.AvailableSlots</dd>
                 </dl>
             </div>
         </div>

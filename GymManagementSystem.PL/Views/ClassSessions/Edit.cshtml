@@ -1,4 +1,4 @@
-@model GymManagementSystem.PL.ViewModels.ClassSessionViewModel
+@model GymManagementSystem.PL.ViewModels.UpdateSessionViewModel
 
 @{
     ViewData["Title"] = "Edit Session";
@@ -10,7 +10,7 @@
             <header class="d-flex justify-content-between mb-4 align-items-center border-bottom pb-3" style="border-color: var(--border-color) !important;">
                 <div>
                     <h2 class="display-6 fw-bold mb-1">Edit <span class="text-gradient">Session</span></h2>
-                    <p class="text-secondary fs-6 mb-0">Update schedule and details for @Model.Name.</p>
+                    <p class="text-secondary fs-6 mb-0">Update schedule and details for @Model.Description.</p>
                 </div>
                 <a asp-action="Index" class="btn btn-outline-secondary">
                     <i class="bi bi-arrow-left me-2"></i> Back to Schedule
@@ -25,21 +25,21 @@
 
                     <div class="row g-4 mb-4">
                         <div class="col-12">
-                            <label asp-for="Name" class="form-label text-secondary fw-semibold"></label>
-                            <input asp-for="Name" class="form-control form-control-lg premium-input" placeholder="e.g., Morning Yoga, HIIT Training" />
-                            <span asp-validation-for="Name" class="text-danger small mt-1"></span>
+                            <label asp-for="Description" class="form-label text-secondary fw-semibold"></label>
+                            <input asp-for="Description" class="form-control form-control-lg premium-input" placeholder="e.g., Morning Yoga, HIIT Training" />
+                            <span asp-validation-for="Description" class="text-danger small mt-1"></span>
                         </div>
                         
                         <div class="col-md-6">
-                            <label asp-for="StartTime" class="form-label text-secondary fw-semibold"></label>
-                            <input asp-for="StartTime" class="form-control form-control-lg premium-input" />
-                            <span asp-validation-for="StartTime" class="text-danger small mt-1"></span>
+                            <label asp-for="StartDate" class="form-label text-secondary fw-semibold"></label>
+                            <input asp-for="StartDate" class="form-control form-control-lg premium-input" />
+                            <span asp-validation-for="StartDate" class="text-danger small mt-1"></span>
                         </div>
                         
                         <div class="col-md-6">
-                            <label asp-for="EndTime" class="form-label text-secondary fw-semibold"></label>
-                            <input asp-for="EndTime" class="form-control form-control-lg premium-input" />
-                            <span asp-validation-for="EndTime" class="text-danger small mt-1"></span>
+                            <label asp-for="EndDate" class="form-label text-secondary fw-semibold"></label>
+                            <input asp-for="EndDate" class="form-control form-control-lg premium-input" />
+                            <span asp-validation-for="EndDate" class="text-danger small mt-1"></span>
                         </div>
 
                         <div class="col-md-6">
@@ -54,14 +54,6 @@
                                 <option value="">-- Select Trainer --</option>
                             </select>
                             <span asp-validation-for="TrainerId" class="text-danger small mt-1"></span>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label asp-for="CategoryId" class="form-label text-secondary fw-semibold"></label>
-                            <select asp-for="CategoryId" asp-items="Model.CategoriesList" class="form-select form-select-lg premium-input">
-                                <option value="">-- Select Category --</option>
-                            </select>
-                            <span asp-validation-for="CategoryId" class="text-danger small mt-1"></span>
                         </div>
                     </div>
 
