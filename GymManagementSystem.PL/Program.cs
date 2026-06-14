@@ -1,9 +1,11 @@
 using GymManagementSystem.PL.Infrastructure.AutofacModules;
 using GymManagementSystem.DAL.DbContexts;
+using GymManagementSystem.DAL.Entities;
 using GymManagementSystem.DAL.Interceptors;
 using GymManagementSystem.BLL.Interfaces;
 using GymManagementSystem.BLL.Services;
 using GymManagementSystem.PL.Seeders;
+using Microsoft.AspNetCore.Identity;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
@@ -81,6 +83,17 @@ try
 
     builder.Services.AddHostedService<CleanupBackgroundService>();
 
+    builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+        .AddEntityFrameworkStores<GymDbContext>()
+        .AddDefaultTokenProviders();
+
+    builder.Services.ConfigureApplicationCookie(options =>
+    {
+        options.LoginPath = "/Account/Login";
+        options.LogoutPath = "/Account/Logout";
+        options.AccessDeniedPath = "/Account/AccessDenied";
+    });
+
     builder.Services.AddControllersWithViews();
 
     var app = builder.Build();
@@ -103,6 +116,9 @@ try
 
     app.UseStaticFiles();
     app.UseRouting();
+
+    app.UseAuthentication();
+    app.UseAuthorization();
 
     app.MapControllerRoute(
         name: "default",

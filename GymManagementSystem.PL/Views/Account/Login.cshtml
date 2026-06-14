@@ -1,0 +1,36 @@
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+        <div class="premium-card p-5">
+            <h2 class="display-6 fw-bold mb-2 text-center">Welcome <span class="text-gradient">Back</span></h2>
+            <p class="text-secondary text-center mb-4 fs-5">Sign in to manage your gym system</p>
+
+            <form method="post" asp-action="Login" asp-controller="Account">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="mb-3">
+                    <label for="email" class="form-label fs-5">Email</label>
+                    <input type="email" name="email" id="email" class="form-control form-control-lg" required autofocus />
+                </div>
+
+                <div class="mb-4">
+                    <label for="password" class="form-label fs-5">Password</label>
+                    <input type="password" name="password" id="password" class="form-control form-control-lg" required />
+                </div>
+
+                <button type="submit" class="btn btn-gradient btn-lg w-100 mb-3 py-3 fs-5">Sign In</button>
+
+                <p class="text-center text-secondary mb-0">
+                    <a asp-action="Index" asp-controller="Home" class="text-primary-theme">Back to Home</a>
+                </p>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

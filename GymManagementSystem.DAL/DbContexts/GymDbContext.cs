@@ -1,10 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using GymManagementSystem.DAL.Entities;
 using GymManagementSystem.DAL.Configurations;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace GymManagementSystem.DAL.DbContexts;
 
-public class GymDbContext : DbContext
+public class GymDbContext : IdentityDbContext<ApplicationUser>
 {
     public DbSet<Plan> Plans { get; set; }
     public DbSet<GymUser> GymUsers { get; set; }
@@ -23,7 +24,7 @@ public class GymDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        
+
         modelBuilder.ApplyConfiguration(new PlanConfiguration());
         modelBuilder.ApplyConfiguration(new GymUserConfiguration());
         modelBuilder.ApplyConfiguration(new HealthRecordConfiguration());
@@ -33,5 +34,12 @@ public class GymDbContext : DbContext
         modelBuilder.ApplyConfiguration(new CategoryConfiguration());
         modelBuilder.ApplyConfiguration(new MemberConfiguration());
         modelBuilder.ApplyConfiguration(new TrainerConfiguration());
+
+        foreach (var entity in modelBuilder.Model.GetEntityTypes())
+        {
+            var tableName = entity.GetTableName();
+            if (tableName != null && tableName.StartsWith("AspNet"))
+                entity.SetTableName(tableName[6..]);
+        }
     }
 }
