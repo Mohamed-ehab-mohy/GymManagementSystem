@@ -161,19 +161,30 @@ public static class DatabaseSeeder
 
     private static async Task SeedAdminAsync(IServiceScope scope)
     {
+        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-        if (await userManager.FindByEmailAsync("admin@gymy.com") == null)
+
+        foreach (var roleName in new[] { "Admin", "SuperAdmin" })
         {
-            var admin = new ApplicationUser
-            {
-                UserName = "admin@gymy.com",
-                Email = "admin@gymy.com"
-            };
-            var result = await userManager.CreateAsync(admin, "Admin@123");
-            if (result.Succeeded)
-            {
-                Log.Information("Default admin user created: admin@gymy.com");
-            }
+            if (!await roleManager.RoleExistsAsync(roleName))
+                await roleManager.CreateAsync(new IdentityRole(roleName));
+        }
+
+        await EnsureUserAsync(userManager, "admin@gymy.com", "Admin@123", "Admin");
+        await EnsureUserAsync(userManager, "superadmin@gymy.com", "Super@123", "SuperAdmin");
+    }
+
+    private static async Task EnsureUserAsync(UserManager<ApplicationUser> userManager, string email, string password, string role)
+    {
+        if (await userManager.FindByEmailAsync(email) != null)
+            return;
+
+        var user = new ApplicationUser { UserName = email, Email = email };
+        var result = await userManager.CreateAsync(user, password);
+        if (result.Succeeded)
+        {
+            await userManager.AddToRoleAsync(user, role);
+            Log.Information("User {Email} created with role {Role}", email, role);
         }
     }
 
