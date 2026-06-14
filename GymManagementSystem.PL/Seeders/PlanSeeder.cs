@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Serilog;
 
 namespace GymManagementSystem.PL.Seeders;
 
@@ -129,30 +131,50 @@ public static class DatabaseSeeder
             await dbContext.SaveChangesAsync();
         }
 
-        if (await dbContext.Plans.AnyAsync())
-            return;
-
-        var env = scope.ServiceProvider.GetRequiredService<IWebHostEnvironment>();
-        var jsonPath = Path.Combine(env.ContentRootPath, "SeedData", "plans.json");
-        if (!File.Exists(jsonPath))
-            return;
-
-        var json = await File.ReadAllTextAsync(jsonPath);
-        var seedPlans = System.Text.Json.JsonSerializer.Deserialize<List<PlanSeedDto>>(json);
-        if (seedPlans == null || seedPlans.Count == 0)
-            return;
-
-        var plans = seedPlans.Select(p => new Plan
+        if (!await dbContext.Plans.AnyAsync())
         {
-            Name = p.Name,
-            Description = p.Description,
-            DurationDays = p.DurationDays,
-            Price = p.Price,
-            IsActive = p.IsActive
-        }).ToList();
+            var env = scope.ServiceProvider.GetRequiredService<IWebHostEnvironment>();
+            var jsonPath = Path.Combine(env.ContentRootPath, "SeedData", "plans.json");
+            if (File.Exists(jsonPath))
+            {
+                var json = await File.ReadAllTextAsync(jsonPath);
+                var seedPlans = System.Text.Json.JsonSerializer.Deserialize<List<PlanSeedDto>>(json);
+                if (seedPlans != null && seedPlans.Count > 0)
+                {
+                    var plans = seedPlans.Select(p => new Plan
+                    {
+                        Name = p.Name,
+                        Description = p.Description,
+                        DurationDays = p.DurationDays,
+                        Price = p.Price,
+                        IsActive = p.IsActive
+                    }).ToList();
 
-        await dbContext.Plans.AddRangeAsync(plans);
-        await dbContext.SaveChangesAsync();
+                    await dbContext.Plans.AddRangeAsync(plans);
+                    await dbContext.SaveChangesAsync();
+                }
+            }
+        }
+
+        await SeedAdminAsync(scope);
+    }
+
+    private static async Task SeedAdminAsync(IServiceScope scope)
+    {
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+        if (await userManager.FindByEmailAsync("admin@gymy.com") == null)
+        {
+            var admin = new ApplicationUser
+            {
+                UserName = "admin@gymy.com",
+                Email = "admin@gymy.com"
+            };
+            var result = await userManager.CreateAsync(admin, "Admin@123");
+            if (result.Succeeded)
+            {
+                Log.Information("Default admin user created: admin@gymy.com");
+            }
+        }
     }
 
     private class PlanSeedDto
