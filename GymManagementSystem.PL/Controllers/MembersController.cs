@@ -1,15 +1,11 @@
+using AutoMapper;
 using GymManagementSystem.BLL.Export;
 using GymManagementSystem.BLL.Interfaces;
+using GymManagementSystem.DAL;
 using GymManagementSystem.DAL.Entities;
 using GymManagementSystem.PL.ViewModels;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using GymManagementSystem.DAL.Repositories;
-
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace GymManagementSystem.PL.Controllers;
 
@@ -18,55 +14,34 @@ public class MembersController : Controller
 {
     private readonly IMemberService _memberService;
     private readonly IExportService _exportService;
-    private readonly IUnitOfWork _unitOfWork;
     private readonly IAttachmentService _attachmentService;
+    private readonly IMapper _mapper;
 
-    public MembersController(IMemberService memberService, IExportService exportService, IUnitOfWork unitOfWork, IAttachmentService attachmentService)
+    public MembersController(IMemberService memberService, IExportService exportService, IAttachmentService attachmentService, IMapper mapper)
     {
         _memberService = memberService;
         _exportService = exportService;
-        _unitOfWork = unitOfWork;
         _attachmentService = attachmentService;
+        _mapper = mapper;
     }
 
-    private static void SplitName(string fullName, out string firstName, out string lastName)
+    public async Task<IActionResult> Index(int page = 1, string? search = null, string? sortBy = null, bool ascending = true)
     {
-        var parts = fullName.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
-        firstName = parts[0];
-        lastName = parts.Length > 1 ? parts[1] : "";
-    }
+        const int pageSize = 10;
+        var pagedMembers = await _memberService.GetPagedMembersAsync(page, pageSize, search, sortBy, ascending);
+        var viewModels = _mapper.Map<IEnumerable<MemberViewModel>>(pagedMembers.Items);
 
-    private async Task<IEnumerable<MemberViewModel>> GetMemberViewModelsAsync()
-    {
-        var members = await _memberService.GetAllMembersAsync();
-        return members.Select(m => new MemberViewModel
+        ViewBag.Search = search;
+        ViewBag.SortBy = sortBy;
+        ViewBag.Ascending = ascending;
+
+        return View(new PagedResultDisplay<MemberViewModel>
         {
-            Id = m.Id,
-            FirstName = m.FirstName,
-            LastName = m.LastName,
-            Email = m.Email,
-            PhoneNumber = m.PhoneNumber,
-            DateOfBirth = m.DateOfBirth,
-            Gender = m.Gender,
-            Photo = m.Photo,
-            JoinDate = m.JoinDate,
-            Street = m.Address?.Street ?? "",
-            City = m.Address?.City ?? "",
-            State = m.Address?.State ?? "",
-            ZipCode = m.Address?.ZipCode ?? "",
-            EmergencyContactName = m.EmergencyContactName,
-            EmergencyContactPhone = m.EmergencyContactPhone,
-            Height = m.HealthRecord?.Height ?? 0,
-            Weight = m.HealthRecord?.Weight ?? 0,
-            BloodType = m.HealthRecord?.BloodType ?? "",
-            Note = m.HealthRecord?.Note
-        }).ToList();
-    }
-
-    public async Task<IActionResult> Index()
-    {
-        var viewModels = await GetMemberViewModelsAsync();
-        return View(viewModels);
+            Items = viewModels,
+            TotalCount = pagedMembers.TotalCount,
+            Page = pagedMembers.Page,
+            PageSize = pagedMembers.PageSize
+        });
     }
 
     public IActionResult Create()
@@ -94,12 +69,8 @@ public class MembersController : Controller
                 Address = new Address
                 {
                     Street = $"{model.BuildingNumber} {model.Street}",
-                    City = model.City,
-                    State = "",
-                    ZipCode = ""
+                    City = model.City
                 },
-                EmergencyContactName = "",
-                EmergencyContactPhone = "",
                 HealthRecord = new HealthRecord
                 {
                     Height = model.HealthRecord.Height,
@@ -132,8 +103,6 @@ public class MembersController : Controller
             return NotFound();
 
         var addressParts = (member.Address?.Street ?? "").Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
-        var buildingNumber = addressParts.Length > 0 ? addressParts[0] : "";
-        var street = addressParts.Length > 1 ? addressParts[1] : (member.Address?.Street ?? "");
 
         var model = new MemberToUpdateViewModel
         {
@@ -142,8 +111,8 @@ public class MembersController : Controller
             Photo = member.Photo,
             Email = member.Email,
             PhoneNumber = member.PhoneNumber,
-            BuildingNumber = buildingNumber,
-            Street = street,
+            BuildingNumber = addressParts.Length > 0 ? addressParts[0] : "",
+            Street = addressParts.Length > 1 ? addressParts[1] : (member.Address?.Street ?? ""),
             City = member.Address?.City ?? ""
         };
 
@@ -178,9 +147,7 @@ public class MembersController : Controller
                 member.Photo = await _attachmentService.SaveFileAsync("uploads", member.Id, model.PhotoFile.FileName, stream);
             }
 
-            if (member.Address == null)
-                member.Address = new Address();
-
+            member.Address ??= new Address();
             member.Address.Street = $"{model.BuildingNumber} {model.Street}";
             member.Address.City = model.City;
 
@@ -197,29 +164,7 @@ public class MembersController : Controller
         if (member == null)
             return NotFound();
 
-        var model = new MemberViewModel
-        {
-            Id = member.Id,
-            FirstName = member.FirstName,
-            LastName = member.LastName,
-            Email = member.Email,
-            PhoneNumber = member.PhoneNumber,
-            DateOfBirth = member.DateOfBirth,
-            Gender = member.Gender,
-            Photo = member.Photo,
-            JoinDate = member.JoinDate,
-            Street = member.Address?.Street ?? "",
-            City = member.Address?.City ?? "",
-            State = member.Address?.State ?? "",
-            ZipCode = member.Address?.ZipCode ?? "",
-            EmergencyContactName = member.EmergencyContactName,
-            EmergencyContactPhone = member.EmergencyContactPhone,
-            Height = member.HealthRecord?.Height ?? 0,
-            Weight = member.HealthRecord?.Weight ?? 0,
-            BloodType = member.HealthRecord?.BloodType ?? "",
-            Note = member.HealthRecord?.Note
-        };
-
+        var model = _mapper.Map<MemberViewModel>(member);
         return View(model);
     }
 
@@ -235,35 +180,40 @@ public class MembersController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    [HttpGet]
     public async Task<IActionResult> ExportExcel()
     {
-        var members = await GetMemberViewModelsAsync();
+        var members = await _memberService.GetAllMembersAsync();
+        var viewModels = _mapper.Map<IEnumerable<MemberViewModel>>(members);
         var columns = GetMemberColumnDefinitions();
-        var fileBytes = await _exportService.ExportAsync(members, columns, ExportFormat.Excel, "Gym Members Report");
-        var fileName = $"members_{DateTime.Now:yyyyMMdd_HHmm}.xlsx";
-        return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+        var fileBytes = await _exportService.ExportAsync(viewModels, columns, ExportFormat.Excel, "Gym Members Report");
+        return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"members_{DateTime.Now:yyyyMMdd_HHmm}.xlsx");
     }
 
-    [HttpGet]
     public async Task<IActionResult> ExportPdf()
     {
-        var members = await GetMemberViewModelsAsync();
+        var members = await _memberService.GetAllMembersAsync();
+        var viewModels = _mapper.Map<IEnumerable<MemberViewModel>>(members);
         var columns = GetMemberColumnDefinitions();
-        var fileBytes = await _exportService.ExportAsync(members, columns, ExportFormat.Pdf, "Gym Members Report");
-        var fileName = $"members_{DateTime.Now:yyyyMMdd_HHmm}.pdf";
-        return File(fileBytes, "application/pdf", fileName);
+        var fileBytes = await _exportService.ExportAsync(viewModels, columns, ExportFormat.Pdf, "Gym Members Report");
+        return File(fileBytes, "application/pdf", $"members_{DateTime.Now:yyyyMMdd_HHmm}.pdf");
     }
 
-    private List<ColumnDefinition<MemberViewModel>> GetMemberColumnDefinitions()
+    private static void SplitName(string fullName, out string firstName, out string lastName)
     {
-        return new List<ColumnDefinition<MemberViewModel>>
-        {
+        var parts = fullName.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
+        firstName = parts[0];
+        lastName = parts.Length > 1 ? parts[1] : "";
+    }
+
+    private static List<ColumnDefinition<MemberViewModel>> GetMemberColumnDefinitions()
+    {
+        return
+        [
             new() { HeaderName = "ID", ValueSelector = m => m.Id },
             new() { HeaderName = "First Name", ValueSelector = m => m.FirstName },
             new() { HeaderName = "Last Name", ValueSelector = m => m.LastName },
             new() { HeaderName = "Email", ValueSelector = m => m.Email },
-            new() { HeaderName = "Phone Number", ValueSelector = m => m.PhoneNumber }
-        };
+            new() { HeaderName = "Phone", ValueSelector = m => m.PhoneNumber }
+        ];
     }
 }

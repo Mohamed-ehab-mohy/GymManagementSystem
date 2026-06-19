@@ -1,8 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Linq.Expressions;
 using GymManagementSystem.BLL.Interfaces;
+using GymManagementSystem.DAL;
 using GymManagementSystem.DAL.Entities;
 using GymManagementSystem.DAL.Repositories;
 
@@ -26,6 +24,18 @@ public class MemberService : IMemberService
     public async Task<IEnumerable<Member>> GetAllMembersAsync()
     {
         return await _memberRepository.GetAllWithDetailsAsync();
+    }
+
+    public async Task<PagedResult<Member>> GetPagedMembersAsync(int page, int pageSize, string? search = null, string? sortBy = null, bool ascending = true)
+    {
+        Expression<Func<Member, bool>>? filter = null;
+
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            filter = m => m.FirstName.Contains(search) || m.LastName.Contains(search) || m.Email!.Contains(search) || m.PhoneNumber!.Contains(search);
+        }
+
+        return await _memberRepository.GetPagedAsync(page, pageSize, filter, sortBy, ascending);
     }
 
     public async Task<Member?> GetMemberByIdAsync(int id)
