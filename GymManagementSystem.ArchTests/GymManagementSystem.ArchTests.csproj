@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="NetArchTest.Rules" />
+    <PackageReference Include="Shouldly" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GymManagementSystem.Domain\GymManagementSystem.Domain.csproj" />
+    <ProjectReference Include="..\GymManagementSystem.BLL\GymManagementSystem.BLL.csproj" />
+    <ProjectReference Include="..\GymManagementSystem.DAL\GymManagementSystem.DAL.csproj" />
+    <ProjectReference Include="..\GymManagementSystem.PL\GymManagementSystem.PL.csproj" />
+  </ItemGroup>
+
+</Project>
