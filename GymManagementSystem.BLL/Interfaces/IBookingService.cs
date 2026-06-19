@@ -13,4 +13,9 @@ public interface IBookingService
     Task AddBookingAsync(Booking booking);
     Task UpdateBookingAsync(Booking booking);
     Task DeleteBookingAsync(int id);
+
+    Task<IEnumerable<ClassSession>> GetAvailableSessionsAsync();
+    Task<Result> BookSessionAsync(int memberId, int sessionId);
+    Task<Result> CancelBookingAsync(int bookingId, int memberId);
+    Task<IEnumerable<Booking>> GetMyBookingsAsync(int memberId);
 }
