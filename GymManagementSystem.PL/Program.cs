@@ -53,10 +53,23 @@ try
         containerBuilder.RegisterModule(new ServiceModule());
     });
 
-    builder.Host.UseSerilog((context, services, configuration) => configuration
-        .ReadFrom.Configuration(context.Configuration)
-        .ReadFrom.Services(services)
-        .Enrich.FromLogContext());
+    builder.Host.UseSerilog((context, services, configuration) =>
+    {
+        configuration
+            .ReadFrom.Configuration(context.Configuration)
+            .ReadFrom.Services(services)
+            .Enrich.FromLogContext();
+
+        var logsDbConn = context.Configuration.GetConnectionString("LogsDb");
+        if (!string.IsNullOrEmpty(logsDbConn))
+        {
+            configuration.WriteTo.PostgreSQL(
+                connectionString: logsDbConn,
+                tableName: "Logs",
+                columnOptions: (IDictionary<string, Serilog.Sinks.PostgreSQL.ColumnWriters.ColumnWriterBase>?)null,
+                needAutoCreateTable: true);
+        }
+    });
 
     builder.Services.AddHttpContextAccessor();
     builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();

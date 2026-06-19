@@ -36,6 +36,12 @@
     <PackageVersion Include="QuestPDF" Version="2026.5.0" />
   </ItemGroup>
 
+  <!-- PostgreSQL / Serilog Sinks -->
+  <ItemGroup>
+    <PackageVersion Include="Npgsql" Version="10.0.2" />
+    <PackageVersion Include="Serilog.Sinks.Postgresql.Alternative" Version="4.2.0" />
+  </ItemGroup>
+
   <!-- Other -->
   <ItemGroup>
     <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.8" />

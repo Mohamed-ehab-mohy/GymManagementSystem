@@ -22,6 +22,8 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" />
     <PackageReference Include="Serilog.AspNetCore" />
     <PackageReference Include="Serilog.Sinks.Seq" />
+    <PackageReference Include="Npgsql" />
+    <PackageReference Include="Serilog.Sinks.Postgresql.Alternative" />
   </ItemGroup>
 
   <ItemGroup>
