@@ -1,8 +1,6 @@
 using GymManagementSystem.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace GymManagementSystem.DAL.Interceptors;
 
@@ -20,37 +18,24 @@ public class SoftDeleteInterceptor : SaveChangesInterceptor
         return base.SavingChangesAsync(eventData, result, cancellationToken);
     }
 
-    private void HandleSoftDelete(DbContext? context)
+    private static void HandleSoftDelete(DbContext? context)
     {
         if (context == null) return;
 
-        var entries = context.ChangeTracker.Entries();
+        var entries = context.ChangeTracker.Entries<ISoftDeletable>();
 
         foreach (var entry in entries)
         {
-            if (entry.State == EntityState.Deleted && 
-                entry.Metadata.FindProperty("IsDeleted") != null)
+            if (entry.State == EntityState.Deleted)
             {
                 entry.State = EntityState.Unchanged;
+                entry.Entity.IsDeleted = true;
+                entry.Entity.DeletedAt = DateTime.UtcNow;
 
-                entry.Property("IsDeleted").CurrentValue = true;
-                entry.Property("IsDeleted").IsModified = true;
-
-                if (entry.Metadata.FindProperty("DeletedAt") != null)
+                if (entry.Entity is BaseEntity baseEntity)
                 {
-                    entry.Property("DeletedAt").CurrentValue = System.DateTime.UtcNow;
-                    entry.Property("DeletedAt").IsModified = true;
+                    baseEntity.UpdatedAt = DateTime.UtcNow;
                 }
-
-                if (entry.Metadata.FindProperty("UpdatedAt") != null)
-                {
-                    entry.Property("UpdatedAt").CurrentValue = System.DateTime.UtcNow;
-                    entry.Property("UpdatedAt").IsModified = true;
-                }
-            }
-            else if (entry.State == EntityState.Deleted && entry.Metadata.IsOwned())
-            {
-                entry.State = EntityState.Unchanged;
             }
         }
     }

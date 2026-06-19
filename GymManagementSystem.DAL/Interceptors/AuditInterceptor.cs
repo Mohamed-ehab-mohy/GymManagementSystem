@@ -1,14 +1,18 @@
 using GymManagementSystem.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace GymManagementSystem.DAL.Interceptors;
 
 public class AuditInterceptor : SaveChangesInterceptor
 {
+    private readonly ICurrentUserService _currentUserService;
+
+    public AuditInterceptor(ICurrentUserService currentUserService)
+    {
+        _currentUserService = currentUserService;
+    }
+
     public override InterceptionResult<int> SavingChanges(DbContextEventData eventData, InterceptionResult<int> result)
     {
         UpdateAuditFields(eventData.Context);
@@ -25,9 +29,8 @@ public class AuditInterceptor : SaveChangesInterceptor
     {
         if (context == null) return;
 
+        var currentUser = _currentUserService.IsAuthenticated ? _currentUserService.UserEmail : "System";
         var entries = context.ChangeTracker.Entries<BaseEntity>();
-
-        string currentUser = "System";
 
         foreach (var entry in entries)
         {
@@ -36,7 +39,7 @@ public class AuditInterceptor : SaveChangesInterceptor
                 entry.Entity.CreatedAt = DateTime.UtcNow;
                 entry.Entity.CreatedBy = currentUser;
             }
-            else if (entry.State == EntityState.Modified)
+            else if (entry.State == EntityState.Modified && !entry.Entity.IsDeleted)
             {
                 entry.Entity.UpdatedAt = DateTime.UtcNow;
                 entry.Entity.UpdatedBy = currentUser;

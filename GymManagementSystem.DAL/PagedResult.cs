@@ -1,4 +1,4 @@
-namespace GymManagementSystem.BLL.DTOs;
+namespace GymManagementSystem.DAL;
 
 public class PagedResult<T>
 {

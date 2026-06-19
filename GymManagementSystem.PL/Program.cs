@@ -1,4 +1,5 @@
 using GymManagementSystem.PL.Infrastructure.AutofacModules;
+using GymManagementSystem.PL.Infrastructure.Extensions;
 using GymManagementSystem.DAL.DbContexts;
 using GymManagementSystem.DAL.Entities;
 using GymManagementSystem.DAL.Interceptors;
@@ -58,7 +59,9 @@ try
         .ReadFrom.Services(services)
         .Enrich.FromLogContext());
 
-    builder.Services.AddSingleton<AuditInterceptor>();
+    builder.Services.AddHttpContextAccessor();
+    builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+    builder.Services.AddScoped<AuditInterceptor>();
     builder.Services.AddSingleton<SoftDeleteInterceptor>();
 
     builder.Services.AddDbContext<GymDbContext>((sp, opts) =>
