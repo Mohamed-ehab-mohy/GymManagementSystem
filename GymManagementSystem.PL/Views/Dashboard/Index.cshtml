@@ -1,0 +1,86 @@
+@model DashboardStatsDto
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="display-5 fw-bold">Gym <span class="text-gradient">Dashboard</span></h1>
+    <span class="text-secondary fs-5">@DateTime.Now.ToString("dddd, MMMM dd, yyyy")</span>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-4 col-lg-3">
+        <div class="premium-card p-4 text-center">
+            <div class="display-3 fw-bold text-primary-theme mb-2">@Model.TotalMembers</div>
+            <div class="text-secondary fs-5">Total Members</div>
+            <i class="bi bi-people fs-1 text-primary-theme opacity-25 position-absolute top-0 end-0 m-3"></i>
+        </div>
+    </div>
+    <div class="col-md-4 col-lg-3">
+        <div class="premium-card p-4 text-center">
+            <div class="display-3 fw-bold text-success mb-2">@Model.TotalTrainers</div>
+            <div class="text-secondary fs-5">Total Trainers</div>
+            <i class="bi bi-person-badge fs-1 text-success opacity-25 position-absolute top-0 end-0 m-3"></i>
+        </div>
+    </div>
+    <div class="col-md-4 col-lg-3">
+        <div class="premium-card p-4 text-center">
+            <div class="display-3 fw-bold text-info mb-2">@Model.ActivePlans</div>
+            <div class="text-secondary fs-5">Active Plans</div>
+            <i class="bi bi-card-checklist fs-1 text-info opacity-25 position-absolute top-0 end-0 m-3"></i>
+        </div>
+    </div>
+    <div class="col-md-4 col-lg-3">
+        <div class="premium-card p-4 text-center">
+            <div class="display-3 fw-bold text-warning mb-2">@Model.TodaySessions</div>
+            <div class="text-secondary fs-5">Today's Sessions</div>
+            <i class="bi bi-calendar-event fs-1 text-warning opacity-25 position-absolute top-0 end-0 m-3"></i>
+        </div>
+    </div>
+    <div class="col-md-4 col-lg-3">
+        <div class="premium-card p-4 text-center">
+            <div class="display-3 fw-bold text-success mb-2">@Model.TodayAttendance</div>
+            <div class="text-secondary fs-5">Today's Attendance</div>
+            <i class="bi bi-check-circle fs-1 text-success opacity-25 position-absolute top-0 end-0 m-3"></i>
+        </div>
+    </div>
+    <div class="col-md-4 col-lg-3">
+        <div class="premium-card p-4 text-center">
+            <div class="display-3 fw-bold text-danger mb-2">@Model.ExpiringMemberships</div>
+            <div class="text-secondary fs-5">Expiring (< 7 days)</div>
+            <i class="bi bi-exclamation-triangle fs-1 text-danger opacity-25 position-absolute top-0 end-0 m-3"></i>
+        </div>
+    </div>
+    <div class="col-md-4 col-lg-3">
+        <div class="premium-card p-4 text-center">
+            <div class="display-3 fw-bold text-secondary mb-2">@Model.TotalPlans</div>
+            <div class="text-secondary fs-5">Total Plans</div>
+            <i class="bi bi-layers fs-1 text-secondary opacity-25 position-absolute top-0 end-0 m-3"></i>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="premium-card p-4">
+            <h4 class="fw-bold mb-3">Quick Actions</h4>
+            <div class="d-flex flex-wrap gap-3">
+                <a asp-controller="Members" asp-action="Create" class="btn btn-gradient px-4 py-2">
+                    <i class="bi bi-person-plus me-2"></i>Add Member
+                </a>
+                <a asp-controller="Trainers" asp-action="Create" class="btn btn-outline-primary px-4 py-2">
+                    <i class="bi bi-person-badge me-2"></i>Add Trainer
+                </a>
+                <a asp-controller="Plans" asp-action="Create" class="btn btn-outline-success px-4 py-2">
+                    <i class="bi bi-plus-circle me-2"></i>Add Plan
+                </a>
+                <a asp-controller="ClassSessions" asp-action="Create" class="btn btn-outline-info px-4 py-2">
+                    <i class="bi bi-calendar-plus me-2"></i>Create Session
+                </a>
+                <a asp-controller="Attendance" asp-action="Scan" class="btn btn-outline-warning px-4 py-2">
+                    <i class="bi bi-qr-code-scan me-2"></i>Scan QR
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

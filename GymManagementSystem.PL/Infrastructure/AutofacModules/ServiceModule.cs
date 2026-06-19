@@ -19,6 +19,7 @@ public class ServiceModule : Module
         builder.RegisterType<HealthRecordService>().As<IHealthRecordService>().InstancePerLifetimeScope();
         builder.RegisterType<ExportService>().As<IExportService>().InstancePerLifetimeScope();
         builder.RegisterType<AttendanceService>().As<IAttendanceService>().InstancePerLifetimeScope();
+        builder.RegisterType<DashboardService>().As<IDashboardService>().InstancePerLifetimeScope();
         builder.RegisterType<CategoryService>().As<ICategoryService>().InstancePerLifetimeScope();
         builder.RegisterType<AttachmentService>().As<IAttachmentService>().InstancePerLifetimeScope()
             .WithParameter(
