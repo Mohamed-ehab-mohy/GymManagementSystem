@@ -4,10 +4,12 @@ using System.Threading.Tasks;
 using GymManagementSystem.BLL.Interfaces;
 using GymManagementSystem.DAL.Entities;
 using GymManagementSystem.PL.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GymManagementSystem.PL.Controllers;
 
+[Authorize]
 public class TrainersController : Controller
 {
     private readonly ITrainerService _trainerService;

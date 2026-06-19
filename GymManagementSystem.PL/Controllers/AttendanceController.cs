@@ -1,12 +1,13 @@
 using GymManagementSystem.BLL.Attendance;
 using GymManagementSystem.DAL.Repositories;
 using GymManagementSystem.PL.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Threading.Tasks;
 
 namespace GymManagementSystem.PL.Controllers
 {
+    [Authorize]
     public class AttendanceController : Controller
     {
         private readonly IAttendanceService _attendanceService;

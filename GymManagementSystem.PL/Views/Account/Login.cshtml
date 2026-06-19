@@ -1,3 +1,4 @@
+@model LoginViewModel
 @{
     ViewData["Title"] = "Login";
 }
@@ -12,17 +13,22 @@
                 <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
                 <div class="mb-3">
-                    <label for="email" class="form-label fs-5">Email</label>
-                    <input type="email" name="email" id="email" class="form-control form-control-lg" required autofocus />
+                    <label asp-for="Email" class="form-label fs-5"></label>
+                    <input asp-for="Email" class="form-control form-control-lg" autofocus />
+                    <span asp-validation-for="Email" class="text-danger"></span>
                 </div>
 
                 <div class="mb-4">
-                    <label for="password" class="form-label fs-5">Password</label>
-                    <input type="password" name="password" id="password" class="form-control form-control-lg" required />
+                    <label asp-for="Password" class="form-label fs-5"></label>
+                    <input asp-for="Password" class="form-control form-control-lg" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
                 </div>
 
                 <button type="submit" class="btn btn-gradient btn-lg w-100 mb-3 py-3 fs-5">Sign In</button>
 
+                <p class="text-center text-secondary mb-2">
+                    Don't have an account? <a asp-action="Register" asp-controller="Account" class="text-primary-theme">Register</a>
+                </p>
                 <p class="text-center text-secondary mb-0">
                     <a asp-action="Index" asp-controller="Home" class="text-primary-theme">Back to Home</a>
                 </p>

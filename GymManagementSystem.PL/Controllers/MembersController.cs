@@ -9,8 +9,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using GymManagementSystem.DAL.Repositories;
 
+using Microsoft.AspNetCore.Authorization;
+
 namespace GymManagementSystem.PL.Controllers;
 
+[Authorize]
 public class MembersController : Controller
 {
     private readonly IMemberService _memberService;

@@ -164,7 +164,7 @@ public static class DatabaseSeeder
         var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
-        foreach (var roleName in new[] { "Admin", "SuperAdmin" })
+        foreach (var roleName in new[] { "User", "Admin", "SuperAdmin" })
         {
             if (!await roleManager.RoleExistsAsync(roleName))
                 await roleManager.CreateAsync(new IdentityRole(roleName));
