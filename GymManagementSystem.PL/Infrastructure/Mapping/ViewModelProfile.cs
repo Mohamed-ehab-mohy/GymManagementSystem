@@ -1,22 +1,22 @@
-using AutoMapper;
 using GymManagementSystem.Domain;
 using GymManagementSystem.PL.ViewModels;
+using Mapster;
 
 namespace GymManagementSystem.PL.Infrastructure.Mapping;
 
-public class ViewModelProfile : Profile
+public class ViewModelProfile : IRegister
 {
-    public ViewModelProfile()
+    public void Register(TypeAdapterConfig config)
     {
-        CreateMap<Member, MemberViewModel>()
-            .ForMember(d => d.Street, o => o.MapFrom(s => s.Address != null ? s.Address.Street : string.Empty))
-            .ForMember(d => d.City, o => o.MapFrom(s => s.Address != null ? s.Address.City : string.Empty))
-            .ForMember(d => d.State, o => o.MapFrom(s => s.Address != null ? s.Address.State : string.Empty))
-            .ForMember(d => d.ZipCode, o => o.MapFrom(s => s.Address != null ? s.Address.ZipCode : string.Empty))
-            .ForMember(d => d.Height, o => o.MapFrom(s => s.HealthRecord != null ? s.HealthRecord.Height : 0))
-            .ForMember(d => d.Weight, o => o.MapFrom(s => s.HealthRecord != null ? s.HealthRecord.Weight : 0))
-            .ForMember(d => d.BloodType, o => o.MapFrom(s => s.HealthRecord != null ? s.HealthRecord.BloodType : string.Empty))
-            .ForMember(d => d.Note, o => o.MapFrom(s => s.HealthRecord != null ? s.HealthRecord.Note : null))
-            .ForMember(d => d.PhotoFile, o => o.Ignore());
+        config.NewConfig<Member, MemberViewModel>()
+            .Map(d => d.Street, s => s.Address != null ? s.Address.Street : string.Empty)
+            .Map(d => d.City, s => s.Address != null ? s.Address.City : string.Empty)
+            .Map(d => d.State, s => s.Address != null ? s.Address.State : string.Empty)
+            .Map(d => d.ZipCode, s => s.Address != null ? s.Address.ZipCode : string.Empty)
+            .Map(d => d.Height, s => s.HealthRecord != null ? s.HealthRecord.Height : 0)
+            .Map(d => d.Weight, s => s.HealthRecord != null ? s.HealthRecord.Weight : 0)
+            .Map(d => d.BloodType, s => s.HealthRecord != null ? s.HealthRecord.BloodType : string.Empty)
+            .Map(d => d.Note, s => s.HealthRecord != null ? s.HealthRecord.Note : null)
+            .Ignore(d => d.PhotoFile);
     }
 }

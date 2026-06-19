@@ -1,9 +1,9 @@
-using AutoMapper;
 using GymManagementSystem.BLL.Export;
 using GymManagementSystem.BLL.Interfaces;
 using GymManagementSystem.BLL.Abstractions;
 using GymManagementSystem.Domain;
 using GymManagementSystem.PL.ViewModels;
+using Mapster;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,21 +15,19 @@ public class MembersController : Controller
     private readonly IMemberService _memberService;
     private readonly IExportService _exportService;
     private readonly IAttachmentService _attachmentService;
-    private readonly IMapper _mapper;
 
-    public MembersController(IMemberService memberService, IExportService exportService, IAttachmentService attachmentService, IMapper mapper)
+    public MembersController(IMemberService memberService, IExportService exportService, IAttachmentService attachmentService)
     {
         _memberService = memberService;
         _exportService = exportService;
         _attachmentService = attachmentService;
-        _mapper = mapper;
     }
 
     public async Task<IActionResult> Index(int page = 1, string? search = null, string? sortBy = null, bool ascending = true)
     {
         const int pageSize = 10;
         var pagedMembers = await _memberService.GetPagedMembersAsync(page, pageSize, search, sortBy, ascending);
-        var viewModels = _mapper.Map<IEnumerable<MemberViewModel>>(pagedMembers.Items);
+        var viewModels = pagedMembers.Items.Adapt<IEnumerable<MemberViewModel>>();
 
         ViewBag.Search = search;
         ViewBag.SortBy = sortBy;
@@ -164,7 +162,7 @@ public class MembersController : Controller
         if (member == null)
             return NotFound();
 
-        var model = _mapper.Map<MemberViewModel>(member);
+        var model = member.Adapt<MemberViewModel>();
         return View(model);
     }
 
@@ -183,7 +181,7 @@ public class MembersController : Controller
     public async Task<IActionResult> ExportExcel()
     {
         var members = await _memberService.GetAllMembersAsync();
-        var viewModels = _mapper.Map<IEnumerable<MemberViewModel>>(members);
+        var viewModels = members.Adapt<IEnumerable<MemberViewModel>>();
         var columns = GetMemberColumnDefinitions();
         var fileBytes = await _exportService.ExportAsync(viewModels, columns, ExportFormat.Excel, "Gym Members Report");
         return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"members_{DateTime.Now:yyyyMMdd_HHmm}.xlsx");
@@ -192,7 +190,7 @@ public class MembersController : Controller
     public async Task<IActionResult> ExportPdf()
     {
         var members = await _memberService.GetAllMembersAsync();
-        var viewModels = _mapper.Map<IEnumerable<MemberViewModel>>(members);
+        var viewModels = members.Adapt<IEnumerable<MemberViewModel>>();
         var columns = GetMemberColumnDefinitions();
         var fileBytes = await _exportService.ExportAsync(viewModels, columns, ExportFormat.Pdf, "Gym Members Report");
         return File(fileBytes, "application/pdf", $"members_{DateTime.Now:yyyyMMdd_HHmm}.pdf");

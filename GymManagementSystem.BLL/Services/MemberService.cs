@@ -1,8 +1,10 @@
 using System.Linq.Expressions;
 using GymManagementSystem.BLL.Interfaces;
 using GymManagementSystem.BLL.Abstractions;
+using GymManagementSystem.BLL.DTOs;
 using GymManagementSystem.Domain;
 using GymManagementSystem.BLL.Abstractions.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace GymManagementSystem.BLL.Services;
 
@@ -72,5 +74,75 @@ public class MemberService : IMemberService
         _memberRepository.Delete(member);
         await _unitOfWork.CompleteAsync();
         return (true, "Member deleted successfully.");
+    }
+
+    public async Task<MemberDashboardDto?> GetMemberDashboardAsync(int memberId)
+    {
+        var member = await _memberRepository.GetByIdWithDetailsAsync(memberId);
+        if (member == null) return null;
+
+        var activeMembership = await _membershipRepository.Query()
+            .Include(m => m.Plan)
+            .Where(m => m.MemberId == memberId && m.IsActive && !m.IsDeleted)
+            .FirstOrDefaultAsync();
+
+        var upcomingBookings = await _bookingRepository.Query()
+            .Include(b => b.ClassSession).ThenInclude(s => s!.Trainer)
+            .Include(b => b.ClassSession).ThenInclude(s => s!.Category)
+            .Where(b => b.MemberId == memberId && !b.IsDeleted && b.ClassSession.ScheduleTime > DateTime.Now)
+            .OrderBy(b => b.ClassSession.ScheduleTime)
+            .Take(5)
+            .ToListAsync();
+
+        var totalBooked = await _bookingRepository.Query()
+            .CountAsync(b => b.MemberId == memberId && !b.IsDeleted);
+
+        var totalAttended = await _bookingRepository.Query()
+            .CountAsync(b => b.MemberId == memberId && b.IsAttended && !b.IsDeleted);
+
+        decimal? bmi = null;
+        string? bmiCategory = null;
+        if (member.HealthRecord?.Height > 0 && member.HealthRecord?.Weight > 0)
+        {
+            var heightInMeters = member.HealthRecord.Height / 100m;
+            bmi = Math.Round(member.HealthRecord.Weight / (heightInMeters * heightInMeters), 1);
+            bmiCategory = bmi switch
+            {
+                < 18.5m => "Underweight",
+                < 25m => "Normal",
+                < 30m => "Overweight",
+                _ => "Obese"
+            };
+        }
+
+        var daysRemaining = activeMembership != null
+            ? (activeMembership.EndDate - DateTime.Today).Days
+            : 0;
+
+        return new MemberDashboardDto
+        {
+            MemberName = $"{member.FirstName} {member.LastName}",
+            Photo = member.Photo,
+            JoinDate = member.JoinDate,
+            HasActiveMembership = activeMembership != null,
+            PlanName = activeMembership?.Plan?.Name,
+            MembershipStart = activeMembership?.StartDate,
+            MembershipEnd = activeMembership?.EndDate,
+            DaysRemaining = Math.Max(0, daysRemaining),
+            Weight = member.HealthRecord?.Weight,
+            Height = member.HealthRecord?.Height,
+            Bmi = bmi,
+            BmiCategory = bmiCategory,
+            UpcomingSessions = upcomingBookings.Select(b => new UpcomingSessionDto
+            {
+                SessionName = b.ClassSession.Name,
+                ScheduleTime = b.ClassSession.ScheduleTime,
+                TrainerName = $"{b.ClassSession.Trainer.FirstName} {b.ClassSession.Trainer.LastName}",
+                CategoryName = b.ClassSession.Category.CategoryName
+            }).ToList(),
+            TotalBooked = totalBooked,
+            TotalAttended = totalAttended,
+            AttendanceRate = totalBooked > 0 ? Math.Round((double)totalAttended / totalBooked * 100, 1) : 0
+        };
     }
 }

@@ -36,34 +36,67 @@
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav m-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Dashboard" ? "active" : "")" 
-                                asp-controller="Dashboard" asp-action="Index">Dashboard</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Members" ? "active" : "")" 
-                                asp-controller="Members" asp-action="Index">Members</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Trainers" ? "active" : "")" 
-                                asp-controller="Trainers" asp-action="Index">Trainers</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "ClassSessions" ? "active" : "")" 
-                                asp-controller="ClassSessions" asp-action="Index">Sessions</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Plans" ? "active" : "")" 
-                                asp-controller="Plans" asp-action="Index">Plans</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Booking" ? "active" : "")" 
-                                asp-controller="Booking" asp-action="Index">Bookings</a>
-                        </li>
+                        @if (User.IsInRole("Member"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Dashboard" ? "active" : "")" 
+                                    asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Bookings" ? "active" : "")" 
+                                    asp-controller="Bookings" asp-action="Index">Book Session</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Bookings" ? "active" : "")" 
+                                    asp-controller="Bookings" asp-action="Mine">My Bookings</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Dashboard" ? "active" : "")" 
+                                    asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Members" ? "active" : "")" 
+                                    asp-controller="Members" asp-action="Index">Members</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Trainers" ? "active" : "")" 
+                                    asp-controller="Trainers" asp-action="Index">Trainers</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "ClassSessions" ? "active" : "")" 
+                                    asp-controller="ClassSessions" asp-action="Index">Sessions</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Plans" ? "active" : "")" 
+                                    asp-controller="Plans" asp-action="Index">Plans</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Bookings" ? "active" : "")" 
+                                    asp-controller="Bookings" asp-action="Index">Bookings</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Analytics" ? "active" : "")" 
+                                    asp-controller="Analytics" asp-action="Index">Analytics</a>
+                            </li>
+                        }
                     </ul>
                     <div class="d-flex align-items-center gap-2">
                         @if (User.Identity?.IsAuthenticated == true)
                         {
+                            <div class="dropdown me-3">
+                                <a class="position-relative" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-bell fs-5 text-secondary"></i>
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="notificationBadge" style="font-size:0.6rem;">0</span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown" id="notificationList" style="max-height:300px;overflow-y:auto;width:320px;">
+                                    <li><h6 class="dropdown-header">Notifications</h6></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li class="text-center text-muted small py-2" id="noNotifications">No notifications</li>
+                                </ul>
+                            </div>
                             <span class="text-secondary me-2 d-none d-lg-inline">@User.Identity.Name</span>
                             <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
                                 <button type="submit" class="btn btn-glass px-4 py-2">Logout</button>
@@ -117,6 +150,44 @@
     <script src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/2.0.8/js/dataTables.bootstrap5.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
+    <script>
+        (function () {
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl("/hubs/notifications")
+                .withAutomaticReconnect()
+                .build();
+
+            connection.on("ReceiveNotification", function (message) {
+                const badge = document.getElementById("notificationBadge");
+                const list = document.getElementById("notificationList");
+                const noMsg = document.getElementById("noNotifications");
+                if (noMsg) noMsg.remove();
+
+                const current = parseInt(badge.textContent) || 0;
+                badge.textContent = current + 1;
+
+                const item = document.createElement("li");
+                item.innerHTML = `<a class="dropdown-item small" href="/Notifications">${message}</a>`;
+                list.insertBefore(item, list.querySelector('.dropdown-divider')?.nextSibling);
+
+                const toast = document.createElement("div");
+                toast.className = "position-fixed bottom-0 end-0 p-3";
+                toast.style.zIndex = "9999";
+                toast.innerHTML = `<div class="toast show align-items-center text-bg-primary border-0" role="alert">
+                    <div class="d-flex"><div class="toast-body">${message}</div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div></div>`;
+                document.body.appendChild(toast);
+                setTimeout(() => toast.remove(), 5000);
+            });
+
+            connection.start().then(function () {
+                fetch('/Notifications/GetUnreadCount')
+                    .then(r => r.json())
+                    .then(d => { if (d.count > 0) document.getElementById("notificationBadge").textContent = d.count; });
+            }).catch(function () {});
+        })();
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
     <script>
         $(document).ready(function () {
@@ -127,6 +198,79 @@
                 language: { search: "Search:" }
             });
         });
+    </script>
+
+    <div id="chatbot-widget" class="chatbot-widget">
+        <button id="chatbot-toggle" class="chatbot-btn" aria-label="Toggle Chatbot">
+            <i class="bi bi-chat-dots-fill fs-4"></i>
+        </button>
+        <div id="chatbot-panel" class="chatbot-panel" style="display:none;">
+            <div class="chatbot-header d-flex justify-content-between align-items-center px-3 py-2">
+                <strong>Gym Assistant</strong>
+                <button id="chatbot-close" class="btn btn-sm btn-link text-white text-decoration-none">&times;</button>
+            </div>
+            <div id="chatbot-messages" class="chatbot-messages px-3 py-2">
+                <div class="text-muted small text-center mb-2">Ask me about hours, pricing, classes, and more!</div>
+            </div>
+            <div class="chatbot-input d-flex p-2 border-top">
+                <input id="chatbot-input" type="text" class="form-control form-control-sm" placeholder="Type a message..." />
+                <button id="chatbot-send" class="btn btn-sm btn-gradient ms-2">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .chatbot-widget { position: fixed; bottom: 20px; right: 20px; z-index: 9999; }
+        .chatbot-btn { width: 56px; height: 56px; border-radius: 50%; border: none; background: linear-gradient(135deg, #e63946, #457b9d); color: #fff; box-shadow: 0 4px 15px rgba(0,0,0,.3); cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .chatbot-panel { position: absolute; bottom: 70px; right: 0; width: 340px; max-height: 460px; background: var(--card-bg, #1a1a2e); border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,.5); display: flex; flex-direction: column; overflow: hidden; }
+        .chatbot-header { background: linear-gradient(135deg, #e63946, #457b9d); color: #fff; }
+        .chatbot-messages { flex: 1; overflow-y: auto; max-height: 320px; font-size: 0.85rem; }
+        .chatbot-messages .bot-msg, .chatbot-messages .user-msg { margin-bottom: 8px; padding: 6px 12px; border-radius: 12px; max-width: 85%; word-wrap: break-word; }
+        .chatbot-messages .user-msg { background: #457b9d; color: #fff; margin-left: auto; border-bottom-right-radius: 4px; }
+        .chatbot-messages .bot-msg { background: var(--glass-bg, rgba(255,255,255,.08)); color: var(--text-color, #e0e0e0); margin-right: auto; border-bottom-left-radius: 4px; }
+        .chatbot-input { border-color: var(--border-color, #333) !important; }
+        .chatbot-input input { background: var(--glass-bg, rgba(255,255,255,.05)); color: var(--text-color, #ccc); border: 1px solid var(--border-color, #333); }
+    </style>
+
+    <script>
+        (function () {
+            var toggle = document.getElementById('chatbot-toggle');
+            var panel = document.getElementById('chatbot-panel');
+            var close = document.getElementById('chatbot-close');
+            var input = document.getElementById('chatbot-input');
+            var send = document.getElementById('chatbot-send');
+            var messages = document.getElementById('chatbot-messages');
+
+            toggle.onclick = function () { panel.style.display = panel.style.display === 'none' ? 'flex' : 'none'; };
+            close.onclick = function () { panel.style.display = 'none'; };
+
+            function addMessage(text, cls) {
+                var div = document.createElement('div');
+                div.className = cls;
+                div.textContent = text;
+                messages.appendChild(div);
+                messages.scrollTop = messages.scrollHeight;
+            }
+
+            function ask() {
+                var msg = input.value.trim();
+                if (!msg) return;
+                addMessage(msg, 'user-msg');
+                input.value = '';
+
+                fetch('/Chatbot/Ask', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: 'message=' + encodeURIComponent(msg)
+                })
+                .then(function (r) { return r.json(); })
+                .then(function (d) { addMessage(d.response, 'bot-msg'); })
+                .catch(function () { addMessage('Sorry, something went wrong.', 'bot-msg'); });
+            }
+
+            send.onclick = ask;
+            input.onkeypress = function (e) { if (e.key === 'Enter') ask(); };
+        })();
     </script>
 </body>
 </html>

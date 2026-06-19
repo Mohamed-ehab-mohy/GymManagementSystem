@@ -1,4 +1,5 @@
 using GymManagementSystem.BLL.Abstractions;
+using GymManagementSystem.BLL.DTOs;
 using GymManagementSystem.Domain;
 
 namespace GymManagementSystem.BLL.Interfaces;
@@ -11,4 +12,5 @@ public interface IMemberService
     Task AddMemberAsync(Member member);
     Task UpdateMemberAsync(Member member);
     Task<(bool Success, string Message)> DeleteMemberAsync(int id);
+    Task<MemberDashboardDto?> GetMemberDashboardAsync(int memberId);
 }

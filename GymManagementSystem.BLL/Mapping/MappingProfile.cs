@@ -1,38 +1,38 @@
-using AutoMapper;
 using GymManagementSystem.Domain;
 using GymManagementSystem.BLL.DTOs;
+using Mapster;
 
 namespace GymManagementSystem.BLL.Mapping;
 
-public class MappingProfile : Profile
+public class MappingProfile : IRegister
 {
-    public MappingProfile()
+    public void Register(TypeAdapterConfig config)
     {
-        CreateMap<Member, MemberDto>()
-            .ForMember(d => d.Street, o => o.MapFrom(s => s.Address != null ? s.Address.Street : string.Empty))
-            .ForMember(d => d.City, o => o.MapFrom(s => s.Address != null ? s.Address.City : string.Empty))
-            .ForMember(d => d.Height, o => o.MapFrom(s => s.HealthRecord != null ? s.HealthRecord.Height : 0))
-            .ForMember(d => d.Weight, o => o.MapFrom(s => s.HealthRecord != null ? s.HealthRecord.Weight : 0))
-            .ForMember(d => d.BloodType, o => o.MapFrom(s => s.HealthRecord != null ? s.HealthRecord.BloodType : string.Empty))
-            .ForMember(d => d.Note, o => o.MapFrom(s => s.HealthRecord != null ? s.HealthRecord.Note : null));
+        config.NewConfig<Member, MemberDto>()
+            .Map(d => d.Street, s => s.Address != null ? s.Address.Street : string.Empty)
+            .Map(d => d.City, s => s.Address != null ? s.Address.City : string.Empty)
+            .Map(d => d.Height, s => s.HealthRecord != null ? s.HealthRecord.Height : 0)
+            .Map(d => d.Weight, s => s.HealthRecord != null ? s.HealthRecord.Weight : 0)
+            .Map(d => d.BloodType, s => s.HealthRecord != null ? s.HealthRecord.BloodType : string.Empty)
+            .Map(d => d.Note, s => s.HealthRecord != null ? s.HealthRecord.Note : null);
 
-        CreateMap<Trainer, TrainerDto>();
+        config.NewConfig<Trainer, TrainerDto>();
 
-        CreateMap<Plan, PlanDto>();
+        config.NewConfig<Plan, PlanDto>();
 
-        CreateMap<ClassSession, ClassSessionDto>()
-            .ForMember(d => d.TrainerName, o => o.MapFrom(s => s.Trainer != null ? $"{s.Trainer.FirstName} {s.Trainer.LastName}" : string.Empty))
-            .ForMember(d => d.CategoryName, o => o.MapFrom(s => s.Category != null ? s.Category.CategoryName : string.Empty))
-            .ForMember(d => d.AvailableSlots, o => o.MapFrom(s => s.Capacity - s.Bookings.Count(b => !b.IsDeleted)));
+        config.NewConfig<ClassSession, ClassSessionDto>()
+            .Map(d => d.TrainerName, s => s.Trainer != null ? $"{s.Trainer.FirstName} {s.Trainer.LastName}" : string.Empty)
+            .Map(d => d.CategoryName, s => s.Category != null ? s.Category.CategoryName : string.Empty)
+            .Map(d => d.AvailableSlots, s => s.Capacity - s.Bookings.Count(b => !b.IsDeleted));
 
-        CreateMap<Category, CategoryDto>();
+        config.NewConfig<Category, CategoryDto>();
 
-        CreateMap<Membership, MembershipDto>()
-            .ForMember(d => d.MemberName, o => o.MapFrom(s => s.Member != null ? $"{s.Member.FirstName} {s.Member.LastName}" : string.Empty))
-            .ForMember(d => d.PlanName, o => o.MapFrom(s => s.Plan != null ? s.Plan.Name : string.Empty));
+        config.NewConfig<Membership, MembershipDto>()
+            .Map(d => d.MemberName, s => s.Member != null ? $"{s.Member.FirstName} {s.Member.LastName}" : string.Empty)
+            .Map(d => d.PlanName, s => s.Plan != null ? s.Plan.Name : string.Empty);
 
-        CreateMap<Booking, BookingDto>()
-            .ForMember(d => d.MemberName, o => o.MapFrom(s => s.Member != null ? $"{s.Member.FirstName} {s.Member.LastName}" : string.Empty))
-            .ForMember(d => d.SessionName, o => o.MapFrom(s => s.ClassSession != null ? s.ClassSession.Name : string.Empty));
+        config.NewConfig<Booking, BookingDto>()
+            .Map(d => d.MemberName, s => s.Member != null ? $"{s.Member.FirstName} {s.Member.LastName}" : string.Empty)
+            .Map(d => d.SessionName, s => s.ClassSession != null ? s.ClassSession.Name : string.Empty);
     }
 }
