@@ -20,14 +20,9 @@ namespace GymManagementSystem.PL.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> MyQr(int id)
+        public async Task<IActionResult> MyQr(int bookingId)
         {
-            var booking = await _bookingRepository.GetOrCreateBookingForMemberAsync(id);
-            if (booking == null)
-            {
-                booking = await _bookingRepository.GetForCheckInAsync(id);
-            }
-
+            var booking = await _bookingRepository.GetForCheckInAsync(bookingId);
             if (booking == null)
                 return NotFound();
 

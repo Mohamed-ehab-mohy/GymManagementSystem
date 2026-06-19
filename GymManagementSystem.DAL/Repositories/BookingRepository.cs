@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using GymManagementSystem.DAL.DbContexts;
 using GymManagementSystem.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -26,37 +27,6 @@ public class BookingRepository : Repository<Booking>, IBookingRepository
             .FirstOrDefaultAsync(b => b.MemberId == memberId);
     }
 
-    public async Task<Booking?> GetOrCreateBookingForMemberAsync(int memberId)
-    {
-        var existing = await _context.Bookings
-            .Include(b => b.Member)
-            .Include(b => b.ClassSession)
-            .FirstOrDefaultAsync(b => b.MemberId == memberId);
-
-        if (existing != null)
-            return existing;
-
-        var member = await _context.Members.FindAsync(memberId);
-        var session = await _context.ClassSessions
-            .FirstOrDefaultAsync(cs => cs.ScheduleTime.Date == DateTime.Today);
-
-        if (member == null || session == null)
-            return null;
-
-        var booking = new Booking
-        {
-            MemberId = memberId,
-            ClassSessionId = session.Id,
-            BookingDate = DateTime.Today,
-            IsAttended = false,
-            Member = member,
-            ClassSession = session
-        };
-
-        await _context.Bookings.AddAsync(booking);
-        return booking;
-    }
-
     public async Task<IEnumerable<Booking>> GetBySessionIdAsync(int sessionId)
     {
         return await _context.Bookings
@@ -69,5 +39,32 @@ public class BookingRepository : Repository<Booking>, IBookingRepository
         return await _context.Bookings
             .Where(b => b.MemberId == memberId)
             .ToListAsync();
+    }
+
+    public async Task<PagedResult<Booking>> GetPagedBookingsAsync(int page, int pageSize, string? search = null)
+    {
+        var query = _context.Bookings
+            .Include(b => b.Member)
+            .Include(b => b.ClassSession)
+            .AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            query = query.Where(b =>
+                (b.Member.FirstName + " " + b.Member.LastName).Contains(search));
+        }
+
+        query = query.OrderBy(b => b.BookingDate).ThenBy(b => b.Id);
+
+        var totalCount = await query.CountAsync();
+        var items = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+
+        return new PagedResult<Booking>
+        {
+            Items = items,
+            TotalCount = totalCount,
+            Page = page,
+            PageSize = pageSize
+        };
     }
 }

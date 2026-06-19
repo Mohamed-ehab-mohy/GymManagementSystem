@@ -1,0 +1,41 @@
+@model CreateBookingViewModel
+@{
+    ViewData["Title"] = "New Booking";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="premium-card p-4">
+                <h3 class="fw-bold mb-4 text-primary"><i class="bi bi-plus-circle me-2"></i> New Booking</h3>
+
+                <form asp-action="Create" method="post">
+                    <div class="mb-3">
+                        <label asp-for="MemberId" class="form-label fw-bold">Member</label>
+                        <select asp-for="MemberId" asp-items="@(new SelectList(Model.Members, "Id", "FirstName"))" class="form-select">
+                            <option value="">-- Select Member --</option>
+                        </select>
+                        <span asp-validation-for="MemberId" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="ClassSessionId" class="form-label fw-bold">Session</label>
+                        <select asp-for="ClassSessionId" asp-items="@(new SelectList(Model.Sessions, "Id", "Name"))" class="form-select">
+                            <option value="">-- Select Session --</option>
+                        </select>
+                        <span asp-validation-for="ClassSessionId" class="text-danger"></span>
+                    </div>
+
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-gradient w-100">
+                            <i class="bi bi-check-lg me-2"></i> Create
+                        </button>
+                        <a asp-action="Index" class="btn btn-outline-secondary w-100">
+                            <i class="bi bi-x-lg me-2"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

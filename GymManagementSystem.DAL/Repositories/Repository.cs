@@ -43,6 +43,12 @@ public class Repository<T> : IRepository<T> where T : class
                     : query.OrderByDescending(e => EF.Property<object>(e, sortBy));
             }
         }
+        else
+        {
+            var idProperty = typeof(T).GetProperty("Id", BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+            if (idProperty != null)
+                query = query.OrderBy(e => EF.Property<object>(e, "Id"));
+        }
 
         var totalCount = await query.CountAsync();
         var items = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();

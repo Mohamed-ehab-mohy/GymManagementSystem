@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using GymManagementSystem.BLL.Interfaces;
+using GymManagementSystem.DAL;
 using GymManagementSystem.DAL.Entities;
 using GymManagementSystem.DAL.Repositories;
 
@@ -20,6 +21,11 @@ public class BookingService : IBookingService
     public async Task<IEnumerable<Booking>> GetAllBookingsAsync()
     {
         return await _bookingRepository.GetAllAsync();
+    }
+
+    public async Task<PagedResult<Booking>> GetPagedBookingsAsync(int page, int pageSize, string? search = null)
+    {
+        return await _bookingRepository.GetPagedBookingsAsync(page, pageSize, search);
     }
 
     public async Task<Booking?> GetBookingByIdAsync(int id)

@@ -1,0 +1,124 @@
+@model PagedResultDisplay<BookingViewModel>
+@{
+    ViewData["Title"] = "Bookings";
+    var search = ViewBag.Search as string;
+}
+
+<div class="container py-4">
+    <header class="d-flex justify-content-between mb-5 align-items-center flex-wrap gap-3 border-bottom pb-4" style="border-color: var(--border-color) !important;">
+        <div>
+            <h2 class="display-5 fw-bold mb-2">Gym <span class="text-gradient">Bookings</span></h2>
+            <p class="text-secondary fs-5 mb-0">View and manage all member bookings with QR check-in.</p>
+        </div>
+        <div>
+            <a asp-controller="Attendance" asp-action="Scan" class="btn btn-outline-primary me-2">
+                <i class="bi bi-qr-code-scan me-2"></i> Scan QR
+            </a>
+            <a asp-action="Create" class="btn btn-gradient">
+                <i class="bi bi-plus-circle me-2"></i> New Booking
+            </a>
+        </div>
+    </header>
+
+    <form method="get" class="mb-4">
+        <div class="row g-2 align-items-center">
+            <div class="col-md-6">
+                <div class="input-group">
+                    <input type="text" name="search" value="@search" class="form-control form-control-lg" placeholder="Search by member name..." />
+                    <button type="submit" class="btn btn-gradient btn-lg"><i class="bi bi-search"></i> Search</button>
+                </div>
+            </div>
+            <div class="col-md-auto">
+                <span class="text-secondary">@Model.TotalCount booking(s) found</span>
+            </div>
+        </div>
+    </form>
+
+    <div class="premium-card p-4">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr style="border-bottom: 2px solid var(--border-color);">
+                        <th class="py-3 px-4 fw-bold">Member</th>
+                        <th class="py-3 px-4 fw-bold">Session</th>
+                        <th class="py-3 px-4 fw-bold">Date</th>
+                        <th class="py-3 px-4 fw-bold">Status</th>
+                        <th class="py-3 px-4 fw-bold text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Items.Any())
+                    {
+                        foreach (var item in Model.Items)
+                        {
+                            <tr style="border-bottom: 1px solid var(--border-color);">
+                                <td class="py-3 px-4">
+                                    <h6 class="mb-0 fw-bold">@item.MemberName</h6>
+                                </td>
+                                <td class="py-3 px-4">
+                                    <span>@item.SessionName</span>
+                                    <br />
+                                    <small class="text-secondary">@(item.ScheduleTime?.ToString("dd MMM yyyy - hh:mm tt") ?? "")</small>
+                                </td>
+                                <td class="py-3 px-4">@item.BookingDate.ToString("dd MMM yyyy")</td>
+                                <td class="py-3 px-4">
+                                    @if (item.IsAttended)
+                                    {
+                                        <span class="badge bg-success">Attended</span>
+                                        <br />
+                                        <small class="text-secondary">@item.CheckedInAt?.ToString("hh:mm tt")</small>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning text-dark">Pending</span>
+                                    }
+                                </td>
+                                <td class="py-3 px-4 text-end">
+                                    <div class="btn-group" role="group">
+                                        <a asp-controller="Attendance" asp-action="MyQr" asp-route-bookingId="@item.Id" class="btn btn-sm btn-outline-warning" title="View QR">
+                                            <i class="bi bi-qr-code"></i>
+                                        </a>
+                                        <form asp-action="Delete" asp-route-id="@item.Id" method="post" style="display:inline;">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete" onclick="return confirm('Are you sure?');">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center py-5">
+                                <i class="bi bi-calendar-x display-4 text-secondary mb-3 d-block"></i>
+                                <h5 class="text-secondary">No bookings found</h5>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        @if (Model.TotalPages > 1)
+        {
+            <nav class="mt-4">
+                <ul class="pagination justify-content-center mb-0">
+                    <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
+                        <a class="page-link" asp-route-page="@(Model.Page - 1)" asp-route-search="@search"><i class="bi bi-chevron-left"></i></a>
+                    </li>
+                    @for (int i = 1; i <= Model.TotalPages; i++)
+                    {
+                        <li class="page-item @(i == Model.Page ? "active" : "")">
+                            <a class="page-link" asp-route-page="@i" asp-route-search="@search">@i</a>
+                        </li>
+                    }
+                    <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
+                        <a class="page-link" asp-route-page="@(Model.Page + 1)" asp-route-search="@search"><i class="bi bi-chevron-right"></i></a>
+                    </li>
+                </ul>
+            </nav>
+        }
+    </div>
+</div>

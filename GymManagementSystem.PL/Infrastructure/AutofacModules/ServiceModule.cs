@@ -23,7 +23,7 @@ public class ServiceModule : Module
         builder.RegisterType<CategoryService>().As<ICategoryService>().InstancePerLifetimeScope();
         builder.RegisterType<AttachmentService>().As<IAttachmentService>().InstancePerLifetimeScope()
             .WithParameter(
-                (pi, ctx) => pi.Name == "webRootPath",
-                (pi, ctx) => ctx.Resolve<IWebHostEnvironment>().WebRootPath);
+                (pi, ctx) => pi.Name == "storagePath",
+                (pi, ctx) => Path.Combine(ctx.Resolve<IWebHostEnvironment>().ContentRootPath, "App_Data"));
     }
 }

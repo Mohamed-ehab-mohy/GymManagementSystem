@@ -92,7 +92,7 @@ try
         options.AccessDeniedPath = "/Account/AccessDenied";
     });
 
-    builder.Services.AddAutoMapper(typeof(GymManagementSystem.BLL.Mapping.MappingProfile).Assembly);
+    builder.Services.AddAutoMapper(typeof(GymManagementSystem.BLL.Mapping.MappingProfile).Assembly, typeof(Program).Assembly);
     builder.Services.AddControllersWithViews();
 
     var app = builder.Build();

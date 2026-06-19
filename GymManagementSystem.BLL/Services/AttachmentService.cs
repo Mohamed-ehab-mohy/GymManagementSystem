@@ -4,16 +4,16 @@ namespace GymManagementSystem.BLL.Services;
 
 public class AttachmentService : IAttachmentService
 {
-    private readonly string _webRootPath;
+    private readonly string _storagePath;
 
-    public AttachmentService(string webRootPath)
+    public AttachmentService(string storagePath)
     {
-        _webRootPath = webRootPath;
+        _storagePath = storagePath;
     }
 
     public async Task<string?> SaveFileAsync(string subFolder, int entityId, string fileName, Stream content)
     {
-        var uploadsDir = Path.Combine(_webRootPath, subFolder);
+        var uploadsDir = Path.Combine(_storagePath, subFolder);
         Directory.CreateDirectory(uploadsDir);
 
         var ext = Path.GetExtension(fileName);
@@ -25,12 +25,12 @@ public class AttachmentService : IAttachmentService
             await content.CopyToAsync(stream);
         }
 
-        return $"/{subFolder}/{safeName}";
+        return $"/uploads/{safeName}";
     }
 
     public Task<bool> DeleteFileAsync(string relativePath)
     {
-        var fullPath = Path.Combine(_webRootPath, relativePath.TrimStart('/'));
+        var fullPath = Path.Combine(_storagePath, relativePath.TrimStart('/'));
         if (!System.IO.File.Exists(fullPath))
             return Task.FromResult(false);
 
