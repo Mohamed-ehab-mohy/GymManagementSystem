@@ -1,14 +1,21 @@
 using GymManagementSystem.PL.Infrastructure.AutofacModules;
 using GymManagementSystem.PL.Infrastructure.Extensions;
+using GymManagementSystem.BLL.Interfaces;
 using GymManagementSystem.PL.Services;
 using GymManagementSystem.DAL.DbContexts;
 using GymManagementSystem.Domain;
+using GymManagementSystem.BLL.Services;
 using GymManagementSystem.DAL.Interceptors;
+using GymManagementSystem.PL.Jobs;
 using GymManagementSystem.PL.Seeders;
-using Microsoft.AspNetCore.Identity;
+using Mapster;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using Quartz;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using HealthChecks.UI.Client;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
@@ -93,21 +100,59 @@ try
     });
 
     builder.Services.AddHostedService<CleanupBackgroundService>();
+    builder.Services.AddHostedService<RenewalReminderService>();
 
-    builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-        .AddEntityFrameworkStores<GymDbContext>()
-        .AddDefaultTokenProviders();
+    var authBuilder = builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+        .AddCookie(options =>
+        {
+            options.LoginPath = "/Account/Login";
+            options.LogoutPath = "/Account/Logout";
+            options.AccessDeniedPath = "/Account/AccessDenied";
+            options.ExpireTimeSpan = TimeSpan.FromHours(8);
+            options.SlidingExpiration = true;
+        });
 
-    builder.Services.ConfigureApplicationCookie(options =>
+    var googleClientId = builder.Configuration["Authentication:Google:ClientId"];
+    if (!string.IsNullOrEmpty(googleClientId))
     {
-        options.LoginPath = "/Account/Login";
-        options.LogoutPath = "/Account/Logout";
-        options.AccessDeniedPath = "/Account/AccessDenied";
-    });
+        authBuilder.AddGoogle(options =>
+        {
+            options.ClientId = googleClientId;
+            options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"] ?? "";
+            options.CallbackPath = "/signin-google";
+            options.Scope.Add("profile");
+            options.Scope.Add("email");
+        });
+    }
 
-    builder.Services.AddMemoryCache();
-    builder.Services.AddAutoMapper(typeof(GymManagementSystem.BLL.Mapping.MappingProfile).Assembly, typeof(Program).Assembly);
-    builder.Services.AddControllersWithViews();
+builder.Services.AddHttpClient();
+builder.Services.AddMemoryCache();
+builder.Services.AddMapster();
+builder.Services.AddControllersWithViews();
+builder.Services.AddSignalR();
+
+var connStr = builder.Configuration.GetConnectionString("DefaultConnection");
+if (!string.IsNullOrEmpty(connStr))
+{
+    builder.Services.AddHealthChecks()
+        .AddSqlServer(connStr, name: "SQL Server", tags: new[] { "db", "sqlserver" });
+}
+else
+{
+    builder.Services.AddHealthChecks();
+}
+
+builder.Services.AddScoped<IPurgeService, PurgeService>();
+builder.Services.AddQuartz(q =>
+{
+    var jobKey = new JobKey("PurgeDeletedRecords");
+    q.AddJob<PurgeDeletedRecordsJob>(opts => opts.WithIdentity(jobKey));
+    q.AddTrigger(opts => opts
+        .ForJob(jobKey)
+        .WithIdentity("PurgeDeletedRecords-Trigger")
+        .WithCronSchedule("0 0 3 * * ?")); // 3 AM daily
+});
+builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
     var app = builder.Build();
 
@@ -136,6 +181,20 @@ try
     app.MapControllerRoute(
         name: "default",
         pattern: "{controller=Home}/{action=Index}/{id?}");
+
+    app.MapHub<NotificationHub>("/hubs/notifications");
+
+    app.MapHealthChecks("/health", new HealthCheckOptions
+    {
+        Predicate = _ => true,
+        ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+    });
+
+    app.MapHealthChecks("/health/ready", new HealthCheckOptions
+    {
+        Predicate = _ => true,
+        ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+    });
 
     await DatabaseSeeder.SeedAllAsync(app.Services);
 

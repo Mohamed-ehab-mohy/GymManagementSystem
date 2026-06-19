@@ -1,11 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using GymManagementSystem.Domain;
 using GymManagementSystem.DAL.Configurations;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace GymManagementSystem.DAL.DbContexts;
 
-public class GymDbContext : IdentityDbContext<ApplicationUser>
+public class GymDbContext : DbContext
 {
     public DbSet<Plan> Plans { get; set; }
     public DbSet<GymUser> GymUsers { get; set; }
@@ -16,6 +15,8 @@ public class GymDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Membership> Memberships { get; set; }
     public DbSet<Booking> Bookings { get; set; }
     public DbSet<Category> Categories { get; set; }
+    public DbSet<Notification> Notifications { get; set; }
+    public DbSet<Payment> Payments { get; set; }
 
     public GymDbContext(DbContextOptions<GymDbContext> options) : base(options)
     {
@@ -32,14 +33,9 @@ public class GymDbContext : IdentityDbContext<ApplicationUser>
         modelBuilder.ApplyConfiguration(new MembershipConfiguration());
         modelBuilder.ApplyConfiguration(new BookingConfiguration());
         modelBuilder.ApplyConfiguration(new CategoryConfiguration());
+        modelBuilder.ApplyConfiguration(new NotificationConfiguration());
+        modelBuilder.ApplyConfiguration(new PaymentConfiguration());
         modelBuilder.ApplyConfiguration(new MemberConfiguration());
         modelBuilder.ApplyConfiguration(new TrainerConfiguration());
-
-        foreach (var entity in modelBuilder.Model.GetEntityTypes())
-        {
-            var tableName = entity.GetTableName();
-            if (tableName != null && tableName.StartsWith("AspNet"))
-                entity.SetTableName(tableName[6..]);
-        }
     }
 }

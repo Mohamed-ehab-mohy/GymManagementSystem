@@ -1,12 +1,12 @@
 using GymManagementSystem.DAL.DbContexts;
 using GymManagementSystem.Domain;
+using GymManagementSystem.BLL.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
 using Serilog;
 
 namespace GymManagementSystem.PL.Seeders;
@@ -38,6 +38,8 @@ public static class DatabaseSeeder
                 PhoneNumber = "01123456789",
                 DateOfBirth = new DateTime(1985, 6, 15),
                 Gender = "Male",
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("Trainer@123", 12),
+                Role = "Trainer",
                 Specialty = TrainerSpecialty.GeneralFitness,
                 HireDate = DateTime.Today,
                 Address = new Address { Street = "Gymy St", City = "Cairo", State = "Cairo", ZipCode = "12345" }
@@ -57,6 +59,8 @@ public static class DatabaseSeeder
                 PhoneNumber = "01098765432",
                 DateOfBirth = new DateTime(1995, 3, 20),
                 Gender = "Male",
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("Member@123", 12),
+                Role = "Member",
                 JoinDate = DateTime.Today,
                 EmergencyContactName = "Parent",
                 EmergencyContactPhone = "01234567890",
@@ -77,6 +81,8 @@ public static class DatabaseSeeder
                 PhoneNumber = "01012345678",
                 DateOfBirth = new DateTime(1998, 7, 10),
                 Gender = "Male",
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("Member@123", 12),
+                Role = "Member",
                 JoinDate = DateTime.Today,
                 EmergencyContactName = "Friend",
                 EmergencyContactPhone = "01112223334",
@@ -161,31 +167,17 @@ public static class DatabaseSeeder
 
     private static async Task SeedAdminAsync(IServiceScope scope)
     {
-        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+        var authService = scope.ServiceProvider.GetRequiredService<IAuthService>();
 
-        foreach (var roleName in new[] { "User", "Admin", "SuperAdmin" })
-        {
-            if (!await roleManager.RoleExistsAsync(roleName))
-                await roleManager.CreateAsync(new IdentityRole(roleName));
-        }
+        var adminEmail = "admin@gymy.com";
+        var result = await authService.RegisterAdminAsync(adminEmail, "Admin@123", "Admin");
+        if (result.IsSuccess)
+            Log.Information("Admin user {Email} created", adminEmail);
 
-        await EnsureUserAsync(userManager, "admin@gymy.com", "Admin@123", "Admin");
-        await EnsureUserAsync(userManager, "superadmin@gymy.com", "Super@123", "SuperAdmin");
-    }
-
-    private static async Task EnsureUserAsync(UserManager<ApplicationUser> userManager, string email, string password, string role)
-    {
-        if (await userManager.FindByEmailAsync(email) != null)
-            return;
-
-        var user = new ApplicationUser { UserName = email, Email = email };
-        var result = await userManager.CreateAsync(user, password);
-        if (result.Succeeded)
-        {
-            await userManager.AddToRoleAsync(user, role);
-            Log.Information("User {Email} created with role {Role}", email, role);
-        }
+        var superAdminEmail = "superadmin@gymy.com";
+        result = await authService.RegisterAdminAsync(superAdminEmail, "Super@123", "SuperAdmin");
+        if (result.IsSuccess)
+            Log.Information("SuperAdmin user {Email} created", superAdminEmail);
     }
 
     private class PlanSeedDto

@@ -34,6 +34,15 @@ public class GymUserConfiguration : IEntityTypeConfiguration<GymUser>
             .IsRequired()
             .HasMaxLength(10);
 
+        builder.Property(u => u.PasswordHash)
+            .IsRequired()
+            .HasMaxLength(200);
+
+        builder.Property(u => u.Role)
+            .IsRequired()
+            .HasMaxLength(20)
+            .HasDefaultValue("Member");
+
         builder.HasIndex(u => u.Email).IsUnique();
         builder.HasIndex(u => u.PhoneNumber).IsUnique();
 

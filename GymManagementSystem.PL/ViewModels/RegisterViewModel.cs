@@ -4,9 +4,13 @@ namespace GymManagementSystem.PL.ViewModels;
 
 public class RegisterViewModel
 {
-    [Required(ErrorMessage = "Full name is required.")]
-    [StringLength(100, MinimumLength = 3, ErrorMessage = "Name must be between 3 and 100 characters.")]
-    public string FullName { get; set; } = string.Empty;
+    [Required(ErrorMessage = "First name is required.")]
+    [StringLength(50, MinimumLength = 2)]
+    public string FirstName { get; set; } = string.Empty;
+
+    [Required(ErrorMessage = "Last name is required.")]
+    [StringLength(50, MinimumLength = 2)]
+    public string LastName { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "Email is required.")]
     [EmailAddress(ErrorMessage = "Invalid email format.")]
@@ -20,4 +24,11 @@ public class RegisterViewModel
     [DataType(DataType.Password)]
     [Compare("Password", ErrorMessage = "Passwords do not match.")]
     public string ConfirmPassword { get; set; } = string.Empty;
+
+    [Required]
+    [DataType(DataType.Date)]
+    public DateTime DateOfBirth { get; set; } = DateTime.Today.AddYears(-18);
+
+    [Required]
+    public string Gender { get; set; } = "Male";
 }

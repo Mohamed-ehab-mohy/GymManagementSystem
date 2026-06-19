@@ -15,7 +15,7 @@ public class MembersControllerIntegrationTests : IClassFixture<CustomWebApplicat
         _factory = factory;
     }
 
-    [Fact(Skip = "Requires test authentication setup after adding [Authorize]")]
+    [Fact]
     public async Task Index_ReturnsSuccessAndCorrectContentType()
     {
         var client = _factory.CreateClient();
@@ -28,7 +28,7 @@ public class MembersControllerIntegrationTests : IClassFixture<CustomWebApplicat
         content.ShouldContain("Mohamed");
     }
 
-    [Fact(Skip = "Requires test authentication setup after adding [Authorize]")]
+    [Fact]
     public async Task ExportExcel_ReturnsExcelFile()
     {
         var client = _factory.CreateClient();
@@ -41,7 +41,7 @@ public class MembersControllerIntegrationTests : IClassFixture<CustomWebApplicat
         bytes.Length.ShouldBeGreaterThan(0);
     }
 
-    [Fact(Skip = "Requires test authentication setup after adding [Authorize]")]
+    [Fact]
     public async Task ExportPdf_ReturnsPdfFile()
     {
         var client = _factory.CreateClient();
