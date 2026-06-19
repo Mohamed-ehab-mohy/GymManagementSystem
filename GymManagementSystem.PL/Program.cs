@@ -3,7 +3,6 @@ using GymManagementSystem.PL.Infrastructure.Extensions;
 using GymManagementSystem.DAL.DbContexts;
 using GymManagementSystem.DAL.Entities;
 using GymManagementSystem.DAL.Interceptors;
-using GymManagementSystem.BLL.Interfaces;
 using GymManagementSystem.BLL.Services;
 using GymManagementSystem.PL.Seeders;
 using Microsoft.AspNetCore.Identity;
@@ -79,10 +78,6 @@ try
                 );
         }
     });
-
-    builder.Services.AddSingleton<ISingletonService, SingletonService>();
-    builder.Services.AddScoped<IScopedService, ScopedService>();
-    builder.Services.AddTransient<ITransientService, TransientService>();
 
     builder.Services.AddHostedService<CleanupBackgroundService>();
 
