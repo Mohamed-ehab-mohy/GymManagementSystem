@@ -1,5 +1,5 @@
 using GymManagementSystem.DAL.DbContexts;
-using GymManagementSystem.DAL.Entities;
+using GymManagementSystem.Domain;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace GymManagementSystem.DAL.Entities;
+namespace GymManagementSystem.Domain;
 
 public class Trainer : GymUser
 {

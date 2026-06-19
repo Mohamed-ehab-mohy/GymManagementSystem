@@ -1,7 +1,7 @@
 using System.Linq.Expressions;
 using System.Reflection;
 using GymManagementSystem.DAL.DbContexts;
-using Microsoft.EntityFrameworkCore;
+using GymManagementSystem.BLL.Abstractions; using Microsoft.EntityFrameworkCore;
 
 namespace GymManagementSystem.DAL.Repositories;
 

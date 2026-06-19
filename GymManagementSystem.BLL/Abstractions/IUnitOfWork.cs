@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace GymManagementSystem.DAL.Repositories;
+namespace GymManagementSystem.BLL.Abstractions;
 
 public interface IUnitOfWork : IDisposable
 {

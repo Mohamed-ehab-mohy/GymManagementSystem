@@ -1,5 +1,5 @@
 using GymManagementSystem.DAL.DbContexts;
-using GymManagementSystem.DAL.Entities;
+using GymManagementSystem.Domain; using GymManagementSystem.BLL.Abstractions.Repositories;
 
 namespace GymManagementSystem.DAL.Repositories;
 

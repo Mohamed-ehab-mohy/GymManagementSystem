@@ -1,8 +1,9 @@
 using System;
 using System.Threading.Tasks;
 using GymManagementSystem.BLL.Attendance;
-using GymManagementSystem.DAL.Entities;
-using GymManagementSystem.DAL.Repositories;
+using GymManagementSystem.Domain;
+using GymManagementSystem.BLL.Abstractions;
+using GymManagementSystem.BLL.Abstractions.Repositories;
 using Microsoft.Extensions.Configuration;
 using NSubstitute;
 using Shouldly;

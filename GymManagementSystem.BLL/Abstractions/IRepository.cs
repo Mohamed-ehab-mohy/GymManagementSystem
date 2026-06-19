@@ -1,6 +1,6 @@
 using System.Linq.Expressions;
 
-namespace GymManagementSystem.DAL.Repositories;
+namespace GymManagementSystem.BLL.Abstractions;
 
 public interface IRepository<T> where T : class
 {

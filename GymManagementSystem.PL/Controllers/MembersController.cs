@@ -1,8 +1,8 @@
 using AutoMapper;
 using GymManagementSystem.BLL.Export;
 using GymManagementSystem.BLL.Interfaces;
-using GymManagementSystem.DAL;
-using GymManagementSystem.DAL.Entities;
+using GymManagementSystem.BLL.Abstractions;
+using GymManagementSystem.Domain;
 using GymManagementSystem.PL.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

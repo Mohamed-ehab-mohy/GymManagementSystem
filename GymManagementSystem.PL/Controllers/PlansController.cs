@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using GymManagementSystem.BLL.Interfaces;
 using GymManagementSystem.PL.ViewModels;
-using GymManagementSystem.DAL.Entities;
+using GymManagementSystem.Domain;
 using GymManagementSystem.BLL.Export;
 using Microsoft.AspNetCore.Authorization;
 

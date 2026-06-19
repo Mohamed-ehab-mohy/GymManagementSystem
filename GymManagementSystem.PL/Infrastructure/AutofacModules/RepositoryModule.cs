@@ -1,4 +1,6 @@
 using Autofac;
+using GymManagementSystem.BLL.Abstractions;
+using GymManagementSystem.BLL.Abstractions.Repositories;
 using GymManagementSystem.DAL.Repositories;
 
 namespace GymManagementSystem.PL.Infrastructure.AutofacModules;

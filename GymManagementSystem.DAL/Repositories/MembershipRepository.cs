@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using GymManagementSystem.DAL.DbContexts;
-using GymManagementSystem.DAL.Entities;
+using GymManagementSystem.Domain; using GymManagementSystem.BLL.Abstractions.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace GymManagementSystem.DAL.Repositories;

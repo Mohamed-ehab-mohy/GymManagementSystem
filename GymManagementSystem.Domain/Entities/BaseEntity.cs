@@ -1,4 +1,4 @@
-namespace GymManagementSystem.DAL.Entities;
+namespace GymManagementSystem.Domain;
 
 public abstract class BaseEntity : ISoftDeletable
 {

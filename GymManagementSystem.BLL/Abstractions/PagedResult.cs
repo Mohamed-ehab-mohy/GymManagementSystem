@@ -1,4 +1,4 @@
-namespace GymManagementSystem.DAL;
+namespace GymManagementSystem.BLL.Abstractions;
 
 public class PagedResult<T>
 {

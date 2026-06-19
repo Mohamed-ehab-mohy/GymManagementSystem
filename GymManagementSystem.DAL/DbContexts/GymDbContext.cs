@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using GymManagementSystem.DAL.Entities;
+using GymManagementSystem.Domain;
 using GymManagementSystem.DAL.Configurations;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 

@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using GymManagementSystem.BLL.Interfaces;
-using GymManagementSystem.DAL.Entities;
-using GymManagementSystem.DAL.Repositories;
+using GymManagementSystem.BLL.Abstractions;
+using GymManagementSystem.Domain;
+using GymManagementSystem.BLL.Abstractions;
+using GymManagementSystem.BLL.Abstractions.Repositories;
 
 namespace GymManagementSystem.BLL.Services;
 

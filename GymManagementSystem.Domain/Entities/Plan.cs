@@ -1,6 +1,6 @@
 using System;
 
-namespace GymManagementSystem.DAL.Entities;
+namespace GymManagementSystem.Domain;
 
 public class Plan : BaseEntity
 {

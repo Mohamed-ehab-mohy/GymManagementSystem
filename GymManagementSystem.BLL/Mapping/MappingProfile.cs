@@ -1,5 +1,5 @@
 using AutoMapper;
-using GymManagementSystem.DAL.Entities;
+using GymManagementSystem.Domain;
 using GymManagementSystem.BLL.DTOs;
 
 namespace GymManagementSystem.BLL.Mapping;

@@ -1,5 +1,5 @@
 using GymManagementSystem.BLL.Interfaces;
-using GymManagementSystem.DAL.Entities;
+using GymManagementSystem.Domain;
 using GymManagementSystem.PL.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

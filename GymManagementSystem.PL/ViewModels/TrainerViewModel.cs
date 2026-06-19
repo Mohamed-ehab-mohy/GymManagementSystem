@@ -1,6 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
-using GymManagementSystem.DAL.Entities;
+using GymManagementSystem.Domain;
 
 namespace GymManagementSystem.PL.ViewModels;
 

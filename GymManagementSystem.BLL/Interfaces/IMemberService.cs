@@ -1,5 +1,5 @@
-using GymManagementSystem.DAL;
-using GymManagementSystem.DAL.Entities;
+using GymManagementSystem.BLL.Abstractions;
+using GymManagementSystem.Domain;
 
 namespace GymManagementSystem.BLL.Interfaces;
 

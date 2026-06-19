@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\GymManagementSystem.DAL\GymManagementSystem.DAL.csproj" />
+    <ProjectReference Include="..\GymManagementSystem.Domain\GymManagementSystem.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>

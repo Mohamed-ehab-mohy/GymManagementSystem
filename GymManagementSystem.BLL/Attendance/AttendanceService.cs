@@ -1,4 +1,5 @@
-using GymManagementSystem.DAL.Repositories;
+using GymManagementSystem.BLL.Abstractions;
+using GymManagementSystem.BLL.Abstractions.Repositories;
 using Microsoft.Extensions.Configuration;
 using QRCoder;
 using System;

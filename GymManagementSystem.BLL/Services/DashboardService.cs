@@ -1,6 +1,6 @@
 using GymManagementSystem.BLL.DTOs;
 using GymManagementSystem.BLL.Interfaces;
-using GymManagementSystem.DAL.Repositories;
+using GymManagementSystem.BLL.Abstractions.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace GymManagementSystem.BLL.Services;

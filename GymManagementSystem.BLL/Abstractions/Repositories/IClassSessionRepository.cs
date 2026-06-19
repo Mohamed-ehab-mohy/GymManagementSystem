@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using GymManagementSystem.DAL.Entities;
+using GymManagementSystem.Domain;
+using GymManagementSystem.BLL.Abstractions;
 
-namespace GymManagementSystem.DAL.Repositories;
+namespace GymManagementSystem.BLL.Abstractions.Repositories;
 
 public interface IClassSessionRepository : IRepository<ClassSession>
 {

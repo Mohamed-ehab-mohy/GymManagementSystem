@@ -1,5 +1,5 @@
 using GymManagementSystem.BLL.Attendance;
-using GymManagementSystem.DAL.Repositories;
+using GymManagementSystem.BLL.Abstractions.Repositories;
 using GymManagementSystem.PL.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

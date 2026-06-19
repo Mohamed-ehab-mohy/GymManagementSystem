@@ -8,7 +8,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace GymManagementSystem.BLL.Services;
+namespace GymManagementSystem.PL.Services;
 
 public class CleanupBackgroundService : BackgroundService
 {

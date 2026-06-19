@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using GymManagementSystem.DAL.Entities;
+using GymManagementSystem.Domain;
 
 namespace GymManagementSystem.BLL.Interfaces;
 

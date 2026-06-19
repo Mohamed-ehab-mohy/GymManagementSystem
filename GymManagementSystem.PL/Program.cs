@@ -1,9 +1,9 @@
 using GymManagementSystem.PL.Infrastructure.AutofacModules;
 using GymManagementSystem.PL.Infrastructure.Extensions;
+using GymManagementSystem.PL.Services;
 using GymManagementSystem.DAL.DbContexts;
-using GymManagementSystem.DAL.Entities;
+using GymManagementSystem.Domain;
 using GymManagementSystem.DAL.Interceptors;
-using GymManagementSystem.BLL.Services;
 using GymManagementSystem.PL.Seeders;
 using Microsoft.AspNetCore.Identity;
 using Autofac;

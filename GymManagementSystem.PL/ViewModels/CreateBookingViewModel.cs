@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using GymManagementSystem.DAL.Entities;
+using GymManagementSystem.Domain;
 
 namespace GymManagementSystem.PL.ViewModels;
 

@@ -1,4 +1,5 @@
 using GymManagementSystem.BLL.Interfaces;
+using GymManagementSystem.Domain;
 using GymManagementSystem.PL.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -73,7 +74,7 @@ public class BookingController : Controller
 
         if (ModelState.IsValid)
         {
-            var booking = new DAL.Entities.Booking
+            var booking = new Booking
             {
                 MemberId = model.MemberId,
                 ClassSessionId = model.ClassSessionId,

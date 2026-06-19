@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\GymManagementSystem.Domain\GymManagementSystem.Domain.csproj" />
     <ProjectReference Include="..\GymManagementSystem.BLL\GymManagementSystem.BLL.csproj" />
   </ItemGroup>
 
