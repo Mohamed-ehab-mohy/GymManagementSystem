@@ -21,6 +21,7 @@ public class ServiceModule : Module
         builder.RegisterType<AttendanceService>().As<IAttendanceService>().InstancePerLifetimeScope();
         builder.RegisterType<DashboardService>().As<IDashboardService>().InstancePerLifetimeScope();
         builder.RegisterType<CategoryService>().As<ICategoryService>().InstancePerLifetimeScope();
+        builder.RegisterType<CacheService>().As<ICacheService>().SingleInstance();
         builder.RegisterType<AttachmentService>().As<IAttachmentService>().InstancePerLifetimeScope()
             .WithParameter(
                 (pi, ctx) => pi.Name == "storagePath",

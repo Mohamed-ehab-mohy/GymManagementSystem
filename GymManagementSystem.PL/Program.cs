@@ -105,6 +105,7 @@ try
         options.AccessDeniedPath = "/Account/AccessDenied";
     });
 
+    builder.Services.AddMemoryCache();
     builder.Services.AddAutoMapper(typeof(GymManagementSystem.BLL.Mapping.MappingProfile).Assembly, typeof(Program).Assembly);
     builder.Services.AddControllersWithViews();
 
