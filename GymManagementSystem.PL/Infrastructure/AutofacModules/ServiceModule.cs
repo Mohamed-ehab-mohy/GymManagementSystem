@@ -1,8 +1,8 @@
 using Autofac;
+using GymManagementSystem.BLL.Attendance;
+using GymManagementSystem.BLL.Export;
 using GymManagementSystem.BLL.Interfaces;
 using GymManagementSystem.BLL.Services;
-using GymManagementSystem.BLL.Export;
-using GymManagementSystem.BLL.Attendance;
 
 namespace GymManagementSystem.PL.Infrastructure.AutofacModules;
 
