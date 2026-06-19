@@ -1,0 +1,40 @@
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: gym-sqlserver
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "Gym@2024Secret!"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+
+  seq:
+    image: datalust/seq:latest
+    container_name: gym-seq
+    environment:
+      ACCEPT_EULA: "Y"
+    ports:
+      - "5341:5341"
+      - "8081:80"
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: gym-app
+    ports:
+      - "5000:80"
+    depends_on:
+      - sqlserver
+      - seq
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ASPNETCORE_URLS: "http://0.0.0.0:80"
+      ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=GymManagementDb;User Id=sa;Password=Gym@2024Secret!;TrustServerCertificate=true"
+      Serilog__WriteTo__0__Name: "Seq"
+      Serilog__WriteTo__0__Args__serverUrl: "http://seq:5341"
+
+volumes:
+  sqlserver-data:
