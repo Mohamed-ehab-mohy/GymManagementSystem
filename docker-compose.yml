@@ -4,11 +4,17 @@ services:
     container_name: gym-sqlserver
     environment:
       ACCEPT_EULA: "Y"
-      MSSQL_SA_PASSWORD: "Gym@2024Secret!"
+      MSSQL_SA_PASSWORD: "${SA_PASSWORD:-Gym@2024Secret!}"
     ports:
-      - "1433:1433"
+      - "${SQL_PORT:-1433}:1433"
     volumes:
       - sqlserver-data:/var/opt/mssql
+    healthcheck:
+      test: /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "${SA_PASSWORD:-Gym@2024Secret!}" -C -Q "SELECT 1" || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
 
   seq:
     image: datalust/seq:latest
@@ -16,8 +22,8 @@ services:
     environment:
       ACCEPT_EULA: "Y"
     ports:
-      - "5341:5341"
-      - "8081:80"
+      - "${SEQ_INGEST_PORT:-5341}:5341"
+      - "${SEQ_UI_PORT:-8081}:80"
 
   app:
     build:
@@ -25,22 +31,28 @@ services:
       dockerfile: Dockerfile
     container_name: gym-app
     ports:
-      - "5000:80"
+      - "${APP_PORT:-5000}:80"
     depends_on:
-      - sqlserver
-      - seq
+      sqlserver:
+        condition: service_healthy
+      seq:
+        condition: service_started
     environment:
       ASPNETCORE_ENVIRONMENT: "Development"
       ASPNETCORE_URLS: "http://0.0.0.0:80"
-      ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=GymManagementDb;User Id=sa;Password=Gym@2024Secret!;TrustServerCertificate=true"
+      ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=GymManagementDb;User Id=sa;Password=${SA_PASSWORD:-Gym@2024Secret!};TrustServerCertificate=true"
       Serilog__WriteTo__0__Name: "Seq"
       Serilog__WriteTo__0__Args__serverUrl: "http://seq:5341"
+      OpenAI__ApiKey: "${OPENAI_API_KEY}"
+      OpenAI__Model: "${OPENAI_MODEL:-gpt-4o-mini}"
+      Authentication__Google__ClientId: "${GOOGLE_CLIENT_ID:-}"
+      Authentication__Google__ClientSecret: "${GOOGLE_CLIENT_SECRET:-}"
 
   prometheus:
     image: prom/prometheus:latest
     container_name: gym-prometheus
     ports:
-      - "9090:9090"
+      - "${PROMETHEUS_PORT:-9090}:9090"
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
     depends_on:
@@ -50,7 +62,7 @@ services:
     image: grafana/grafana:latest
     container_name: gym-grafana
     ports:
-      - "3000:3000"
+      - "${GRAFANA_PORT:-3000}:3000"
     depends_on:
       - prometheus
 

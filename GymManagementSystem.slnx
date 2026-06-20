@@ -1,4 +1,5 @@
 <Solution>
+  <Project Path="GymManagementSystem.Domain/GymManagementSystem.Domain.csproj" />
   <Project Path="GymManagementSystem.BLL/GymManagementSystem.BLL.csproj" />
   <Project Path="GymManagementSystem.BLL.Tests/GymManagementSystem.BLL.Tests.csproj" />
   <Project Path="GymManagementSystem.DAL/GymManagementSystem.DAL.csproj" />
