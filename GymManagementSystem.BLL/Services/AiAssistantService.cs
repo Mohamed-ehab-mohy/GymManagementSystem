@@ -46,22 +46,31 @@ public class AiAssistantService : IAiAssistantService
             max_tokens = _maxTokens
         };
 
-        try
-        {
-            using var client = _httpClientFactory.CreateClient();
-            client.DefaultRequestHeaders.Authorization = new("Bearer", _apiKey);
+        using var client = _httpClientFactory.CreateClient();
+        client.DefaultRequestHeaders.Authorization = new("Bearer", _apiKey);
 
+        for (int retry = 0; retry < 3; retry++)
+        {
             var response = await client.PostAsJsonAsync("https://api.openai.com/v1/chat/completions", requestBody);
-            response.EnsureSuccessStatusCode();
 
-            var result = await response.Content.ReadFromJsonAsync<OpenAiResponse>();
-            return result?.Choices?.FirstOrDefault()?.Message?.Content?.Trim()
-                   ?? "Sorry, I couldn't process that request.";
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadFromJsonAsync<OpenAiResponse>();
+                return result?.Choices?.FirstOrDefault()?.Message?.Content?.Trim()
+                       ?? "Sorry, I couldn't process that request.";
+            }
+
+            if ((int)response.StatusCode == 429 && retry < 2)
+            {
+                await Task.Delay(2000);
+                continue;
+            }
+
+            var error = await response.Content.ReadAsStringAsync();
+            return $"I'm having trouble connecting right now. Please try again later. ({(int)response.StatusCode}: {response.ReasonPhrase})";
         }
-        catch (HttpRequestException ex)
-        {
-            return $"I'm having trouble connecting right now. Please try again later. ({ex.Message})";
-        }
+
+        return "I'm having trouble connecting right now. Please try again later.";
     }
 
     private List<object> BuildMessages(string systemPrompt, string userMessage, List<ChatMessage> history)
