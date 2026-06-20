@@ -210,12 +210,11 @@
                 <strong>Gym Assistant</strong>
                 <button id="chatbot-close" class="btn btn-sm btn-link text-white text-decoration-none">&times;</button>
             </div>
-            <div id="chatbot-messages" class="chatbot-messages px-3 py-2">
-                <div class="text-muted small text-center mb-2">Ask me anything / اسألني أي شيء</div>
-            </div>
+            <div id="chatbot-messages" class="chatbot-messages px-3 py-2"></div>
+            <div id="chatbot-suggestions" class="chatbot-suggestions px-3 pb-2"></div>
             <div class="chatbot-input d-flex p-2 border-top">
                 <input id="chatbot-input" type="text" class="form-control form-control-sm" placeholder="Type a message / اكتب رسالة..." />
-                <button id="chatbot-send" class="btn btn-sm btn-gradient ms-2">Send</button>
+                <button id="chatbot-send" class="btn btn-sm btn-gradient ms-2">ارسل / Send</button>
             </div>
         </div>
     </div>
@@ -229,6 +228,9 @@
         .chatbot-messages .bot-msg, .chatbot-messages .user-msg { margin-bottom: 8px; padding: 6px 12px; border-radius: 12px; max-width: 85%; word-wrap: break-word; }
         .chatbot-messages .user-msg { background: var(--primary, #f97316); color: #fff; margin-left: auto; border-bottom-right-radius: 4px; }
         .chatbot-messages .bot-msg { background: var(--secondary, #a855f7); color: #fff; margin-right: auto; border-bottom-left-radius: 4px; }
+        .chatbot-suggestions { display: flex; flex-wrap: wrap; gap: 6px; }
+        .chatbot-suggestions .chip { padding: 5px 10px; border-radius: 14px; border: 1px solid var(--primary, #f97316); background: transparent; color: var(--primary, #f97316); font-size: 0.75rem; cursor: pointer; transition: var(--transition); white-space: nowrap; }
+        .chatbot-suggestions .chip:hover { background: var(--primary, #f97316); color: #fff; }
         .chatbot-input { border-color: var(--border-color, #333) !important; }
         .chatbot-input input { background: var(--bg, #0c0a09); color: var(--text, #f5f5f4); border: 1px solid var(--border-color, #333); }
     </style>
@@ -241,9 +243,33 @@
             var input = document.getElementById('chatbot-input');
             var send = document.getElementById('chatbot-send');
             var messages = document.getElementById('chatbot-messages');
+            var suggestions = document.getElementById('chatbot-suggestions');
 
-            toggle.onclick = function () { panel.style.display = panel.style.display === 'none' ? 'flex' : 'none'; };
-            close.onclick = function () { panel.style.display = 'none'; };
+            var chips = [
+                'What are your opening hours? / مواعيد العمل؟',
+                'What plans do you have? / الخطط المتاحة؟',
+                'Do you have a free trial? / في فترة تجربة؟',
+                'What classes are available? / إيه الجيم كلاسات؟',
+                'How do I book a session? / ازاي أحجز؟',
+                'Tell me about trainers / المدربين',
+                'What is the location? / موقع الجيم؟',
+                'Contact info / معلومات الاتصال'
+            ];
+
+            function showSuggestions() {
+                suggestions.innerHTML = '';
+                chips.forEach(function (text) {
+                    var chip = document.createElement('button');
+                    chip.className = 'chip';
+                    chip.textContent = text;
+                    chip.onclick = function () { askMessage(text); };
+                    suggestions.appendChild(chip);
+                });
+            }
+
+            function hideSuggestions() {
+                suggestions.innerHTML = '';
+            }
 
             function addMessage(text, cls) {
                 var div = document.createElement('div');
@@ -253,11 +279,16 @@
                 messages.scrollTop = messages.scrollHeight;
             }
 
-            function ask() {
-                var msg = input.value.trim();
+            function askMessage(msg) {
                 if (!msg) return;
                 addMessage(msg, 'user-msg');
-                input.value = '';
+                hideSuggestions();
+                var typing = document.createElement('div');
+                typing.className = 'bot-msg';
+                typing.textContent = '...';
+                typing.id = 'typing-indicator';
+                messages.appendChild(typing);
+                messages.scrollTop = messages.scrollHeight;
 
                 fetch('/Chatbot/Ask', {
                     method: 'POST',
@@ -265,9 +296,34 @@
                     body: 'message=' + encodeURIComponent(msg)
                 })
                 .then(function (r) { return r.json(); })
-                .then(function (d) { addMessage(d.response, 'bot-msg'); })
-                .catch(function () { addMessage('Sorry, something went wrong.', 'bot-msg'); });
+                .then(function (d) {
+                    var t = document.getElementById('typing-indicator');
+                    if (t) t.remove();
+                    addMessage(d.response, 'bot-msg');
+                    showSuggestions();
+                })
+                .catch(function () {
+                    var t = document.getElementById('typing-indicator');
+                    if (t) t.remove();
+                    addMessage('Sorry, something went wrong.', 'bot-msg');
+                    showSuggestions();
+                });
             }
+
+            function ask() {
+                askMessage(input.value.trim());
+                input.value = '';
+            }
+
+            toggle.onclick = function () {
+                var isHidden = panel.style.display === 'none';
+                panel.style.display = isHidden ? 'flex' : 'none';
+                if (isHidden && messages.children.length === 0) {
+                    addMessage('Ask me anything / اسألني أي شيء', 'bot-msg');
+                    showSuggestions();
+                }
+            };
+            close.onclick = function () { panel.style.display = 'none'; };
 
             send.onclick = ask;
             input.onkeypress = function (e) { if (e.key === 'Enter') ask(); };
