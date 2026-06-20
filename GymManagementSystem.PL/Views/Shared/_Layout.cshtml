@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Power Fitness</title>
+    <title>@ViewData["Title"] — GymPro Management</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -13,19 +13,20 @@
     
     <link rel="stylesheet" href="~/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23f97316'/%3E%3Ctext x='16' y='22' text-anchor='middle' fill='white' font-size='18' font-weight='bold' font-family='sans-serif'%3EG%3C/text%3E%3C/svg%3E" />
 </head>
 <body>
     <header>
         <nav class="navbar navbar-expand-lg navbar-glass">
             <div class="container">
                 <a class="navbar-brand d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="Index">
-                    <img src="~/images/logo.png" alt="Power Fitness Logo" class="me-2" />
-                    <span class="text-gradient d-none d-sm-inline">POWER FITNESS</span>
+                    <span class="brand-icon"><i class="bi bi-dumbbell"></i></span>
+                    <span class="text-gradient d-none d-sm-inline">GymPro</span>
                 </a>
                 
                 <div class="d-flex align-items-center order-lg-last ms-auto">
                     <button id="theme-toggle" class="theme-toggle me-3" aria-label="Toggle Theme">
-                        <i class="bi bi-sun-fill"></i>
+                        <i class="bi bi-moon-stars-fill"></i>
                     </button>
                     <button class="navbar-toggler btn-glass p-2 border-0" type="button" data-bs-toggle="collapse"
                         data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"

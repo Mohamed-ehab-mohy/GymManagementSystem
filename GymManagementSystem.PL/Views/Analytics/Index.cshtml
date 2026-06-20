@@ -3,84 +3,114 @@
     ViewData["Title"] = "Analytics Dashboard";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="display-5 fw-bold">Analytics <span class="text-gradient">Dashboard</span></h1>
-    <span class="text-secondary fs-5">@DateTime.Now.ToString("dddd, MMMM dd, yyyy")</span>
+<div class="welcome-header">
+    <h1>Analytics <span class="text-gradient">Dashboard</span></h1>
+    <p>@DateTime.Now.ToString("dddd, MMMM dd, yyyy")</p>
 </div>
 
 <div class="row g-4 mb-4">
     <div class="col-md-3">
-        <div class="premium-card p-4 text-center">
-            <div class="display-4 fw-bold text-success mb-2">@Model.MonthlyRevenue.ToString("C")</div>
-            <div class="text-secondary fs-5">Revenue This Month</div>
+        <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(34,197,94,0.1); color: var(--success);">
+                <i class="bi bi-currency-dollar"></i>
+            </div>
+            <div class="stat-value" style="font-size:1.5rem;">@Model.MonthlyRevenue.ToString("C")</div>
+            <div class="stat-label">Revenue This Month</div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="premium-card p-4 text-center">
-            <div class="display-4 fw-bold text-primary-theme mb-2">@Model.ActiveMemberCount</div>
-            <div class="text-secondary fs-5">Active Members</div>
+        <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(249,115,22,0.1); color: var(--primary);">
+                <i class="bi bi-people-fill"></i>
+            </div>
+            <div class="stat-value">@Model.ActiveMemberCount</div>
+            <div class="stat-label">Active Members</div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="premium-card p-4 text-center">
-            <div class="display-4 fw-bold text-info mb-2">@Model.TodaySessionsCount</div>
-            <div class="text-secondary fs-5">Today's Sessions</div>
+        <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(6,182,212,0.1); color: var(--accent);">
+                <i class="bi bi-calendar-check-fill"></i>
+            </div>
+            <div class="stat-value">@Model.TodaySessionsCount</div>
+            <div class="stat-label">Today's Sessions</div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="premium-card p-4 text-center">
-            <div class="display-4 fw-bold text-danger mb-2">@Model.ExpiringSoonCount</div>
-            <div class="text-secondary fs-5">Expiring (7 days)</div>
+        <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(239,68,68,0.1); color: var(--danger);">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+            </div>
+            <div class="stat-value">@Model.ExpiringSoonCount</div>
+            <div class="stat-label">Expiring (7 days)</div>
         </div>
     </div>
 </div>
 
 <div class="row g-4 mb-4">
     <div class="col-md-6">
-        <div class="premium-card p-4">
-            <h5 class="fw-bold mb-3"><i class="bi bi-people me-2"></i>New Members Per Month</h5>
-            <canvas id="membersChart" height="200"></canvas>
+        <div class="premium-card">
+            <div class="premium-card-header">
+                <h5 class="mb-0"><i class="bi bi-people me-2" style="color: var(--primary);"></i>New Members Per Month</h5>
+            </div>
+            <div class="premium-card-body">
+                <canvas id="membersChart" height="200"></canvas>
+            </div>
         </div>
     </div>
     <div class="col-md-6">
-        <div class="premium-card p-4">
-            <h5 class="fw-bold mb-3"><i class="bi bi-cash-stack me-2"></i>Revenue Per Month</h5>
-            <canvas id="revenueChart" height="200"></canvas>
+        <div class="premium-card">
+            <div class="premium-card-header">
+                <h5 class="mb-0"><i class="bi bi-cash-stack me-2" style="color: var(--success);"></i>Revenue Per Month</h5>
+            </div>
+            <div class="premium-card-body">
+                <canvas id="revenueChart" height="200"></canvas>
+            </div>
         </div>
     </div>
 </div>
 
-<div class="row g-4">
+<div class="row g-4 mb-4">
     <div class="col-md-6">
-        <div class="premium-card p-4">
-            <h5 class="fw-bold mb-3"><i class="bi bi-pie-chart me-2"></i>Members by Plan</h5>
-            <canvas id="planChart" height="200"></canvas>
+        <div class="premium-card">
+            <div class="premium-card-header">
+                <h5 class="mb-0"><i class="bi bi-pie-chart me-2" style="color: var(--secondary);"></i>Members by Plan</h5>
+            </div>
+            <div class="premium-card-body">
+                <canvas id="planChart" height="200"></canvas>
+            </div>
         </div>
     </div>
     <div class="col-md-6">
-        <div class="premium-card p-4">
-            <h5 class="fw-bold mb-3"><i class="bi bi-trophy me-2"></i>Top 5 Sessions</h5>
-            <table class="table table-dark table-borderless align-middle mb-0">
-                <thead>
-                    <tr><th>Session</th><th>Bookings</th><th>Capacity</th><th>Fill Rate</th></tr>
-                </thead>
-                <tbody>
-                    @foreach (var s in Model.TopSessions)
-                    {
-                        <tr>
-                            <td>@s.SessionName</td>
-                            <td>@s.BookingCount</td>
-                            <td>@s.Capacity</td>
-                            <td>
-                                <div class="progress" style="height:6px">
-                                    <div class="progress-bar bg-success" style="width:@(s.Capacity > 0 ? (s.BookingCount * 100 / s.Capacity) : 0)%"></div>
-                                </div>
-                                <small>@(s.Capacity > 0 ? (s.BookingCount * 100 / s.Capacity) : 0)%</small>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+        <div class="premium-card">
+            <div class="premium-card-header">
+                <h5 class="mb-0"><i class="bi bi-trophy me-2" style="color: var(--accent);"></i>Top 5 Sessions</h5>
+            </div>
+            <div class="premium-card-body">
+                <table class="table align-middle mb-0">
+                    <thead>
+                        <tr><th>Session</th><th>Bookings</th><th>Capacity</th><th>Fill Rate</th></tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var s in Model.TopSessions)
+                        {
+                            <tr>
+                                <td class="fw-semibold">@s.SessionName</td>
+                                <td>@s.BookingCount</td>
+                                <td>@s.Capacity</td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="progress flex-grow-1" style="height:6px">
+                                            <div class="progress-bar" style="width:@(s.Capacity > 0 ? (s.BookingCount * 100 / s.Capacity) : 0)%"></div>
+                                        </div>
+                                        <small class="fw-semibold" style="color: var(--primary);">@(s.Capacity > 0 ? (s.BookingCount * 100 / s.Capacity) : 0)%</small>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
@@ -89,7 +119,9 @@
 {
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script>
-        const textColor = '#e0e0e0';
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        const textColor = isDark ? '#f5f5f4' : '#292524';
+        const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
 
         new Chart(document.getElementById('membersChart'), {
             type: 'line',
@@ -98,16 +130,21 @@
                 datasets: [{
                     label: 'New Members',
                     data: [@string.Join(",", Model.NewMembersPerMonth.Select(m => m.Count))],
-                    borderColor: '#6f42c1',
-                    backgroundColor: 'rgba(111,66,193,0.1)',
+                    borderColor: '#f97316',
+                    backgroundColor: 'rgba(249,115,22,0.08)',
                     fill: true,
-                    tension: 0.3
+                    tension: 0.4,
+                    pointBackgroundColor: '#f97316',
+                    pointRadius: 4
                 }]
             },
             options: {
                 responsive: true,
                 plugins: { legend: { labels: { color: textColor } } },
-                scales: { x: { ticks: { color: textColor } }, y: { ticks: { color: textColor } } }
+                scales: {
+                    x: { ticks: { color: textColor }, grid: { color: gridColor } },
+                    y: { ticks: { color: textColor }, grid: { color: gridColor } }
+                }
             }
         });
 
@@ -118,13 +155,19 @@
                 datasets: [{
                     label: 'Revenue',
                     data: [@string.Join(",", Model.RevenuePerMonth.Select(r => r.Revenue))],
-                    backgroundColor: '#28a745'
+                    backgroundColor: isDark ? 'rgba(249,115,22,0.6)' : 'rgba(249,115,22,0.8)',
+                    borderColor: '#f97316',
+                    borderWidth: 1,
+                    borderRadius: 6
                 }]
             },
             options: {
                 responsive: true,
                 plugins: { legend: { labels: { color: textColor } } },
-                scales: { x: { ticks: { color: textColor } }, y: { ticks: { color: textColor } } }
+                scales: {
+                    x: { ticks: { color: textColor }, grid: { color: gridColor } },
+                    y: { ticks: { color: textColor }, grid: { color: gridColor } }
+                }
             }
         });
 
@@ -134,12 +177,14 @@
                 labels: [@Html.Raw(string.Join(",", Model.MembersByPlan.Select(p => $"'{p.PlanName}'")))],
                 datasets: [{
                     data: [@string.Join(",", Model.MembersByPlan.Select(p => p.MemberCount))],
-                    backgroundColor: ['#6f42c1', '#28a745', '#ffc107', '#dc3545', '#17a2b8', '#fd7e14']
+                    backgroundColor: ['#f97316', '#a855f7', '#22c55e', '#06b6d4', '#eab308', '#ef4444'],
+                    borderWidth: 0
                 }]
             },
             options: {
                 responsive: true,
-                plugins: { legend: { position: 'bottom', labels: { color: textColor } } }
+                cutout: '60%',
+                plugins: { legend: { position: 'bottom', labels: { color: textColor, padding: 16 } } }
             }
         });
     </script>
