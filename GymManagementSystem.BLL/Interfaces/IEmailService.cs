@@ -5,4 +5,5 @@ namespace GymManagementSystem.BLL.Interfaces;
 public interface IEmailService
 {
     Task SendOtpAsync(string email, string otp);
+    Task SendRenewalReminderAsync(string email, int daysLeft, string planName);
 }

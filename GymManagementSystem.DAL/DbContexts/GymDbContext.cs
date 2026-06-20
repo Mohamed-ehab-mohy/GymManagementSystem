@@ -17,6 +17,7 @@ public class GymDbContext : DbContext
     public DbSet<Category> Categories { get; set; }
     public DbSet<Notification> Notifications { get; set; }
     public DbSet<Payment> Payments { get; set; }
+    public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
 
     public GymDbContext(DbContextOptions<GymDbContext> options) : base(options)
     {
@@ -37,5 +38,6 @@ public class GymDbContext : DbContext
         modelBuilder.ApplyConfiguration(new PaymentConfiguration());
         modelBuilder.ApplyConfiguration(new MemberConfiguration());
         modelBuilder.ApplyConfiguration(new TrainerConfiguration());
+        modelBuilder.ApplyConfiguration(new PasswordResetTokenConfiguration());
     }
 }

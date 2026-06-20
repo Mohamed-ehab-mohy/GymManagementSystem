@@ -49,4 +49,42 @@ public class EmailService : IEmailService
         await client.SendAsync(message);
         await client.DisconnectAsync(true);
     }
+
+    public async Task SendRenewalReminderAsync(string email, int daysLeft, string planName)
+    {
+        var smtpHost = _configuration["Email:SmtpHost"] ?? "smtp.gmail.com";
+        var smtpPort = int.Parse(_configuration["Email:SmtpPort"] ?? "587");
+        var fromEmail = _configuration["Email:From"] ?? "noreply@gymy.com";
+        var username = _configuration["Email:Username"] ?? "";
+        var password = _configuration["Email:Password"] ?? "";
+
+        var message = new MimeMessage();
+        message.From.Add(new MailboxAddress("Power Fitness", fromEmail));
+        message.To.Add(new MailboxAddress("", email));
+        message.Subject = daysLeft == 1
+            ? "Your Membership Expires TOMORROW!"
+            : $"Your Membership Expires in {daysLeft} Days";
+
+        message.Body = new TextPart("html")
+        {
+            Text = $"""
+            <h2>Membership Renewal Reminder</h2>
+            <p>Your <strong>{planName}</strong> plan is expiring in <strong>{daysLeft} day(s)</strong>.</p>
+            <p>Renew now to keep enjoying unlimited access to Power Fitness!</p>
+            <p><a href="{_configuration["App:BaseUrl"] ?? "http://localhost:5000"}/Membership/Renew"
+                  style="display:inline-block;padding:12px 24px;background:#e63946;color:white;text-decoration:none;border-radius:6px;">
+                  Renew Now</a></p>
+            <p>If you already renewed, please ignore this email.</p>
+            """
+        };
+
+        using var client = new SmtpClient();
+        await client.ConnectAsync(smtpHost, smtpPort, MailKit.Security.SecureSocketOptions.StartTls);
+
+        if (!string.IsNullOrEmpty(username))
+            await client.AuthenticateAsync(username, password);
+
+        await client.SendAsync(message);
+        await client.DisconnectAsync(true);
+    }
 }

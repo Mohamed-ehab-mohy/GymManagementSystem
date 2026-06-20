@@ -7,7 +7,6 @@ using GymManagementSystem.BLL.Abstractions.Repositories;
 using GymManagementSystem.BLL.Interfaces;
 using GymManagementSystem.Domain;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace GymManagementSystem.BLL.Services;
 
@@ -16,14 +15,14 @@ public class AuthService : IAuthService
     private readonly IMemberRepository _memberRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IEmailService _emailService;
-    private readonly IMemoryCache _cache;
+    private readonly IRepository<PasswordResetToken> _passwordResetTokenRepo;
 
-    public AuthService(IMemberRepository memberRepository, IUnitOfWork unitOfWork, IEmailService emailService, IMemoryCache cache)
+    public AuthService(IMemberRepository memberRepository, IUnitOfWork unitOfWork, IEmailService emailService, IRepository<PasswordResetToken> passwordResetTokenRepo)
     {
         _memberRepository = memberRepository;
         _unitOfWork = unitOfWork;
         _emailService = emailService;
-        _cache = cache;
+        _passwordResetTokenRepo = passwordResetTokenRepo;
     }
 
     public async Task<Result<ClaimsPrincipal>> LoginAsync(string email, string password)
@@ -137,7 +136,27 @@ public class AuthService : IAuthService
             return Result.Success();
 
         var otp = new Random().Next(100000, 999999).ToString();
-        _cache.Set($"otp:{email}", otp, TimeSpan.FromMinutes(10));
+        var codeHash = BCrypt.Net.BCrypt.HashPassword(otp);
+
+        var existingTokens = await _passwordResetTokenRepo.Query()
+            .Where(t => t.UserId == user.Id && !t.IsUsed)
+            .ToListAsync();
+
+        foreach (var t in existingTokens)
+        {
+            t.IsUsed = true;
+        }
+
+        var token = new PasswordResetToken
+        {
+            UserId = user.Id,
+            CodeHash = codeHash,
+            ExpiresAt = DateTime.UtcNow.AddMinutes(15),
+            IsUsed = false
+        };
+
+        await _passwordResetTokenRepo.AddAsync(token);
+        await _unitOfWork.CompleteAsync();
 
         await _emailService.SendOtpAsync(email, otp);
 
@@ -146,20 +165,24 @@ public class AuthService : IAuthService
 
     public async Task<Result> ResetPasswordAsync(string email, string otp, string newPassword)
     {
-        if (!_cache.TryGetValue($"otp:{email}", out string? cachedOtp) || cachedOtp != otp)
-            return Result.Failure("Invalid or expired OTP.");
-
         var user = await _memberRepository.Query()
             .FirstOrDefaultAsync(m => m.Email == email && !m.IsDeleted);
 
         if (user == null)
             return Result.Failure("User not found.");
 
+        var token = await _passwordResetTokenRepo.Query()
+            .Where(t => t.UserId == user.Id && !t.IsUsed && t.ExpiresAt > DateTime.UtcNow)
+            .OrderByDescending(t => t.Id)
+            .FirstOrDefaultAsync();
+
+        if (token == null || !BCrypt.Net.BCrypt.Verify(otp, token.CodeHash))
+            return Result.Failure("Invalid or expired OTP.");
+
         user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword, workFactor: 12);
+        token.IsUsed = true;
         _memberRepository.Update(user);
         await _unitOfWork.CompleteAsync();
-
-        _cache.Remove($"otp:{email}");
 
         return Result.Success();
     }

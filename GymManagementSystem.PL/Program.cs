@@ -16,6 +16,7 @@ using Quartz;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using HealthChecks.UI.Client;
+using Prometheus;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
@@ -100,7 +101,6 @@ try
     });
 
     builder.Services.AddHostedService<CleanupBackgroundService>();
-    builder.Services.AddHostedService<RenewalReminderService>();
 
     var authBuilder = builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
         .AddCookie(options =>
@@ -132,25 +132,42 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddSignalR();
 
 var connStr = builder.Configuration.GetConnectionString("DefaultConnection");
+var logsDbConn = builder.Configuration.GetConnectionString("LogsDb");
+
+var healthChecksBuilder = builder.Services.AddHealthChecks();
+
 if (!string.IsNullOrEmpty(connStr))
 {
-    builder.Services.AddHealthChecks()
-        .AddSqlServer(connStr, name: "SQL Server", tags: new[] { "db", "sqlserver" });
+    healthChecksBuilder.AddSqlServer(connStr, name: "SQL Server", tags: new[] { "db", "sqlserver" });
 }
-else
+
+if (!string.IsNullOrEmpty(logsDbConn))
 {
-    builder.Services.AddHealthChecks();
+    healthChecksBuilder.AddNpgSql(logsDbConn, name: "PostgreSQL Logs", tags: new[] { "db", "postgres" });
 }
+
+builder.Services.AddHealthChecksUI(opt =>
+{
+    opt.AddHealthCheckEndpoint("Gymy API", "/health");
+    opt.AddHealthCheckEndpoint("Gymy API (Ready)", "/health/ready");
+}).AddInMemoryStorage();
 
 builder.Services.AddScoped<IPurgeService, PurgeService>();
 builder.Services.AddQuartz(q =>
 {
-    var jobKey = new JobKey("PurgeDeletedRecords");
-    q.AddJob<PurgeDeletedRecordsJob>(opts => opts.WithIdentity(jobKey));
+    var purgeKey = new JobKey("PurgeDeletedRecords");
+    q.AddJob<PurgeDeletedRecordsJob>(opts => opts.WithIdentity(purgeKey));
     q.AddTrigger(opts => opts
-        .ForJob(jobKey)
+        .ForJob(purgeKey)
         .WithIdentity("PurgeDeletedRecords-Trigger")
         .WithCronSchedule("0 0 3 * * ?")); // 3 AM daily
+
+    var reminderKey = new JobKey("RenewalReminder");
+    q.AddJob<RenewalReminderJob>(opts => opts.WithIdentity(reminderKey));
+    q.AddTrigger(opts => opts
+        .ForJob(reminderKey)
+        .WithIdentity("RenewalReminder-Trigger")
+        .WithCronSchedule("0 0 8 * * ?")); // 8 AM daily
 });
 builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
@@ -178,6 +195,9 @@ builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
     app.UseAuthentication();
     app.UseAuthorization();
 
+    app.UseMetricServer();
+    app.UseHttpMetrics();
+
     app.MapControllerRoute(
         name: "default",
         pattern: "{controller=Home}/{action=Index}/{id?}");
@@ -195,6 +215,8 @@ builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
         Predicate = _ => true,
         ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
     });
+
+    app.MapHealthChecksUI(opt => opt.UIPath = "/health-ui");
 
     await DatabaseSeeder.SeedAllAsync(app.Services);
 

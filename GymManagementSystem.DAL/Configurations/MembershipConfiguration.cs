@@ -22,6 +22,9 @@ public class MembershipConfiguration : IEntityTypeConfiguration<Membership>
 
         builder.HasIndex(m => new { m.MemberId, m.PlanId }).IsUnique();
 
+        builder.Property(m => m.ReminderDaysSent)
+            .HasDefaultValue(0);
+
         builder.HasQueryFilter(m => !m.IsDeleted);
     }
 }

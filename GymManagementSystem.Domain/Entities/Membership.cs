@@ -13,4 +13,7 @@ public class Membership : BaseEntity
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
     public bool IsActive { get; set; }
+
+    public DateTime? ReminderSentAt { get; set; }
+    public int ReminderDaysSent { get; set; }
 }
