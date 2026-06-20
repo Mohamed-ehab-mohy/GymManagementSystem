@@ -3,27 +3,30 @@ using System.Text.Json;
 using GymManagementSystem.BLL.Interfaces;
 using GymManagementSystem.BLL.Models;
 using GymManagementSystem.BLL.Abstractions.Repositories;
-using Microsoft.Extensions.Configuration;
 
 namespace GymManagementSystem.BLL.Services;
 
 public class AiAssistantService : IAiAssistantService
 {
     private readonly IHttpClientFactory _httpClientFactory;
-    private readonly IConfiguration _configuration;
+    private readonly string _apiKey;
+    private readonly string _model;
+    private readonly int _maxTokens;
     private readonly IPlanRepository _planRepo;
     private readonly IClassSessionRepository _sessionRepo;
     private readonly ITrainerRepository _trainerRepo;
 
     public AiAssistantService(
         IHttpClientFactory httpClientFactory,
-        IConfiguration configuration,
+        string apiKey,
         IPlanRepository planRepo,
         IClassSessionRepository sessionRepo,
         ITrainerRepository trainerRepo)
     {
         _httpClientFactory = httpClientFactory;
-        _configuration = configuration;
+        _apiKey = apiKey;
+        _model = "gpt-4o-mini";
+        _maxTokens = 300;
         _planRepo = planRepo;
         _sessionRepo = sessionRepo;
         _trainerRepo = trainerRepo;
@@ -31,26 +34,22 @@ public class AiAssistantService : IAiAssistantService
 
     public async Task<string> GetResponseAsync(string message, List<ChatMessage> history)
     {
-        var apiKey = _configuration["OpenAI:ApiKey"] ?? Environment.GetEnvironmentVariable("OpenAI__ApiKey");
-        var model = _configuration["OpenAI:Model"] ?? "gpt-4o-mini";
-        var maxTokens = int.TryParse(_configuration["OpenAI:MaxTokens"], out var mt) ? mt : 300;
-
-        if (string.IsNullOrEmpty(apiKey))
+        if (string.IsNullOrEmpty(_apiKey))
             return "AI assistant is not configured. Please set the OpenAI API key.";
 
         var systemPrompt = await BuildSystemPromptAsync();
 
         var requestBody = new
         {
-            model,
+            model = _model,
             messages = BuildMessages(systemPrompt, message, history),
-            max_tokens = maxTokens
+            max_tokens = _maxTokens
         };
 
         try
         {
             using var client = _httpClientFactory.CreateClient();
-            client.DefaultRequestHeaders.Authorization = new("Bearer", apiKey);
+            client.DefaultRequestHeaders.Authorization = new("Bearer", _apiKey);
 
             var response = await client.PostAsJsonAsync("https://api.openai.com/v1/chat/completions", requestBody);
             response.EnsureSuccessStatusCode();
