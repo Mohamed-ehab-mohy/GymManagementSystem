@@ -76,7 +76,7 @@ public class AuthService : IAuthService
             Role = "Member",
             DateOfBirth = dateOfBirth,
             Gender = gender,
-            PhoneNumber = "",
+            PhoneNumber = $"010{Math.Abs(email.GetHashCode()) % 100000000:D8}",
             JoinDate = DateTime.Today,
             EmergencyContactName = "",
             EmergencyContactPhone = "",
@@ -110,7 +110,7 @@ public class AuthService : IAuthService
             Role = "Member",
             DateOfBirth = DateTime.Today.AddYears(-20),
             Gender = "Other",
-            PhoneNumber = "",
+            PhoneNumber = $"010{Math.Abs(email.GetHashCode()) % 100000000:D8}",
             JoinDate = DateTime.Today,
             EmergencyContactName = "",
             EmergencyContactPhone = "",
@@ -212,6 +212,7 @@ public class AuthService : IAuthService
         if (existing)
             return Result.Failure("Email already registered.");
 
+        var phoneSuffix = (email.GetHashCode() & 0x7FFFFFFF) % 100000000;
         var member = new Member
         {
             FirstName = role,
@@ -221,7 +222,7 @@ public class AuthService : IAuthService
             Role = role,
             DateOfBirth = DateTime.Today.AddYears(-30),
             Gender = "Male",
-            PhoneNumber = "",
+            PhoneNumber = $"010{phoneSuffix:D8}",
             JoinDate = DateTime.Today,
             EmergencyContactName = "",
             EmergencyContactPhone = "",
