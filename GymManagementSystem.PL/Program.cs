@@ -132,6 +132,13 @@ try
 
 builder.Services.AddHttpClient();
 builder.Services.AddMemoryCache();
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 builder.Services.AddMapster();
 builder.Services.AddControllersWithViews();
 builder.Services.AddSignalR();
@@ -197,6 +204,7 @@ builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
     app.UseStaticFiles();
     app.UseRouting();
 
+    app.UseSession();
     app.UseAuthentication();
     app.UseAuthorization();
 

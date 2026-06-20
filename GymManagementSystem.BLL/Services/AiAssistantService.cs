@@ -1,70 +1,123 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Net.Http.Json;
+using System.Text.Json;
 using GymManagementSystem.BLL.Interfaces;
+using GymManagementSystem.BLL.Models;
+using GymManagementSystem.BLL.Abstractions.Repositories;
+using Microsoft.Extensions.Configuration;
 
 namespace GymManagementSystem.BLL.Services;
 
 public class AiAssistantService : IAiAssistantService
 {
-    private static readonly Dictionary<string, string> Responses = new(StringComparer.OrdinalIgnoreCase)
-    {
-        ["hello"] = "Hi there! Welcome to Power Fitness. How can I help you today?",
-        ["hi"] = "Hello! How can I assist you with your gym experience?",
-        ["hours"] = "We're open Mon-Fri 6AM-10PM, Sat 7AM-8PM, and Sun 8AM-6PM.",
-        ["opening hours"] = "Mon-Fri: 6AM-10PM | Sat: 7AM-8PM | Sun: 8AM-6PM",
-        ["price"] = "Our plans start at $29/month for Basic, $49/month for Standard, and $79/month for Premium.",
-        ["pricing"] = "Plans: Basic $29/mo, Standard $49/mo, Premium $79/mo. Each with increasing perks!",
-        ["membership"] = "We have 3 membership tiers. Visit the Plans section to see full details.",
-        ["plans"] = "Basic ($29): Gym access | Standard ($49): Gym + Classes | Premium ($79): All access + PT sessions",
-        ["trainer"] = "We have certified personal trainers available. Visit the Trainers page to view profiles.",
-       ["personal trainer"] = "Our trainers specialize in strength, cardio, yoga, and more. Book a session today!",
-        ["class"] = "We offer yoga, pilates, spinning, HIIT, and strength training classes. Check the Sessions page!",
-        ["yoga"] = "Our yoga classes run Mon/Wed/Fri at 7AM and Tue/Thu at 6PM. Zen awaits!",
-        ["hiit"] = "HIIT sessions are Mon/Wed/Fri at 8AM and Tue/Thu at 5PM. Bring your energy!",
-        ["spinning"] = "Spinning classes: daily at 6AM and 6PM. Book your bike!",
-        ["location"] = "We're located at 123 Fitness Street, downtown. Come visit us!",
-        ["parking"] = "Free parking is available for members in the rear lot.",
-        ["pool"] = "Yes! Our Premium members have access to the rooftop pool.",
-        ["sauna"] = "Sauna access is included with Standard and Premium memberships.",
-        ["shower"] = "Locker rooms with showers and changing areas are available for all members.",
-        ["free trial"] = "Yes! We offer a 3-day free trial. Sign up to claim yours!",
-        ["trial"] = "New members can enjoy a 3-day free trial with full access.",
-        ["cancel"] = "You can cancel your membership anytime from your Dashboard or contact admin.",
-        ["refund"] = "Refunds are available within 14 days of purchase. Contact admin for details.",
-        ["contact"] = "You can reach us at support@powerfitness.com or call (555) 123-4567.",
-        ["email"] = "Our support email is support@powerfitness.com.",
-        ["phone"] = "Call us at (555) 123-4567 during business hours.",
-        ["diet"] = "We have a nutritionist on site for consultations. Book a session through the Dashboard.",
-        ["nutrition"] = "Our nutritionist offers personalized meal plans. Ask at the front desk!",
-        ["water"] = "Water fountains and refill stations are available throughout the gym.",
-        ["wifi"] = "Free Wi-Fi is available for all members. Password: powerfit2024",
-        ["age"] = "Members must be at least 14 years old. Minors need parental consent.",
-        ["guest"] = "Members can bring a guest for $10 per visit. Premium members get 2 free guest passes/month.",
-        ["help"] = "I can answer questions about: hours, pricing, memberships, classes, trainers, location, facilities, and more!"
-    };
+    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly IConfiguration _configuration;
+    private readonly IPlanRepository _planRepo;
+    private readonly IClassSessionRepository _sessionRepo;
+    private readonly ITrainerRepository _trainerRepo;
 
-    private static readonly string[] Fallbacks =
+    public AiAssistantService(
+        IHttpClientFactory httpClientFactory,
+        IConfiguration configuration,
+        IPlanRepository planRepo,
+        IClassSessionRepository sessionRepo,
+        ITrainerRepository trainerRepo)
     {
-        "Great question! For more details, please contact our team at support@powerfitness.com.",
-        "I'm not sure about that one. Try asking about hours, pricing, or classes!",
-        "That's beyond my knowledge. Our staff at the front desk would be happy to help!",
-        "Hmm, I don't have that info yet. Feel free to ask something else!"
-    };
+        _httpClientFactory = httpClientFactory;
+        _configuration = configuration;
+        _planRepo = planRepo;
+        _sessionRepo = sessionRepo;
+        _trainerRepo = trainerRepo;
+    }
 
-    public Task<string> GetResponseAsync(string message)
+    public async Task<string> GetResponseAsync(string message, List<ChatMessage> history)
     {
-        if (string.IsNullOrWhiteSpace(message))
-            return Task.FromResult("Please ask me something!");
+        var apiKey = _configuration["OpenAI:ApiKey"];
+        var model = _configuration["OpenAI:Model"] ?? "gpt-4o-mini";
+        var maxTokens = int.TryParse(_configuration["OpenAI:MaxTokens"], out var mt) ? mt : 300;
 
-        foreach (var kvp in Responses)
+        if (string.IsNullOrEmpty(apiKey))
+            return "AI assistant is not configured. Please set the OpenAI API key.";
+
+        var systemPrompt = await BuildSystemPromptAsync();
+
+        var requestBody = new
         {
-            if (message.Contains(kvp.Key, StringComparison.OrdinalIgnoreCase))
-                return Task.FromResult(kvp.Value);
+            model,
+            messages = BuildMessages(systemPrompt, message, history),
+            max_tokens = maxTokens
+        };
+
+        try
+        {
+            using var client = _httpClientFactory.CreateClient();
+            client.DefaultRequestHeaders.Authorization = new("Bearer", apiKey);
+
+            var response = await client.PostAsJsonAsync("https://api.openai.com/v1/chat/completions", requestBody);
+            response.EnsureSuccessStatusCode();
+
+            var result = await response.Content.ReadFromJsonAsync<OpenAiResponse>();
+            return result?.Choices?.FirstOrDefault()?.Message?.Content?.Trim()
+                   ?? "Sorry, I couldn't process that request.";
+        }
+        catch (HttpRequestException ex)
+        {
+            return $"I'm having trouble connecting right now. Please try again later. ({ex.Message})";
+        }
+    }
+
+    private List<object> BuildMessages(string systemPrompt, string userMessage, List<ChatMessage> history)
+    {
+        var messages = new List<object>
+        {
+            new { role = "system", content = systemPrompt }
+        };
+
+        foreach (var msg in history)
+        {
+            messages.Add(new { role = msg.Role, content = msg.Content });
         }
 
-        var random = new Random();
-        return Task.FromResult(Fallbacks[random.Next(Fallbacks.Length)]);
+        messages.Add(new { role = "user", content = userMessage });
+        return messages;
+    }
+
+    private async Task<string> BuildSystemPromptAsync()
+    {
+        var plans = await _planRepo.GetAllAsync();
+        var sessions = await _sessionRepo.GetAllAsync();
+        var trainers = await _trainerRepo.GetAllAsync();
+
+        var planList = string.Join("\n", plans.Select(p => $"- {p.Name}: ${p.Price}/{(p.DurationDays >= 30 ? "month" : $"{p.DurationDays} days")}{(p.IsActive ? "" : " (inactive)")}"));
+        var today = DateTime.Today;
+        var todaySessions = sessions.Where(s => s.StartTime.Date == today).ToList();
+        var sessionList = string.Join("\n", todaySessions.Select(s => $"- {s.Name} at {s.StartTime:HH:mm} (capacity: {s.Capacity})"));
+        var trainerList = string.Join("\n", trainers.Select(t => $"- {t.FirstName} {t.LastName} ({t.Specialty})"));
+
+        return $@"You are a helpful gym assistant for Power Fitness / GymPro management system.
+You must respond in the SAME LANGUAGE as the user's message (Arabic or English).
+
+Current gym context:
+- Today's date: {today:yyyy-MM-dd}
+- Active plans:\n{planList}
+- Today's sessions ({todaySessions.Count}):\n{sessionList}
+- Available trainers:\n{trainerList}
+
+Provide concise, accurate answers about gym services, plans, sessions, trainers, bookings, hours (Mon-Fri 6AM-10PM, Sat 7AM-8PM, Sun 8AM-6PM), location (123 Fitness Street, downtown), and facilities.
+If you don't know something, suggest the user contact support at support@powerfitness.com.";
+    }
+
+    private class OpenAiResponse
+    {
+        public List<Choice>? Choices { get; set; }
+    }
+
+    private class Choice
+    {
+        public Message? Message { get; set; }
+    }
+
+    private class Message
+    {
+        public string? Content { get; set; }
     }
 }

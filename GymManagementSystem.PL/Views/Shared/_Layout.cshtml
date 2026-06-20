@@ -211,10 +211,10 @@
                 <button id="chatbot-close" class="btn btn-sm btn-link text-white text-decoration-none">&times;</button>
             </div>
             <div id="chatbot-messages" class="chatbot-messages px-3 py-2">
-                <div class="text-muted small text-center mb-2">Ask me about hours, pricing, classes, and more!</div>
+                <div class="text-muted small text-center mb-2">Ask me anything / اسألني أي شيء</div>
             </div>
             <div class="chatbot-input d-flex p-2 border-top">
-                <input id="chatbot-input" type="text" class="form-control form-control-sm" placeholder="Type a message..." />
+                <input id="chatbot-input" type="text" class="form-control form-control-sm" placeholder="Type a message / اكتب رسالة..." />
                 <button id="chatbot-send" class="btn btn-sm btn-gradient ms-2">Send</button>
             </div>
         </div>
@@ -222,15 +222,15 @@
 
     <style>
         .chatbot-widget { position: fixed; bottom: 20px; right: 20px; z-index: 9999; }
-        .chatbot-btn { width: 56px; height: 56px; border-radius: 50%; border: none; background: linear-gradient(135deg, #e63946, #457b9d); color: #fff; box-shadow: 0 4px 15px rgba(0,0,0,.3); cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .chatbot-panel { position: absolute; bottom: 70px; right: 0; width: 340px; max-height: 460px; background: var(--card-bg, #1a1a2e); border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,.5); display: flex; flex-direction: column; overflow: hidden; }
-        .chatbot-header { background: linear-gradient(135deg, #e63946, #457b9d); color: #fff; }
+        .chatbot-btn { width: 56px; height: 56px; border-radius: 50%; border: none; background: var(--gradient, linear-gradient(135deg, #f97316, #a855f7)); color: #fff; box-shadow: 0 4px 15px var(--primary-glow, rgba(249,115,22,.3)); cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .chatbot-panel { position: absolute; bottom: 70px; right: 0; width: 340px; max-height: 460px; background: var(--bg-card, #1c1917); border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,.5); display: flex; flex-direction: column; overflow: hidden; }
+        .chatbot-header { background: var(--gradient, linear-gradient(135deg, #f97316, #a855f7)); color: #fff; }
         .chatbot-messages { flex: 1; overflow-y: auto; max-height: 320px; font-size: 0.85rem; }
         .chatbot-messages .bot-msg, .chatbot-messages .user-msg { margin-bottom: 8px; padding: 6px 12px; border-radius: 12px; max-width: 85%; word-wrap: break-word; }
-        .chatbot-messages .user-msg { background: #457b9d; color: #fff; margin-left: auto; border-bottom-right-radius: 4px; }
-        .chatbot-messages .bot-msg { background: var(--glass-bg, rgba(255,255,255,.08)); color: var(--text-color, #e0e0e0); margin-right: auto; border-bottom-left-radius: 4px; }
+        .chatbot-messages .user-msg { background: var(--primary, #f97316); color: #fff; margin-left: auto; border-bottom-right-radius: 4px; }
+        .chatbot-messages .bot-msg { background: var(--secondary, #a855f7); color: #fff; margin-right: auto; border-bottom-left-radius: 4px; }
         .chatbot-input { border-color: var(--border-color, #333) !important; }
-        .chatbot-input input { background: var(--glass-bg, rgba(255,255,255,.05)); color: var(--text-color, #ccc); border: 1px solid var(--border-color, #333); }
+        .chatbot-input input { background: var(--bg, #0c0a09); color: var(--text, #f5f5f4); border: 1px solid var(--border-color, #333); }
     </style>
 
     <script>
