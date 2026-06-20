@@ -319,7 +319,8 @@
             toggle.onclick = function () {
                 var isHidden = panel.style.display === 'none';
                 panel.style.display = isHidden ? 'flex' : 'none';
-                if (isHidden && messages.children.length === 0) {
+                var hasMessages = messages.querySelectorAll('.bot-msg, .user-msg').length > 0;
+                if (isHidden && !hasMessages) {
                     addMessage('Ask me anything / اسألني أي شيء', 'bot-msg');
                     showSuggestions();
                 }
