@@ -31,7 +31,7 @@ public class AiAssistantService : IAiAssistantService
 
     public async Task<string> GetResponseAsync(string message, List<ChatMessage> history)
     {
-        var apiKey = _configuration["OpenAI:ApiKey"];
+        var apiKey = _configuration["OpenAI:ApiKey"] ?? Environment.GetEnvironmentVariable("OpenAI__ApiKey");
         var model = _configuration["OpenAI:Model"] ?? "gpt-4o-mini";
         var maxTokens = int.TryParse(_configuration["OpenAI:MaxTokens"], out var mt) ? mt : 300;
 
