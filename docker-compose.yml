@@ -47,6 +47,7 @@ services:
       OpenAI__Model: "${OPENAI_MODEL:-gpt-4o-mini}"
       Authentication__Google__ClientId: "${GOOGLE_CLIENT_ID:-}"
       Authentication__Google__ClientSecret: "${GOOGLE_CLIENT_SECRET:-}"
+      AttendanceSettings__SecretKey: "${ATTENDANCE_SECRET_KEY}"
 
   prometheus:
     image: prom/prometheus:latest

@@ -18,6 +18,7 @@ namespace GymManagementSystem.BLL.Attendance
             _bookingRepository = bookingRepository;
             _unitOfWork = unitOfWork;
             _secretKey = configuration["AttendanceSettings:SecretKey"] 
+                ?? Environment.GetEnvironmentVariable("AttendanceSettings__SecretKey")
                 ?? throw new InvalidOperationException("Attendance SecretKey is not configured.");
         }
 
