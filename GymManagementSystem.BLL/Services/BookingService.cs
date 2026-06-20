@@ -7,6 +7,8 @@ using GymManagementSystem.BLL.Abstractions;
 using GymManagementSystem.Domain;
 using GymManagementSystem.BLL.Abstractions.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace GymManagementSystem.BLL.Services;
 
@@ -17,16 +19,18 @@ public class BookingService : IBookingService
     private readonly IClassSessionRepository _sessionRepository;
     private readonly IMembershipRepository _membershipRepository;
     private readonly INotificationService _notificationService;
+    private readonly ILogger _logger;
 
     public BookingService(IBookingRepository repository, IUnitOfWork unitOfWork,
         IClassSessionRepository sessionRepository, IMembershipRepository membershipRepository,
-        INotificationService notificationService)
+        INotificationService notificationService, ILogger<BookingService>? logger = null)
     {
         _bookingRepository = repository;
         _unitOfWork = unitOfWork;
         _sessionRepository = sessionRepository;
         _membershipRepository = membershipRepository;
         _notificationService = notificationService;
+        _logger = logger ?? NullLogger<BookingService>.Instance;
     }
 
     public async Task<IEnumerable<Booking>> GetAllBookingsAsync()
@@ -93,7 +97,10 @@ public class BookingService : IBookingService
 
         var bookingCount = session.Bookings.Count(b => !b.IsDeleted);
         if (bookingCount >= session.Capacity)
+        {
+            _logger.LogWarning("Booking conflict: session {SessionId} ({Name}) is full (capacity {Capacity})", sessionId, session.Name, session.Capacity);
             return Result.Failure("Session is full.");
+        }
 
         var memberships = await _membershipRepository.Query()
             .Where(m => m.MemberId == memberId && m.IsActive && m.EndDate >= DateTime.Today)
@@ -119,6 +126,8 @@ public class BookingService : IBookingService
         await _bookingRepository.AddAsync(booking);
         await _unitOfWork.CompleteAsync();
 
+        _logger.LogInformation("Booking created: member {MemberId} booked session {SessionId} ({Name})", memberId, sessionId, session.Name);
+
         await _notificationService.SendToUserAsync(memberId, "Your booking has been confirmed.");
         await _notificationService.SendToUserAsync(session.TrainerId, $"A new booking has been made for session: {session.Name ?? session.Id.ToString()}");
 
@@ -140,6 +149,8 @@ public class BookingService : IBookingService
 
         _bookingRepository.Delete(booking);
         await _unitOfWork.CompleteAsync();
+
+        _logger.LogInformation("Booking cancelled: member {MemberId} cancelled booking {BookingId}", memberId, bookingId);
 
         await _notificationService.SendToUserAsync(memberId, "Your booking has been cancelled.");
 

@@ -20,7 +20,8 @@ using Prometheus;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
-    .WriteTo.Console()
+    .WriteTo.Console(new Serilog.Formatting.Json.JsonFormatter())
+    .WriteTo.File("logs/gymy-.log", rollingInterval: RollingInterval.Day)
     .CreateBootstrapLogger();
 
 Log.Information("GymManagementSystem starting up...");
@@ -66,7 +67,11 @@ try
         configuration
             .ReadFrom.Configuration(context.Configuration)
             .ReadFrom.Services(services)
-            .Enrich.FromLogContext();
+            .Enrich.FromLogContext()
+            .Enrich.WithMachineName()
+            .Enrich.WithThreadId()
+            .WriteTo.Console(new Serilog.Formatting.Json.JsonFormatter())
+            .WriteTo.File("logs/gymy-.log", rollingInterval: RollingInterval.Day);
 
         var logsDbConn = context.Configuration.GetConnectionString("LogsDb");
         if (!string.IsNullOrEmpty(logsDbConn))

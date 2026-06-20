@@ -8,6 +8,8 @@ using GymManagementSystem.BLL.Interfaces;
 using GymManagementSystem.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace GymManagementSystem.BLL.Services;
 
@@ -18,19 +20,22 @@ public class PaymentService : IPaymentService
     private readonly IRepository<Payment> _paymentRepository;
     private readonly IRepository<Membership> _membershipRepository;
     private readonly IHttpClientFactory _httpClientFactory;
+    private readonly ILogger _logger;
 
     public PaymentService(
         IConfiguration configuration,
         IUnitOfWork unitOfWork,
         IRepository<Payment> paymentRepository,
         IRepository<Membership> membershipRepository,
-        IHttpClientFactory httpClientFactory)
+        IHttpClientFactory httpClientFactory,
+        ILogger<PaymentService>? logger = null)
     {
         _configuration = configuration;
         _unitOfWork = unitOfWork;
         _paymentRepository = paymentRepository;
         _membershipRepository = membershipRepository;
         _httpClientFactory = httpClientFactory;
+        _logger = logger ?? NullLogger<PaymentService>.Instance;
     }
 
     public async Task<PaymobCheckoutResult> CreateCheckoutAsync(int memberId, int membershipId, decimal amount)
@@ -142,6 +147,8 @@ public class PaymentService : IPaymentService
 
     public async Task<bool> ProcessCallbackAsync(string transactionId, string orderId, string success)
     {
+        _logger.LogInformation("Payment callback received: transaction {TransactionId}, order {OrderId}, success {Success}", transactionId, orderId, success);
+
         var payment = await _paymentRepository.Query()
             .FirstOrDefaultAsync(p => p.PaymobOrderId == orderId);
 

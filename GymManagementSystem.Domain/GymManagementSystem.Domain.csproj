@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <Target Name="ZeroPeTimestamp" AfterTargets="AfterBuild">
+    <Exec Command="powershell -NoProfile -NonInteractive -ExecutionPolicy Bypass -File &quot;$(MSBuildThisFileDirectory)..\ZeroPeTimestamp.ps1&quot; -Path &quot;$(TargetPath)&quot;" />
+  </Target>
+
 </Project>

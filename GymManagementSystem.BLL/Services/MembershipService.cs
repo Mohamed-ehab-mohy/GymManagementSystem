@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using GymManagementSystem.BLL.Interfaces;
 using GymManagementSystem.BLL.Abstractions;
 using GymManagementSystem.Domain;
-using GymManagementSystem.BLL.Abstractions;
 using GymManagementSystem.BLL.Abstractions.Repositories;
 
 namespace GymManagementSystem.BLL.Services;

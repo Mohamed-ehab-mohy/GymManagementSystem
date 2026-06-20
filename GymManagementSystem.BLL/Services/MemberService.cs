@@ -5,22 +5,26 @@ using GymManagementSystem.BLL.DTOs;
 using GymManagementSystem.Domain;
 using GymManagementSystem.BLL.Abstractions.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace GymManagementSystem.BLL.Services;
 
-public class MemberService : IMemberService
+    public class MemberService : IMemberService
 {
     private readonly IMemberRepository _memberRepository;
     private readonly IMembershipRepository _membershipRepository;
     private readonly IBookingRepository _bookingRepository;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ILogger _logger;
 
-    public MemberService(IMemberRepository memberRepository, IMembershipRepository membershipRepository, IBookingRepository bookingRepository, IUnitOfWork unitOfWork)
+    public MemberService(IMemberRepository memberRepository, IMembershipRepository membershipRepository, IBookingRepository bookingRepository, IUnitOfWork unitOfWork, ILogger<MemberService>? logger = null)
     {
         _memberRepository = memberRepository;
         _membershipRepository = membershipRepository;
         _bookingRepository = bookingRepository;
         _unitOfWork = unitOfWork;
+        _logger = logger ?? NullLogger<MemberService>.Instance;
     }
 
     public async Task<IEnumerable<Member>> GetAllMembersAsync()
@@ -49,6 +53,8 @@ public class MemberService : IMemberService
     {
         await _memberRepository.AddAsync(member);
         await _unitOfWork.CompleteAsync();
+
+        _logger.LogInformation("Member created: member {MemberId} ({Email})", member.Id, member.Email);
     }
 
     public async Task UpdateMemberAsync(Member member)
@@ -73,6 +79,8 @@ public class MemberService : IMemberService
 
         _memberRepository.Delete(member);
         await _unitOfWork.CompleteAsync();
+
+        _logger.LogInformation("Member deleted: member {MemberId} ({Email})", id, member.Email);
         return (true, "Member deleted successfully.");
     }
 

@@ -4,4 +4,5 @@
   <Project Path="GymManagementSystem.DAL/GymManagementSystem.DAL.csproj" />
   <Project Path="GymManagementSystem.PL/GymManagementSystem.PL.csproj" />
   <Project Path="GymManagementSystem.PL.Tests/GymManagementSystem.PL.Tests.csproj" />
+  <Project Path="GymManagementSystem.ArchTests/GymManagementSystem.ArchTests.csproj" />
 </Solution>

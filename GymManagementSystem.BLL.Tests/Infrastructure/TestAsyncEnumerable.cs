@@ -69,6 +69,6 @@ public class TestAsyncQueryProvider<T> : IAsyncQueryProvider
             var fromResult = typeof(Task).GetMethod(nameof(Task.FromResult))!.MakeGenericMethod(innerType);
             return (TResult)fromResult.Invoke(null, [result])!;
         }
-        return (TResult)result;
+        return (TResult)result!;
     }
 }

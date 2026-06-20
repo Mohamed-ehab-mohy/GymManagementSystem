@@ -4,6 +4,7 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <NoWarn>NU1901;NU1902;NU1903</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,6 +24,8 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" />
     <PackageReference Include="Serilog.AspNetCore" />
     <PackageReference Include="Serilog.Sinks.Seq" />
+    <PackageReference Include="Serilog.Enrichers.Environment" />
+    <PackageReference Include="Serilog.Enrichers.Thread" />
     <PackageReference Include="Npgsql" />
     <PackageReference Include="Serilog.Sinks.Postgresql.Alternative" />
     <PackageReference Include="Quartz" />

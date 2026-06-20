@@ -16,7 +16,9 @@ public class ViewModelProfile : IRegister
             .Map(d => d.Height, s => s.HealthRecord != null ? s.HealthRecord.Height : 0)
             .Map(d => d.Weight, s => s.HealthRecord != null ? s.HealthRecord.Weight : 0)
             .Map(d => d.BloodType, s => s.HealthRecord != null ? s.HealthRecord.BloodType : string.Empty)
-            .Map(d => d.Note, s => s.HealthRecord != null ? s.HealthRecord.Note : null)
+            .Map(d => d.Note, s => s.HealthRecord != null ? s.HealthRecord.Note : (string?)null)
+#pragma warning disable CS8603 // Mapster's Ignore returns possible null
             .Ignore(d => d.PhotoFile);
+#pragma warning restore CS8603
     }
 }

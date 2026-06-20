@@ -194,7 +194,7 @@ public class RenewalReminderJobTests
         {
             var result = Execute(expression);
             if (result is Task task) return (TResult)((dynamic)task);
-            return (TResult)result;
+            return (TResult)result!;
         }
     }
 }

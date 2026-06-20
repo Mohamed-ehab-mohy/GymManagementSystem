@@ -7,6 +7,8 @@ using GymManagementSystem.BLL.Abstractions.Repositories;
 using GymManagementSystem.BLL.Interfaces;
 using GymManagementSystem.Domain;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace GymManagementSystem.BLL.Services;
 
@@ -16,13 +18,15 @@ public class AuthService : IAuthService
     private readonly IUnitOfWork _unitOfWork;
     private readonly IEmailService _emailService;
     private readonly IRepository<PasswordResetToken> _passwordResetTokenRepo;
+    private readonly ILogger _logger;
 
-    public AuthService(IMemberRepository memberRepository, IUnitOfWork unitOfWork, IEmailService emailService, IRepository<PasswordResetToken> passwordResetTokenRepo)
+    public AuthService(IMemberRepository memberRepository, IUnitOfWork unitOfWork, IEmailService emailService, IRepository<PasswordResetToken> passwordResetTokenRepo, ILogger<AuthService>? logger = null)
     {
         _memberRepository = memberRepository;
         _unitOfWork = unitOfWork;
         _emailService = emailService;
         _passwordResetTokenRepo = passwordResetTokenRepo;
+        _logger = logger ?? NullLogger<AuthService>.Instance;
     }
 
     public async Task<Result<ClaimsPrincipal>> LoginAsync(string email, string password)
@@ -31,7 +35,12 @@ public class AuthService : IAuthService
             .FirstOrDefaultAsync(m => m.Email == email && !m.IsDeleted);
 
         if (member == null || !BCrypt.Net.BCrypt.Verify(password, member.PasswordHash))
+        {
+            _logger.LogWarning("Login failed for email {Email}", email);
             return Result<ClaimsPrincipal>.Failure("Invalid email or password.");
+        }
+
+        _logger.LogInformation("Login succeeded for member {MemberId} ({Email})", member.Id, email);
 
         var claims = new List<Claim>
         {
@@ -53,7 +62,10 @@ public class AuthService : IAuthService
             .AnyAsync(m => m.Email == email && !m.IsDeleted);
 
         if (existing)
+        {
+            _logger.LogWarning("Registration failed: email {Email} already exists", email);
             return Result.Failure("Email already registered.");
+        }
 
         var member = new Member
         {
@@ -74,6 +86,7 @@ public class AuthService : IAuthService
         await _memberRepository.AddAsync(member);
         await _unitOfWork.CompleteAsync();
 
+        _logger.LogInformation("Member registered: member {MemberId} ({Email})", member.Id, email);
         return Result.Success();
     }
 
@@ -83,7 +96,10 @@ public class AuthService : IAuthService
             .AnyAsync(m => m.Email == email && !m.IsDeleted);
 
         if (existing)
+        {
+            _logger.LogWarning("Registration failed: email {Email} already exists", email);
             return Result.Failure("Email already registered.");
+        }
 
         var member = new Member
         {
@@ -104,6 +120,7 @@ public class AuthService : IAuthService
         await _memberRepository.AddAsync(member);
         await _unitOfWork.CompleteAsync();
 
+        _logger.LogInformation("Member registered: member {MemberId} ({Email})", member.Id, email);
         return Result.Success();
     }
 

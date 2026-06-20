@@ -5,8 +5,9 @@ using System.Threading.Tasks;
 using GymManagementSystem.BLL.Interfaces;
 using GymManagementSystem.BLL.Abstractions;
 using GymManagementSystem.Domain;
-using GymManagementSystem.BLL.Abstractions;
 using GymManagementSystem.BLL.Abstractions.Repositories;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace GymManagementSystem.BLL.Services;
 
@@ -18,13 +19,15 @@ public class PlanService : IPlanService
     private readonly ICacheService _cache;
 
     private static readonly TimeSpan CacheDuration = TimeSpan.FromMinutes(15);
+    private readonly ILogger _logger;
 
-    public PlanService(IPlanRepository planRepository, IMembershipRepository membershipRepository, IUnitOfWork unitOfWork, ICacheService cache)
+    public PlanService(IPlanRepository planRepository, IMembershipRepository membershipRepository, IUnitOfWork unitOfWork, ICacheService cache, ILogger<PlanService>? logger = null)
     {
         _planRepository = planRepository;
         _membershipRepository = membershipRepository;
         _unitOfWork = unitOfWork;
         _cache = cache;
+        _logger = logger ?? NullLogger<PlanService>.Instance;
     }
 
     public async Task<IEnumerable<Plan>> GetAllPlansAsync()
@@ -95,6 +98,9 @@ public class PlanService : IPlanService
 
         _cache.Remove(CacheKeys.ActivePlans);
         _cache.Remove(CacheKeys.Plan(id));
+
+        var action = plan.IsActive ? "activated" : "deactivated";
+        _logger.LogInformation("Plan {PlanId} ({Name}) {Action}", id, plan.Name, action);
 
         return (true, plan.IsActive ? "Plan activated successfully." : "Plan deactivated successfully.");
     }
