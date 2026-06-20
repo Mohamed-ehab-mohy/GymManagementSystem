@@ -49,7 +49,9 @@ public class AiAssistantService : IAiAssistantService
         using var client = _httpClientFactory.CreateClient();
         client.DefaultRequestHeaders.Authorization = new("Bearer", _apiKey);
 
-        for (int retry = 0; retry < 3; retry++)
+        int[] delays = [2000, 4000, 8000, 15000];
+
+        for (int retry = 0; retry <= delays.Length; retry++)
         {
             var response = await client.PostAsJsonAsync("https://api.openai.com/v1/chat/completions", requestBody);
 
@@ -60,17 +62,16 @@ public class AiAssistantService : IAiAssistantService
                        ?? "Sorry, I couldn't process that request.";
             }
 
-            if ((int)response.StatusCode == 429 && retry < 2)
+            if ((int)response.StatusCode == 429 && retry < delays.Length)
             {
-                await Task.Delay(2000);
+                await Task.Delay(delays[retry]);
                 continue;
             }
 
-            var error = await response.Content.ReadAsStringAsync();
-            return $"I'm having trouble connecting right now. Please try again later. ({(int)response.StatusCode}: {response.ReasonPhrase})";
+            return "The AI service is currently busy. Please wait a moment and try again / الخدمة مشغولة حالياً، برجاء الانتظار ثم المحاولة مرة أخرى.";
         }
 
-        return "I'm having trouble connecting right now. Please try again later.";
+        return "The AI service is currently busy. Please wait a moment and try again / الخدمة مشغولة حالياً، برجاء الانتظار ثم المحاولة مرة أخرى.";
     }
 
     private List<object> BuildMessages(string systemPrompt, string userMessage, List<ChatMessage> history)
