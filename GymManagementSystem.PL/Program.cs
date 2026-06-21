@@ -160,8 +160,8 @@ if (!string.IsNullOrEmpty(logsDbConn))
 
 builder.Services.AddHealthChecksUI(opt =>
 {
-    opt.AddHealthCheckEndpoint("Gymy API", "/health");
-    opt.AddHealthCheckEndpoint("Gymy API (Ready)", "/health/ready");
+    opt.AddHealthCheckEndpoint("Gymy API", "http://localhost:80/health");
+    opt.AddHealthCheckEndpoint("Gymy API (Ready)", "http://localhost:80/health/ready");
 }).AddInMemoryStorage();
 
 builder.Services.AddScoped<IPurgeService, PurgeService>();
