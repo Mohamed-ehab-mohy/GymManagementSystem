@@ -1,8 +1,6 @@
-using System;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 using GymManagementSystem.BLL.Abstractions;
 using GymManagementSystem.BLL.Interfaces;
 using GymManagementSystem.Domain;
@@ -42,17 +40,16 @@ public class PaymentService : IPaymentService
     {
         try
         {
-            var apiKey = _configuration["Paymob:ApiKey"] ?? "";
-            var hmac = _configuration["Paymob:Hmac"] ?? "";
-            var integrationId = _configuration["Paymob:IntegrationId"] ?? "";
-            var iframeId = _configuration["Paymob:IframeId"] ?? "YOUR_IFRAME_ID";
+            var apiKey = _configuration["Paymob:ApiKey"];
+            var hmac = _configuration["Paymob:Hmac"];
+            var integrationId = _configuration["Paymob:IntegrationId"];
+            var iframeId = _configuration["Paymob:IframeId"];
 
-            if (string.IsNullOrEmpty(apiKey))
+            if (string.IsNullOrEmpty(apiKey) || string.IsNullOrEmpty(iframeId) || string.IsNullOrEmpty(integrationId))
                 return new PaymobCheckoutResult { Success = false, Error = "Payment not configured." };
 
             var client = _httpClientFactory.CreateClient();
 
-            // Step 1: Get auth token
             var authBody = new { api_key = apiKey };
             var authJson = await client.PostAsync("https://accept.paymob.com/api/auth/tokens",
                 new StringContent(JsonSerializer.Serialize(authBody), Encoding.UTF8, "application/json"));
@@ -64,7 +61,6 @@ public class PaymentService : IPaymentService
             if (string.IsNullOrEmpty(token))
                 return new PaymobCheckoutResult { Success = false, Error = "Failed to authenticate with Paymob." };
 
-            // Step 2: Create order
             var orderBody = new
             {
                 auth_token = token,
@@ -81,7 +77,6 @@ public class PaymentService : IPaymentService
             var orderDoc = JsonDocument.Parse(orderContent);
             var orderId = orderDoc.RootElement.GetProperty("id").GetInt32();
 
-            // Step 3: Get payment key
             var paymentBody = new
             {
                 auth_token = token,
@@ -116,7 +111,6 @@ public class PaymentService : IPaymentService
             var paymentKeyDoc = JsonDocument.Parse(paymentKeyContent);
             var paymentKey = paymentKeyDoc.RootElement.GetProperty("token").GetString();
 
-            // Save payment record
             var payment = new Payment
             {
                 MemberId = memberId,

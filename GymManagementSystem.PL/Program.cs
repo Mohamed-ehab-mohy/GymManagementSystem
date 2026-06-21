@@ -133,6 +133,13 @@ try
 builder.Services.AddHttpClient();
 builder.Services.AddMemoryCache();
 builder.Services.AddMapster();
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(opt =>
+{
+    opt.IdleTimeout = TimeSpan.FromMinutes(30);
+    opt.Cookie.HttpOnly = true;
+    opt.Cookie.IsEssential = true;
+});
 builder.Services.AddControllersWithViews();
 builder.Services.AddSignalR();
 
@@ -165,14 +172,14 @@ builder.Services.AddQuartz(q =>
     q.AddTrigger(opts => opts
         .ForJob(purgeKey)
         .WithIdentity("PurgeDeletedRecords-Trigger")
-        .WithCronSchedule("0 0 3 * * ?")); // 3 AM daily
+        .WithCronSchedule("0 0 3 * * ?"));
 
     var reminderKey = new JobKey("RenewalReminder");
     q.AddJob<RenewalReminderJob>(opts => opts.WithIdentity(reminderKey));
     q.AddTrigger(opts => opts
         .ForJob(reminderKey)
         .WithIdentity("RenewalReminder-Trigger")
-        .WithCronSchedule("0 0 8 * * ?")); // 8 AM daily
+        .WithCronSchedule("0 0 8 * * ?"));
 });
 builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
@@ -196,6 +203,8 @@ builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
     app.UseStaticFiles();
     app.UseRouting();
+
+    app.UseSession();
 
     app.UseAuthentication();
     app.UseAuthorization();

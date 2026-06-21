@@ -1,6 +1,5 @@
-using System;
-using System.Threading.Tasks;
 using GymManagementSystem.BLL.Interfaces;
+using Microsoft.Extensions.Logging;
 using Quartz;
 
 namespace GymManagementSystem.PL.Jobs;
@@ -9,15 +8,17 @@ namespace GymManagementSystem.PL.Jobs;
 public class PurgeDeletedRecordsJob : IJob
 {
     private readonly IPurgeService _purgeService;
+    private readonly ILogger<PurgeDeletedRecordsJob> _logger;
 
-    public PurgeDeletedRecordsJob(IPurgeService purgeService)
+    public PurgeDeletedRecordsJob(IPurgeService purgeService, ILogger<PurgeDeletedRecordsJob> logger)
     {
         _purgeService = purgeService;
+        _logger = logger;
     }
 
     public async Task Execute(IJobExecutionContext context)
     {
         var count = await _purgeService.PurgeAsync(30);
-        Console.WriteLine($"[PurgeJob] Purged {count} soft-deleted records.");
+        _logger.LogInformation("Purged {Count} soft-deleted records.", count);
     }
 }
