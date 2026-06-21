@@ -39,7 +39,9 @@ public class AttendanceControllerIntegrationTests : IClassFixture<CustomWebAppli
             var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
             secretKey = config["AttendanceSettings:SecretKey"]!;
 
-            var booking = await db.Bookings.FirstAsync(b => !b.IsAttended);
+            var booking = await db.Bookings
+                .Include(b => b.ClassSession)
+                .FirstAsync(b => !b.IsAttended && b.ClassSession.StartTime.Date == DateTime.Today);
             bookingId = booking.Id;
         }
 

@@ -484,3 +484,6 @@ $RECYCLE.BIN/
 # Local / secret settings (not committed)
 appsettings.Local.json
 appsettings.Development.json
+
+# App runtime data
+App_Data/
