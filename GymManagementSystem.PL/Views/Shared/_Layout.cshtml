@@ -195,9 +195,64 @@
         @RenderBody()
     </main>
 
-    <footer class="mt-auto border-t border-zinc-200 dark:border-gym-border py-6 bg-white/50 dark:bg-gym-card/50 backdrop-blur-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm font-medium text-zinc-500">
-            &copy; @DateTime.Now.Year - Power Fitness - <a href="#" class="text-neon-cyan hover:text-[#00e6e6] transition-colors">Privacy Policy</a>
+    <footer class="mt-auto border-t border-zinc-200 dark:border-gym-border pt-12 pb-8 bg-white/80 dark:bg-gym-card/80 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <!-- Brand & Description -->
+                <div class="md:col-span-2">
+                    <a asp-area="" asp-controller="Home" asp-action="Index" class="flex items-center gap-3 mb-4 group inline-flex">
+                        <div class="w-10 h-10 rounded-xl bg-neon-green/10 flex items-center justify-center border border-neon-green/30 group-hover:shadow-[0_0_15px_rgba(57,255,20,0.4)] transition-all duration-300">
+                            <i class="bi bi-dumbbell text-neon-green text-xl"></i>
+                        </div>
+                        <span class="font-display font-bold text-xl tracking-tight text-zinc-900 dark:text-white group-hover:text-neon-green transition-colors">GymPro</span>
+                    </a>
+                    <p class="text-zinc-500 dark:text-zinc-400 text-sm leading-relaxed max-w-sm mb-4">
+                        The ultimate fitness management platform. Streamline your gym operations, engage your members, and scale your business with modern tools.
+                    </p>
+                    <div class="flex gap-3">
+                        <a href="#" class="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-500 hover:text-neon-cyan hover:bg-neon-cyan/10 transition-colors">
+                            <i class="bi bi-facebook"></i>
+                        </a>
+                        <a href="#" class="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-500 hover:text-neon-cyan hover:bg-neon-cyan/10 transition-colors">
+                            <i class="bi bi-twitter-x"></i>
+                        </a>
+                        <a href="#" class="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-500 hover:text-neon-cyan hover:bg-neon-cyan/10 transition-colors">
+                            <i class="bi bi-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h3 class="text-zinc-900 dark:text-white font-bold mb-4 uppercase tracking-wider text-xs">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a asp-controller="Dashboard" asp-action="Index" class="text-zinc-500 dark:text-zinc-400 hover:text-neon-cyan transition-colors text-sm">Dashboard</a></li>
+                        <li><a asp-controller="Members" asp-action="Index" class="text-zinc-500 dark:text-zinc-400 hover:text-neon-cyan transition-colors text-sm">Members Directory</a></li>
+                        <li><a asp-controller="Plans" asp-action="Index" class="text-zinc-500 dark:text-zinc-400 hover:text-neon-cyan transition-colors text-sm">Plans & Pricing</a></li>
+                        <li><a asp-controller="ClassSessions" asp-action="Index" class="text-zinc-500 dark:text-zinc-400 hover:text-neon-cyan transition-colors text-sm">Class Schedule</a></li>
+                    </ul>
+                </div>
+
+                <!-- Legal & Support -->
+                <div>
+                    <h3 class="text-zinc-900 dark:text-white font-bold mb-4 uppercase tracking-wider text-xs">Support</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-zinc-500 dark:text-zinc-400 hover:text-neon-cyan transition-colors text-sm">Help Center</a></li>
+                        <li><a href="#" class="text-zinc-500 dark:text-zinc-400 hover:text-neon-cyan transition-colors text-sm">Privacy Policy</a></li>
+                        <li><a href="#" class="text-zinc-500 dark:text-zinc-400 hover:text-neon-cyan transition-colors text-sm">Terms of Service</a></li>
+                        <li><a href="#" class="text-zinc-500 dark:text-zinc-400 hover:text-neon-cyan transition-colors text-sm">Contact Us</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-zinc-200 dark:border-zinc-800 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="text-sm font-medium text-zinc-500">
+                    &copy; @DateTime.Now.Year GymPro Management. All rights reserved.
+                </div>
+                <div class="flex items-center gap-1 text-sm text-zinc-500">
+                    Made with <i class="bi bi-heart-fill text-red-500 mx-1"></i> by Mohamed Ehab
+                </div>
+            </div>
         </div>
     </footer>
 
