@@ -1,7 +1,6 @@
-using System;
-using System.Collections.Generic;
 using System.Security.Claims;
-using System.Threading.Tasks;
+using System.Security.Cryptography;
+using System.Text;
 using GymManagementSystem.BLL.Abstractions;
 using GymManagementSystem.BLL.Abstractions.Repositories;
 using GymManagementSystem.BLL.Interfaces;
@@ -67,21 +66,7 @@ public class AuthService : IAuthService
             return Result.Failure("Email already registered.");
         }
 
-        var member = new Member
-        {
-            FirstName = firstName,
-            LastName = lastName,
-            Email = email,
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword(password, workFactor: 12),
-            Role = "Member",
-            DateOfBirth = dateOfBirth,
-            Gender = gender,
-            PhoneNumber = $"010{Math.Abs(email.GetHashCode()) % 100000000:D8}",
-            JoinDate = DateTime.Today,
-            EmergencyContactName = "",
-            EmergencyContactPhone = "",
-            Address = new Address { Street = "", City = "", State = "", ZipCode = "" }
-        };
+        var member = BuildMember(firstName, lastName, email, password, "Member", dateOfBirth, gender);
 
         await _memberRepository.AddAsync(member);
         await _unitOfWork.CompleteAsync();
@@ -92,36 +77,7 @@ public class AuthService : IAuthService
 
     public async Task<Result> RegisterAsync(string email, string password, string firstName, string lastName)
     {
-        var existing = await _memberRepository.Query()
-            .AnyAsync(m => m.Email == email && !m.IsDeleted);
-
-        if (existing)
-        {
-            _logger.LogWarning("Registration failed: email {Email} already exists", email);
-            return Result.Failure("Email already registered.");
-        }
-
-        var member = new Member
-        {
-            FirstName = firstName,
-            LastName = lastName,
-            Email = email,
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword(password, workFactor: 12),
-            Role = "Member",
-            DateOfBirth = DateTime.Today.AddYears(-20),
-            Gender = "Other",
-            PhoneNumber = $"010{Math.Abs(email.GetHashCode()) % 100000000:D8}",
-            JoinDate = DateTime.Today,
-            EmergencyContactName = "",
-            EmergencyContactPhone = "",
-            Address = new Address { Street = "", City = "", State = "", ZipCode = "" }
-        };
-
-        await _memberRepository.AddAsync(member);
-        await _unitOfWork.CompleteAsync();
-
-        _logger.LogInformation("Member registered: member {MemberId} ({Email})", member.Id, email);
-        return Result.Success();
+        return await RegisterAsync(firstName, lastName, email, password, DateTime.Today.AddYears(-20), "Other");
     }
 
     public async Task<GymUser?> FindByEmailAsync(string email)
@@ -212,26 +168,37 @@ public class AuthService : IAuthService
         if (existing)
             return Result.Failure("Email already registered.");
 
-        var phoneSuffix = (email.GetHashCode() & 0x7FFFFFFF) % 100000000;
-        var member = new Member
-        {
-            FirstName = role,
-            LastName = "User",
-            Email = email,
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword(password, workFactor: 12),
-            Role = role,
-            DateOfBirth = DateTime.Today.AddYears(-30),
-            Gender = "Male",
-            PhoneNumber = $"010{phoneSuffix:D8}",
-            JoinDate = DateTime.Today,
-            EmergencyContactName = "",
-            EmergencyContactPhone = "",
-            Address = new Address { Street = "", City = "", State = "", ZipCode = "" }
-        };
+        var member = BuildMember(role, "User", email, password, role, DateTime.Today.AddYears(-30), "Male");
 
         await _memberRepository.AddAsync(member);
         await _unitOfWork.CompleteAsync();
 
         return Result.Success();
+    }
+
+    private static string GenerateStablePhone(string email)
+    {
+        var hash = SHA256.HashData(Encoding.UTF8.GetBytes(email));
+        var suffix = BitConverter.ToUInt32(hash, 0) % 100000000;
+        return $"010{suffix:D8}";
+    }
+
+    private static Member BuildMember(string firstName, string lastName, string email, string password, string role, DateTime dateOfBirth, string gender)
+    {
+        return new Member
+        {
+            FirstName = firstName,
+            LastName = lastName,
+            Email = email,
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword(password, workFactor: 12),
+            Role = role,
+            DateOfBirth = dateOfBirth,
+            Gender = gender,
+            PhoneNumber = GenerateStablePhone(email),
+            JoinDate = DateTime.Today,
+            EmergencyContactName = "",
+            EmergencyContactPhone = "",
+            Address = new Address { Street = "", City = "", State = "", ZipCode = "" }
+        };
     }
 }
