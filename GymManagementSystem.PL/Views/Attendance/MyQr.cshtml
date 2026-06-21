@@ -4,28 +4,44 @@
     ViewData["Title"] = "My Check-In QR Code";
 }
 
-<div class="container mt-5 d-flex justify-content-center">
-    <div class="premium-card p-4 text-center border-0 rounded-4" style="max-width: 450px;">
-        <h3 class="fw-bold mb-3 text-primary">Attendance QR Code</h3>
-        <p class="text-muted mb-4">Show this QR code to the reception desk to check in.</p>
-
-        <div class="p-3 bg-white rounded-3 shadow-sm d-inline-block mx-auto mb-4">
-            <img src="@Model.QrCodeBase64" alt="Check-In QR Code" class="img-fluid" style="width: 250px; height: 250px;" />
+<div class="flex items-center justify-center py-10">
+    <div class="glass-card w-full max-w-md p-8 relative overflow-hidden">
+        <!-- Decorative Header Background -->
+        <div class="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-neon-cyan/20 to-transparent pointer-events-none"></div>
+        
+        <div class="text-center relative z-10 mb-8">
+            <div class="w-16 h-16 mx-auto rounded-full bg-gradient-to-tr from-blue-500 to-neon-cyan flex items-center justify-center text-white text-3xl mb-4 shadow-[0_0_20px_rgba(0,255,255,0.4)]">
+                <i class="bi bi-qr-code"></i>
+            </div>
+            <h3 class="text-2xl font-display font-bold text-zinc-900 dark:text-white mb-1">Attendance QR Code</h3>
+            <p class="text-sm text-zinc-500 dark:text-zinc-400">Show this QR code to the reception desk to check in.</p>
         </div>
 
-        <hr />
-
-        <div class="text-start mt-3">
-            <p class="mb-2"><strong>Member:</strong> @Model.MemberName</p>
-            <p class="mb-2"><strong>Session:</strong> @Model.SessionName</p>
-            <p class="mb-0"><strong>Date:</strong> @Model.SessionDate.ToString("dd MMM yyyy - hh:mm tt")</p>
+        <div class="p-4 bg-white rounded-2xl shadow-inner border border-zinc-200 mb-8 max-w-[282px] mx-auto relative z-10 group">
+            <div class="absolute inset-0 rounded-2xl bg-gradient-to-tr from-neon-cyan/50 to-blue-500/50 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10"></div>
+            <img src="@Model.QrCodeBase64" alt="Check-In QR Code" class="w-full h-auto aspect-square object-contain" />
         </div>
 
-        <div class="mt-4">
-            <a href="#" onclick="window.print();" class="btn btn-outline-secondary rounded-pill btn-sm w-100 mb-2">
-                <i class="bi bi-printer"></i> Print QR Code
-            </a>
-            <a asp-controller="Members" asp-action="Index" class="btn btn-primary rounded-pill w-100">
+        <div class="border-t border-zinc-200 dark:border-zinc-800 pt-6 mb-8 relative z-10 space-y-4">
+            <div class="flex justify-between items-center">
+                <span class="text-sm font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Member</span>
+                <span class="text-base font-bold text-zinc-900 dark:text-white">@Model.MemberName</span>
+            </div>
+            <div class="flex justify-between items-center">
+                <span class="text-sm font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Session</span>
+                <span class="text-base font-bold text-zinc-900 dark:text-white">@Model.SessionName</span>
+            </div>
+            <div class="flex justify-between items-center">
+                <span class="text-sm font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Date</span>
+                <span class="text-base font-medium text-zinc-900 dark:text-zinc-200">@Model.SessionDate.ToString("dd MMM yyyy - hh:mm tt")</span>
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-3 relative z-10">
+            <button onclick="window.print();" class="btn-outline border-zinc-300 dark:border-zinc-700 w-full justify-center py-2.5 shadow-sm group">
+                <i class="bi bi-printer mr-2 text-zinc-400 group-hover:text-zinc-900 dark:group-hover:text-white transition-colors"></i> Print QR Code
+            </button>
+            <a asp-controller="Dashboard" asp-action="Index" class="btn-primary w-full justify-center py-2.5 shadow-[0_0_15px_rgba(0,255,255,0.3)]">
                 Back to Dashboard
             </a>
         </div>

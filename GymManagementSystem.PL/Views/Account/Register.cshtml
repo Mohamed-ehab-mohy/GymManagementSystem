@@ -5,91 +5,108 @@
 }
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" x-data="{ darkMode: localStorage.getItem('gympro-theme') !== 'light' }" x-bind:class="{ 'dark': darkMode }">
 <head>
-    <script>(function(){var t=localStorage.getItem('gympro-theme');if(!t){t=window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'}document.documentElement.setAttribute('data-theme',t)})();</script>
+    <script>
+        if (localStorage.getItem('gympro-theme') === 'light' || (!('gympro-theme' in localStorage) && !window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.remove('dark')
+        } else {
+            document.documentElement.classList.add('dark')
+        }
+    </script>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Register — GymPro Management</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <title>Register — GymPro</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
-    <link rel="stylesheet" href="~/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
-<body>
-    <div class="auth-wrapper">
-        <div class="auth-card" style="max-width: 480px;">
-            <div class="auth-card-body">
-                <div class="auth-brand">
-                    <span class="brand-icon-lg"><i class="bi bi-dumbbell"></i></span>
-                    <h2>Create <span class="text-gradient">Account</span></h2>
-                    <p>Join the gym management platform</p>
+<body class="bg-zinc-50 dark:bg-gym-darker text-zinc-900 dark:text-zinc-100 font-sans min-h-screen flex items-center justify-center relative overflow-hidden transition-colors duration-300">
+    
+    <button @@click="darkMode = !darkMode; localStorage.setItem('gympro-theme', darkMode ? 'dark' : 'light')" class="absolute top-6 right-6 p-2 text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white transition-colors bg-white dark:bg-zinc-800 rounded-full shadow-sm dark:shadow-none border border-zinc-200 dark:border-zinc-700">
+        <i class="bi bi-moon-fill" x-show="!darkMode"></i>
+        <i class="bi bi-brightness-high-fill text-yellow-400" x-show="darkMode" style="display: none;"></i>
+    </button>
+
+    <div class="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] rounded-full bg-neon-cyan/10 dark:bg-neon-cyan/5 blur-[120px] pointer-events-none"></div>
+    <div class="absolute -bottom-[20%] -right-[10%] w-[50%] h-[50%] rounded-full bg-neon-green/10 dark:bg-neon-green/5 blur-[120px] pointer-events-none"></div>
+
+    <div class="w-full max-w-xl p-4 relative z-10">
+        <div class="glass-card p-8 md:p-10 border-zinc-200 dark:border-gym-border shadow-lg dark:shadow-glass my-8">
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-neon-cyan/10 border border-neon-cyan/30 shadow-[0_0_15px_rgba(0,255,255,0.2)] mb-4">
+                    <i class="bi bi-person-plus-fill text-3xl text-neon-cyan"></i>
+                </div>
+                <h1 class="text-3xl font-display font-bold text-zinc-900 dark:text-white">Join <span class="text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan to-neon-green">GymPro</span></h1>
+                <p class="text-zinc-500 dark:text-zinc-400 mt-2 font-medium">Create your account to get started.</p>
+            </div>
+
+            <form method="post" asp-action="Register" asp-controller="Account">
+                <div asp-validation-summary="ModelOnly" class="text-red-500 text-sm mb-4 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 p-3 rounded-lg font-medium"></div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+                    <div>
+                        <label asp-for="FirstName" class="form-label"></label>
+                        <input asp-for="FirstName" class="form-input" autofocus placeholder="John" />
+                        <span asp-validation-for="FirstName" class="text-red-500 text-xs mt-1 block"></span>
+                    </div>
+                    <div>
+                        <label asp-for="LastName" class="form-label"></label>
+                        <input asp-for="LastName" class="form-input" placeholder="Doe" />
+                        <span asp-validation-for="LastName" class="text-red-500 text-xs mt-1 block"></span>
+                    </div>
                 </div>
 
-                <form method="post" asp-action="Register" asp-controller="Account">
-                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                <div class="mb-5">
+                    <label asp-for="Email" class="form-label"></label>
+                    <input asp-for="Email" class="form-input" placeholder="you@gym.com" />
+                    <span asp-validation-for="Email" class="text-red-500 text-xs mt-1 block"></span>
+                </div>
 
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label asp-for="FirstName" class="form-label"></label>
-                            <input asp-for="FirstName" class="form-control" autofocus placeholder="John" />
-                            <span asp-validation-for="FirstName" class="text-danger"></span>
-                        </div>
-                        <div class="col-md-6">
-                            <label asp-for="LastName" class="form-label"></label>
-                            <input asp-for="LastName" class="form-control" placeholder="Doe" />
-                            <span asp-validation-for="LastName" class="text-danger"></span>
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label asp-for="Email" class="form-label"></label>
-                        <input asp-for="Email" class="form-control" placeholder="you@gym.com" />
-                        <span asp-validation-for="Email" class="text-danger"></span>
-                    </div>
-
-                    <div class="mb-3">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+                    <div>
                         <label asp-for="Password" class="form-label"></label>
-                        <input asp-for="Password" class="form-control" placeholder="Min. 8 characters" />
-                        <span asp-validation-for="Password" class="text-danger"></span>
+                        <input asp-for="Password" type="password" class="form-input" placeholder="Min. 8 characters" />
+                        <span asp-validation-for="Password" class="text-red-500 text-xs mt-1 block"></span>
                     </div>
-
-                    <div class="mb-3">
+                    <div>
                         <label asp-for="ConfirmPassword" class="form-label"></label>
-                        <input asp-for="ConfirmPassword" class="form-control" placeholder="Repeat password" />
-                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                        <input asp-for="ConfirmPassword" type="password" class="form-input" placeholder="Repeat password" />
+                        <span asp-validation-for="ConfirmPassword" class="text-red-500 text-xs mt-1 block"></span>
                     </div>
+                </div>
 
-                    <div class="row mb-4">
-                        <div class="col-md-6">
-                            <label asp-for="DateOfBirth" class="form-label"></label>
-                            <input asp-for="DateOfBirth" class="form-control" type="date" />
-                            <span asp-validation-for="DateOfBirth" class="text-danger"></span>
-                        </div>
-                        <div class="col-md-6">
-                            <label asp-for="Gender" class="form-label"></label>
-                            <select asp-for="Gender" class="form-select">
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
-                            </select>
-                            <span asp-validation-for="Gender" class="text-danger"></span>
-                        </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
+                    <div>
+                        <label asp-for="DateOfBirth" class="form-label"></label>
+                        <input asp-for="DateOfBirth" type="date" class="form-input" />
+                        <span asp-validation-for="DateOfBirth" class="text-red-500 text-xs mt-1 block"></span>
                     </div>
+                    <div>
+                        <label asp-for="Gender" class="form-label"></label>
+                        <select asp-for="Gender" class="form-input">
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                        <span asp-validation-for="Gender" class="text-red-500 text-xs mt-1 block"></span>
+                    </div>
+                </div>
 
-                    <button type="submit" class="btn btn-gradient w-100 mb-3 py-3">Create Account</button>
+                <button type="submit" class="btn-primary w-full py-3 text-lg shadow-[0_0_15px_rgba(57,255,20,0.3)] bg-gradient-to-r from-neon-cyan to-neon-green text-black border-none">
+                    Create Account
+                </button>
 
-                    <p class="text-center text-muted small mb-0">
-                        Already have an account? <a asp-action="Login" class="text-primary-theme fw-semibold">Sign In</a>
+                <div class="mt-8 text-center">
+                    <p class="text-zinc-500 dark:text-zinc-400 text-sm font-medium">
+                        Already have an account? <a asp-action="Login" class="text-neon-cyan hover:text-[#00e6e6] font-semibold ml-1">Sign In</a>
                     </p>
-                </form>
-            </div>
+                </div>
+            </form>
         </div>
     </div>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <partial name="_ValidationScriptsPartial" />
 </body>
 </html>

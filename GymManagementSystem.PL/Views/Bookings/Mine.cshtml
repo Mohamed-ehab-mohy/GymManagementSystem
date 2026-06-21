@@ -34,6 +34,7 @@ else
                 <thead>
                     <tr class="border-b-2 border-zinc-800 bg-zinc-900/50">
                         <th class="py-4 px-6 font-semibold text-sm text-zinc-400 uppercase tracking-wider">Session</th>
+                        <th class="py-4 px-6 font-semibold text-sm text-zinc-400 uppercase tracking-wider">Category</th>
                         <th class="py-4 px-6 font-semibold text-sm text-zinc-400 uppercase tracking-wider">Date & Time</th>
                         <th class="py-4 px-6 font-semibold text-sm text-zinc-400 uppercase tracking-wider">Trainer</th>
                         <th class="py-4 px-6 font-semibold text-sm text-zinc-400 uppercase tracking-wider">Status</th>
@@ -46,7 +47,9 @@ else
                         <tr class="hover:bg-zinc-800/60 transition-colors group">
                             <td class="py-4 px-6 align-middle">
                                 <div class="font-bold text-white text-lg font-display">@booking.SessionName</div>
-                                <div class="text-xs text-neon-cyan mt-1">@booking.CategoryName</div>
+                            </td>
+                            <td class="py-4 px-6 align-middle">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-neon-cyan/10 text-neon-cyan border border-neon-cyan/20">@booking.CategoryName</span>
                             </td>
                             <td class="py-4 px-6 align-middle font-medium text-zinc-300">@booking.ScheduleTime.ToString("dd MMM yyyy, HH:mm")</td>
                             <td class="py-4 px-6 align-middle text-zinc-400">@booking.TrainerName</td>

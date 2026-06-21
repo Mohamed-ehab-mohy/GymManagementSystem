@@ -4,69 +4,69 @@
     ViewData["Title"] = "Edit Session";
 }
 
-<div class="container py-4">
-    <div class="row justify-content-center">
-        <div class="col-12 col-xl-8">
-            <header class="d-flex justify-content-between mb-4 align-items-center border-bottom pb-3" style="border-color: var(--border-color) !important;">
+<div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <div>
+        <h2 class="text-3xl font-display font-bold text-zinc-900 dark:text-white">Edit <span class="text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan to-neon-green">Session</span></h2>
+        <p class="text-zinc-500 dark:text-zinc-400 mt-1">Update schedule and details for @Model.Description.</p>
+    </div>
+    <a asp-action="Index" class="btn-outline">
+        <i class="bi bi-arrow-left mr-2"></i> Back to Schedule
+    </a>
+</div>
+
+<div class="glass-card p-6 md:p-8 max-w-4xl mx-auto">
+    <form asp-action="Edit" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-red-500 mb-4 bg-red-50 dark:bg-red-500/10 p-3 rounded-lg text-sm border border-red-200 dark:border-red-500/20"></div>
+        
+        <input type="hidden" asp-for="Id" />
+
+        <div class="mb-8">
+            <h5 class="flex items-center text-lg font-bold text-zinc-900 dark:text-white mb-4 pb-2 border-b border-zinc-200 dark:border-zinc-800">
+                <i class="bi bi-calendar-event text-neon-cyan mr-2"></i> Session Details
+            </h5>
+            
+            <div class="mb-6">
+                <label asp-for="Description" class="form-label"></label>
+                <input asp-for="Description" class="form-input" placeholder="e.g., Morning Yoga, HIIT Training" />
+                <span asp-validation-for="Description" class="text-red-500 text-xs mt-1 block"></span>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div>
-                    <h2 class="display-6 fw-bold mb-1">Edit <span class="text-gradient">Session</span></h2>
-                    <p class="text-secondary fs-6 mb-0">Update schedule and details for @Model.Description.</p>
+                    <label asp-for="StartDate" class="form-label"></label>
+                    <input asp-for="StartDate" class="form-input" />
+                    <span asp-validation-for="StartDate" class="text-red-500 text-xs mt-1 block"></span>
                 </div>
-                <a asp-action="Index" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-left me-2"></i> Back to Schedule
-                </a>
-            </header>
+                <div>
+                    <label asp-for="EndDate" class="form-label"></label>
+                    <input asp-for="EndDate" class="form-input" />
+                    <span asp-validation-for="EndDate" class="text-red-500 text-xs mt-1 block"></span>
+                </div>
+            </div>
 
-            <div class="premium-card p-4 p-md-5">
-                <form asp-action="Edit" method="post">
-                    <div asp-validation-summary="ModelOnly" class="text-danger mb-4"></div>
-                    
-                    <input type="hidden" asp-for="Id" />
-
-                    <div class="row g-4 mb-4">
-                        <div class="col-12">
-                            <label asp-for="Description" class="form-label text-secondary fw-semibold"></label>
-                            <input asp-for="Description" class="form-control form-control-lg premium-input" placeholder="e.g., Morning Yoga, HIIT Training" />
-                            <span asp-validation-for="Description" class="text-danger small mt-1"></span>
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <label asp-for="StartDate" class="form-label text-secondary fw-semibold"></label>
-                            <input asp-for="StartDate" class="form-control form-control-lg premium-input" />
-                            <span asp-validation-for="StartDate" class="text-danger small mt-1"></span>
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <label asp-for="EndDate" class="form-label text-secondary fw-semibold"></label>
-                            <input asp-for="EndDate" class="form-control form-control-lg premium-input" />
-                            <span asp-validation-for="EndDate" class="text-danger small mt-1"></span>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label asp-for="Capacity" class="form-label text-secondary fw-semibold"></label>
-                            <input asp-for="Capacity" class="form-control form-control-lg premium-input" type="number" min="1" max="25" />
-                            <span asp-validation-for="Capacity" class="text-danger small mt-1"></span>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label asp-for="TrainerId" class="form-label text-secondary fw-semibold"></label>
-                            <select asp-for="TrainerId" asp-items="Model.TrainersList" class="form-select form-select-lg premium-input">
-                                <option value="">-- Select Trainer --</option>
-                            </select>
-                            <span asp-validation-for="TrainerId" class="text-danger small mt-1"></span>
-                        </div>
-                    </div>
-
-                    <div class="d-flex justify-content-end gap-3 mt-5 pt-4 border-top" style="border-color: var(--border-color) !important;">
-                        <button type="button" class="btn btn-outline-secondary px-4 py-2" onclick="window.history.back()">Cancel</button>
-                        <button type="submit" class="btn btn-gradient px-5 py-2 fw-bold">
-                            <i class="bi bi-check-circle me-2"></i> Save Changes
-                        </button>
-                    </div>
-                </form>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label asp-for="Capacity" class="form-label"></label>
+                    <input asp-for="Capacity" class="form-input" type="number" min="1" max="25" />
+                    <span asp-validation-for="Capacity" class="text-red-500 text-xs mt-1 block"></span>
+                </div>
+                <div>
+                    <label asp-for="TrainerId" class="form-label"></label>
+                    <select asp-for="TrainerId" asp-items="Model.TrainersList" class="form-input">
+                        <option value="">-- Select Trainer --</option>
+                    </select>
+                    <span asp-validation-for="TrainerId" class="text-red-500 text-xs mt-1 block"></span>
+                </div>
             </div>
         </div>
-    </div>
+
+        <div class="flex justify-end gap-3 mt-8 pt-6 border-t border-zinc-200 dark:border-zinc-800">
+            <button type="button" class="btn-outline" onclick="window.history.back()">Cancel</button>
+            <button type="submit" class="btn-primary px-8">
+                <i class="bi bi-check-circle mr-2"></i> Save Changes
+            </button>
+        </div>
+    </form>
 </div>
 
 @section Scripts {

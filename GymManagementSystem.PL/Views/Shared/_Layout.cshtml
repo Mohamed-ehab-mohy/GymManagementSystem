@@ -1,6 +1,13 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en" x-data="{ darkMode: localStorage.getItem('gympro-theme') !== 'light' }" x-bind:class="{ 'dark': darkMode }">
 <head>
+    <script>
+        if (localStorage.getItem('gympro-theme') === 'light' || (!('gympro-theme' in localStorage) && !window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.remove('dark')
+        } else {
+            document.documentElement.classList.add('dark')
+        }
+    </script>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] — GymPro Management</title>
@@ -15,16 +22,16 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2339ff14'/%3E%3Ctext x='16' y='22' text-anchor='middle' fill='black' font-size='18' font-weight='bold' font-family='sans-serif'%3EG%3C/text%3E%3C/svg%3E" />
 </head>
-<body class="bg-gym-darker text-zinc-100 font-sans antialiased selection:bg-neon-green selection:text-black min-h-screen flex flex-col">
-    <header x-data="{ mobileMenuOpen: false, profileMenuOpen: false, notificationsOpen: false }" class="sticky top-0 z-50 w-full glass-card border-x-0 border-t-0 rounded-none bg-gym-card/80">
+<body class="bg-zinc-50 dark:bg-gym-darker text-zinc-900 dark:text-zinc-100 font-sans antialiased selection:bg-neon-green selection:text-black min-h-screen flex flex-col transition-colors duration-300">
+    <header x-data="{ mobileMenuOpen: false, profileMenuOpen: false, notificationsOpen: false }" class="sticky top-0 z-50 w-full glass-card overflow-visible border-x-0 border-t-0 rounded-none bg-white/80 dark:bg-gym-card/80">
         <nav class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" aria-label="Top">
             <div class="flex h-16 items-center justify-between">
                 <div class="flex items-center">
                     <a asp-area="" asp-controller="Home" asp-action="Index" class="flex items-center gap-3 group">
-                        <div class="w-10 h-10 rounded-xl bg-neon-green/10 flex items-center justify-center border border-neon-green/30 group-hover:shadow-neon-green transition-all duration-300">
+                        <div class="w-10 h-10 rounded-xl bg-neon-green/10 flex items-center justify-center border border-neon-green/30 group-hover:shadow-[0_0_15px_rgba(57,255,20,0.4)] transition-all duration-300">
                             <i class="bi bi-dumbbell text-neon-green text-xl"></i>
                         </div>
-                        <span class="font-display font-bold text-xl tracking-tight text-white group-hover:text-neon-green transition-colors">GymPro</span>
+                        <span class="font-display font-bold text-xl tracking-tight text-zinc-900 dark:text-white group-hover:text-neon-green transition-colors">GymPro</span>
                     </a>
                 </div>
                 
@@ -32,35 +39,41 @@
                 <div class="hidden md:flex items-center space-x-1">
                     @if (User.IsInRole("Member"))
                     {
-                        <a asp-controller="Dashboard" asp-action="Index" class="px-3 py-2 rounded-lg text-sm font-medium text-zinc-300 hover:text-white hover:bg-zinc-800 transition-colors @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Dashboard" ? "text-neon-green bg-neon-green/10" : "")">Dashboard</a>
-                        <a asp-controller="Bookings" asp-action="Index" class="px-3 py-2 rounded-lg text-sm font-medium text-zinc-300 hover:text-white hover:bg-zinc-800 transition-colors @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Bookings" && ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "text-neon-green bg-neon-green/10" : "")">Book Session</a>
-                        <a asp-controller="Bookings" asp-action="Mine" class="px-3 py-2 rounded-lg text-sm font-medium text-zinc-300 hover:text-white hover:bg-zinc-800 transition-colors @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Bookings" && ViewContext.RouteData.Values["Action"]?.ToString() == "Mine" ? "text-neon-green bg-neon-green/10" : "")">My Bookings</a>
+                        <a asp-controller="Dashboard" asp-action="Index" class="px-3 py-2 rounded-lg text-sm font-medium text-zinc-500 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Dashboard" ? "text-neon-cyan dark:text-neon-green bg-neon-cyan/10 dark:bg-neon-green/10 font-semibold" : "")">Dashboard</a>
+                        <a asp-controller="Bookings" asp-action="Index" class="px-3 py-2 rounded-lg text-sm font-medium text-zinc-500 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Bookings" && ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "text-neon-cyan dark:text-neon-green bg-neon-cyan/10 dark:bg-neon-green/10 font-semibold" : "")">Book Session</a>
+                        <a asp-controller="Bookings" asp-action="Mine" class="px-3 py-2 rounded-lg text-sm font-medium text-zinc-500 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Bookings" && ViewContext.RouteData.Values["Action"]?.ToString() == "Mine" ? "text-neon-cyan dark:text-neon-green bg-neon-cyan/10 dark:bg-neon-green/10 font-semibold" : "")">My Bookings</a>
                     }
                     else
                     {
-                        <a asp-controller="Dashboard" asp-action="Index" class="px-3 py-2 rounded-lg text-sm font-medium text-zinc-300 hover:text-white hover:bg-zinc-800 transition-colors @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Dashboard" ? "text-neon-green bg-neon-green/10" : "")">Dashboard</a>
-                        <a asp-controller="Members" asp-action="Index" class="px-3 py-2 rounded-lg text-sm font-medium text-zinc-300 hover:text-white hover:bg-zinc-800 transition-colors @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Members" ? "text-neon-green bg-neon-green/10" : "")">Members</a>
-                        <a asp-controller="Trainers" asp-action="Index" class="px-3 py-2 rounded-lg text-sm font-medium text-zinc-300 hover:text-white hover:bg-zinc-800 transition-colors @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Trainers" ? "text-neon-green bg-neon-green/10" : "")">Trainers</a>
-                        <a asp-controller="ClassSessions" asp-action="Index" class="px-3 py-2 rounded-lg text-sm font-medium text-zinc-300 hover:text-white hover:bg-zinc-800 transition-colors @(ViewContext.RouteData.Values["Controller"]?.ToString() == "ClassSessions" ? "text-neon-green bg-neon-green/10" : "")">Sessions</a>
-                        <a asp-controller="Plans" asp-action="Index" class="px-3 py-2 rounded-lg text-sm font-medium text-zinc-300 hover:text-white hover:bg-zinc-800 transition-colors @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Plans" ? "text-neon-green bg-neon-green/10" : "")">Plans</a>
-                        <a asp-controller="Bookings" asp-action="Index" class="px-3 py-2 rounded-lg text-sm font-medium text-zinc-300 hover:text-white hover:bg-zinc-800 transition-colors @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Bookings" ? "text-neon-green bg-neon-green/10" : "")">Bookings</a>
-                        <a asp-controller="Analytics" asp-action="Index" class="px-3 py-2 rounded-lg text-sm font-medium text-zinc-300 hover:text-white hover:bg-zinc-800 transition-colors @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Analytics" ? "text-neon-green bg-neon-green/10" : "")">Analytics</a>
+                        <a asp-controller="Dashboard" asp-action="Index" class="px-3 py-2 rounded-lg text-sm font-medium text-zinc-500 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Dashboard" ? "text-neon-cyan dark:text-neon-green bg-neon-cyan/10 dark:bg-neon-green/10 font-semibold" : "")">Dashboard</a>
+                        <a asp-controller="Members" asp-action="Index" class="px-3 py-2 rounded-lg text-sm font-medium text-zinc-500 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Members" ? "text-neon-cyan dark:text-neon-green bg-neon-cyan/10 dark:bg-neon-green/10 font-semibold" : "")">Members</a>
+                        <a asp-controller="Trainers" asp-action="Index" class="px-3 py-2 rounded-lg text-sm font-medium text-zinc-500 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Trainers" ? "text-neon-cyan dark:text-neon-green bg-neon-cyan/10 dark:bg-neon-green/10 font-semibold" : "")">Trainers</a>
+                        <a asp-controller="ClassSessions" asp-action="Index" class="px-3 py-2 rounded-lg text-sm font-medium text-zinc-500 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors @(ViewContext.RouteData.Values["Controller"]?.ToString() == "ClassSessions" ? "text-neon-cyan dark:text-neon-green bg-neon-cyan/10 dark:bg-neon-green/10 font-semibold" : "")">Sessions</a>
+                        <a asp-controller="Plans" asp-action="Index" class="px-3 py-2 rounded-lg text-sm font-medium text-zinc-500 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Plans" ? "text-neon-cyan dark:text-neon-green bg-neon-cyan/10 dark:bg-neon-green/10 font-semibold" : "")">Plans</a>
+                        <a asp-controller="Bookings" asp-action="Index" class="px-3 py-2 rounded-lg text-sm font-medium text-zinc-500 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Bookings" ? "text-neon-cyan dark:text-neon-green bg-neon-cyan/10 dark:bg-neon-green/10 font-semibold" : "")">Bookings</a>
+                        <a asp-controller="Analytics" asp-action="Index" class="px-3 py-2 rounded-lg text-sm font-medium text-zinc-500 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Analytics" ? "text-neon-cyan dark:text-neon-green bg-neon-cyan/10 dark:bg-neon-green/10 font-semibold" : "")">Analytics</a>
                     }
                 </div>
 
                 <div class="hidden md:flex items-center gap-4">
+                    <!-- Theme Toggle -->
+                    <button @@click="darkMode = !darkMode; localStorage.setItem('gympro-theme', darkMode ? 'dark' : 'light')" type="button" class="p-2 text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors bg-zinc-100 dark:bg-zinc-800 rounded-full border border-zinc-200 dark:border-zinc-700 w-10 h-10 flex items-center justify-center mr-2">
+                        <i class="bi bi-moon-fill" x-show="!darkMode"></i>
+                        <i class="bi bi-brightness-high-fill text-yellow-400" x-show="darkMode" style="display: none;"></i>
+                    </button>
+
                     @if (User.Identity?.IsAuthenticated == true)
                     {
                         <!-- Notifications -->
                         <div class="relative" @@click.outside="notificationsOpen = false">
-                            <button @@click="notificationsOpen = !notificationsOpen" type="button" class="relative p-2 text-zinc-400 hover:text-white transition-colors">
+                            <button @@click="notificationsOpen = !notificationsOpen" type="button" class="relative p-2 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors">
                                 <i class="bi bi-bell text-xl"></i>
-                                <span id="notificationBadge" class="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-neon-orange text-[10px] font-bold text-white">0</span>
+                                <span id="notificationBadge" class="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-neon-orange text-[10px] font-bold text-white shadow-[0_0_10px_rgba(255,94,0,0.5)]">0</span>
                             </button>
                             
-                            <div x-show="notificationsOpen" x-transition.opacity.duration.200ms class="absolute right-0 mt-2 w-80 origin-top-right rounded-xl bg-gym-card border border-gym-border shadow-glass focus:outline-none overflow-hidden" style="display: none;">
-                                <div class="px-4 py-3 border-b border-gym-border bg-zinc-900/50">
-                                    <p class="text-sm font-semibold text-white">Notifications</p>
+                            <div x-show="notificationsOpen" x-transition.opacity.duration.200ms class="absolute right-0 mt-2 w-80 origin-top-right rounded-xl bg-white dark:bg-gym-card border border-zinc-200 dark:border-gym-border shadow-lg dark:shadow-glass focus:outline-none overflow-hidden z-[100]" style="display: none;">
+                                <div class="px-4 py-3 border-b border-zinc-200 dark:border-gym-border bg-zinc-50 dark:bg-zinc-900/50">
+                                    <p class="text-sm font-bold text-zinc-900 dark:text-white">Notifications</p>
                                 </div>
                                 <ul id="notificationList" class="max-h-72 overflow-y-auto py-1">
                                     <li class="px-4 py-6 text-center text-sm text-zinc-500" id="noNotifications">No notifications</li>
@@ -70,30 +83,35 @@
 
                         <!-- Profile dropdown -->
                         <div class="relative ml-3" @@click.outside="profileMenuOpen = false">
-                            <button @@click="profileMenuOpen = !profileMenuOpen" type="button" class="flex items-center gap-2 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-neon-green focus:ring-offset-2 focus:ring-offset-gym-darker">
-                                <div class="h-8 w-8 rounded-full bg-gradient-to-tr from-neon-cyan to-neon-green flex items-center justify-center text-black font-bold">
+                            <button @@click="profileMenuOpen = !profileMenuOpen" type="button" class="flex items-center gap-2 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-neon-cyan focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gym-darker">
+                                <div class="h-8 w-8 rounded-full bg-gradient-to-tr from-neon-cyan to-neon-green flex items-center justify-center text-black font-bold shadow-[0_0_10px_rgba(0,255,255,0.3)]">
                                     @(User.Identity.Name?.Substring(0,1).ToUpper() ?? "U")
                                 </div>
-                                <span class="text-zinc-300 hidden lg:block">@User.Identity.Name</span>
-                                <i class="bi bi-chevron-down text-zinc-500 text-xs"></i>
+                                <span class="text-zinc-700 dark:text-zinc-300 hidden lg:block font-medium">@User.Identity.Name</span>
+                                <i class="bi bi-chevron-down text-zinc-400 text-xs"></i>
                             </button>
 
-                            <div x-show="profileMenuOpen" x-transition.opacity.duration.200ms class="absolute right-0 mt-2 w-48 origin-top-right rounded-xl bg-gym-card py-1 shadow-glass border border-gym-border focus:outline-none" style="display: none;">
+                            <div x-show="profileMenuOpen" x-transition.opacity.duration.200ms class="absolute right-0 mt-2 w-48 origin-top-right rounded-xl bg-white dark:bg-gym-card py-1 shadow-lg dark:shadow-glass border border-zinc-200 dark:border-gym-border focus:outline-none z-[100]" style="display: none;">
                                 <form asp-controller="Account" asp-action="Logout" method="post" class="block w-full">
-                                    <button type="submit" class="block w-full px-4 py-2 text-left text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors">Sign out</button>
+                                    <button type="submit" class="block w-full px-4 py-2 text-left text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white transition-colors">Sign out</button>
                                 </form>
                             </div>
                         </div>
                     }
                     else
                     {
-                        <a asp-controller="Account" asp-action="Login" class="btn-primary py-2 px-5 text-sm">Sign In</a>
+                        <a asp-controller="Account" asp-action="Login" class="btn-primary py-2 px-6 text-sm shadow-[0_0_15px_rgba(57,255,20,0.3)]">Sign In</a>
                     }
                 </div>
 
                 <!-- Mobile menu button -->
-                <div class="flex items-center md:hidden">
-                    <button @@click="mobileMenuOpen = !mobileMenuOpen" type="button" class="inline-flex items-center justify-center rounded-md p-2 text-zinc-400 hover:bg-zinc-800 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-neon-green" aria-expanded="false">
+                <div class="flex items-center md:hidden gap-3">
+                    <button @@click="darkMode = !darkMode; localStorage.setItem('gympro-theme', darkMode ? 'dark' : 'light')" type="button" class="p-2 text-zinc-500 dark:text-zinc-400">
+                        <i class="bi bi-moon-fill" x-show="!darkMode"></i>
+                        <i class="bi bi-brightness-high-fill text-yellow-400" x-show="darkMode" style="display: none;"></i>
+                    </button>
+                    
+                    <button @@click="mobileMenuOpen = !mobileMenuOpen" type="button" class="inline-flex items-center justify-center rounded-md p-2 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-neon-cyan" aria-expanded="false">
                         <span class="sr-only">Open main menu</span>
                         <i class="bi bi-list text-2xl" x-show="!mobileMenuOpen"></i>
                         <i class="bi bi-x-lg text-xl" x-show="mobileMenuOpen" style="display: none;"></i>
@@ -103,28 +121,28 @@
         </nav>
 
         <!-- Mobile menu -->
-        <div x-show="mobileMenuOpen" x-transition class="md:hidden border-t border-gym-border bg-gym-card/95 backdrop-blur-md" style="display: none;">
+        <div x-show="mobileMenuOpen" x-transition class="md:hidden border-t border-zinc-200 dark:border-gym-border bg-white/95 dark:bg-gym-card/95 backdrop-blur-md" style="display: none;">
             <div class="space-y-1 px-2 pb-3 pt-2">
                 @if (User.IsInRole("Member"))
                 {
-                    <a asp-controller="Dashboard" asp-action="Index" class="block rounded-md px-3 py-2 text-base font-medium text-white hover:bg-zinc-800 @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Dashboard" ? "text-neon-green bg-neon-green/10" : "")">Dashboard</a>
-                    <a asp-controller="Bookings" asp-action="Index" class="block rounded-md px-3 py-2 text-base font-medium text-white hover:bg-zinc-800 @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Bookings" && ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "text-neon-green bg-neon-green/10" : "")">Book Session</a>
-                    <a asp-controller="Bookings" asp-action="Mine" class="block rounded-md px-3 py-2 text-base font-medium text-white hover:bg-zinc-800 @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Bookings" && ViewContext.RouteData.Values["Action"]?.ToString() == "Mine" ? "text-neon-green bg-neon-green/10" : "")">My Bookings</a>
+                    <a asp-controller="Dashboard" asp-action="Index" class="block rounded-md px-3 py-2 text-base font-medium text-zinc-700 dark:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Dashboard" ? "text-neon-cyan dark:text-neon-green bg-neon-cyan/10 dark:bg-neon-green/10" : "")">Dashboard</a>
+                    <a asp-controller="Bookings" asp-action="Index" class="block rounded-md px-3 py-2 text-base font-medium text-zinc-700 dark:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Bookings" && ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "text-neon-cyan dark:text-neon-green bg-neon-cyan/10 dark:bg-neon-green/10" : "")">Book Session</a>
+                    <a asp-controller="Bookings" asp-action="Mine" class="block rounded-md px-3 py-2 text-base font-medium text-zinc-700 dark:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Bookings" && ViewContext.RouteData.Values["Action"]?.ToString() == "Mine" ? "text-neon-cyan dark:text-neon-green bg-neon-cyan/10 dark:bg-neon-green/10" : "")">My Bookings</a>
                 }
                 else
                 {
-                    <a asp-controller="Dashboard" asp-action="Index" class="block rounded-md px-3 py-2 text-base font-medium text-white hover:bg-zinc-800 @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Dashboard" ? "text-neon-green bg-neon-green/10" : "")">Dashboard</a>
-                    <a asp-controller="Members" asp-action="Index" class="block rounded-md px-3 py-2 text-base font-medium text-white hover:bg-zinc-800 @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Members" ? "text-neon-green bg-neon-green/10" : "")">Members</a>
-                    <a asp-controller="Trainers" asp-action="Index" class="block rounded-md px-3 py-2 text-base font-medium text-white hover:bg-zinc-800 @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Trainers" ? "text-neon-green bg-neon-green/10" : "")">Trainers</a>
-                    <a asp-controller="ClassSessions" asp-action="Index" class="block rounded-md px-3 py-2 text-base font-medium text-white hover:bg-zinc-800 @(ViewContext.RouteData.Values["Controller"]?.ToString() == "ClassSessions" ? "text-neon-green bg-neon-green/10" : "")">Sessions</a>
-                    <a asp-controller="Plans" asp-action="Index" class="block rounded-md px-3 py-2 text-base font-medium text-white hover:bg-zinc-800 @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Plans" ? "text-neon-green bg-neon-green/10" : "")">Plans</a>
-                    <a asp-controller="Bookings" asp-action="Index" class="block rounded-md px-3 py-2 text-base font-medium text-white hover:bg-zinc-800 @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Bookings" ? "text-neon-green bg-neon-green/10" : "")">Bookings</a>
-                    <a asp-controller="Analytics" asp-action="Index" class="block rounded-md px-3 py-2 text-base font-medium text-white hover:bg-zinc-800 @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Analytics" ? "text-neon-green bg-neon-green/10" : "")">Analytics</a>
+                    <a asp-controller="Dashboard" asp-action="Index" class="block rounded-md px-3 py-2 text-base font-medium text-zinc-700 dark:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Dashboard" ? "text-neon-cyan dark:text-neon-green bg-neon-cyan/10 dark:bg-neon-green/10" : "")">Dashboard</a>
+                    <a asp-controller="Members" asp-action="Index" class="block rounded-md px-3 py-2 text-base font-medium text-zinc-700 dark:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Members" ? "text-neon-cyan dark:text-neon-green bg-neon-cyan/10 dark:bg-neon-green/10" : "")">Members</a>
+                    <a asp-controller="Trainers" asp-action="Index" class="block rounded-md px-3 py-2 text-base font-medium text-zinc-700 dark:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Trainers" ? "text-neon-cyan dark:text-neon-green bg-neon-cyan/10 dark:bg-neon-green/10" : "")">Trainers</a>
+                    <a asp-controller="ClassSessions" asp-action="Index" class="block rounded-md px-3 py-2 text-base font-medium text-zinc-700 dark:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 @(ViewContext.RouteData.Values["Controller"]?.ToString() == "ClassSessions" ? "text-neon-cyan dark:text-neon-green bg-neon-cyan/10 dark:bg-neon-green/10" : "")">Sessions</a>
+                    <a asp-controller="Plans" asp-action="Index" class="block rounded-md px-3 py-2 text-base font-medium text-zinc-700 dark:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Plans" ? "text-neon-cyan dark:text-neon-green bg-neon-cyan/10 dark:bg-neon-green/10" : "")">Plans</a>
+                    <a asp-controller="Bookings" asp-action="Index" class="block rounded-md px-3 py-2 text-base font-medium text-zinc-700 dark:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Bookings" ? "text-neon-cyan dark:text-neon-green bg-neon-cyan/10 dark:bg-neon-green/10" : "")">Bookings</a>
+                    <a asp-controller="Analytics" asp-action="Index" class="block rounded-md px-3 py-2 text-base font-medium text-zinc-700 dark:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Analytics" ? "text-neon-cyan dark:text-neon-green bg-neon-cyan/10 dark:bg-neon-green/10" : "")">Analytics</a>
                 }
                 
                 @if (!User.Identity?.IsAuthenticated == true)
                 {
-                    <div class="mt-4 border-t border-gym-border pt-4 px-3">
+                    <div class="mt-4 border-t border-zinc-200 dark:border-gym-border pt-4 px-3">
                         <a asp-controller="Account" asp-action="Login" class="btn-primary w-full justify-center">Sign In</a>
                     </div>
                 }
@@ -132,18 +150,18 @@
             
             @if (User.Identity?.IsAuthenticated == true)
             {
-                <div class="border-t border-gym-border pb-3 pt-4">
+                <div class="border-t border-zinc-200 dark:border-gym-border pb-3 pt-4">
                     <div class="flex items-center px-5 gap-3">
-                        <div class="h-10 w-10 rounded-full bg-gradient-to-tr from-neon-cyan to-neon-green flex items-center justify-center text-black font-bold">
+                        <div class="h-10 w-10 rounded-full bg-gradient-to-tr from-neon-cyan to-neon-green flex items-center justify-center text-black font-bold shadow-[0_0_10px_rgba(0,255,255,0.3)]">
                             @(User.Identity.Name?.Substring(0,1).ToUpper() ?? "U")
                         </div>
                         <div class="ml-3">
-                            <div class="text-base font-medium text-white">@User.Identity.Name</div>
+                            <div class="text-base font-bold text-zinc-900 dark:text-white">@User.Identity.Name</div>
                         </div>
                     </div>
                     <div class="mt-3 space-y-1 px-2">
                         <form asp-controller="Account" asp-action="Logout" method="post" class="block w-full">
-                            <button type="submit" class="block w-full rounded-md px-3 py-2 text-base font-medium text-zinc-400 hover:bg-zinc-800 hover:text-white text-left">Sign out</button>
+                            <button type="submit" class="block w-full rounded-md px-3 py-2 text-base font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white text-left transition-colors">Sign out</button>
                         </form>
                     </div>
                 </div>
@@ -154,21 +172,21 @@
     <main class="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         @if (TempData["SuccessMessage"] != null)
         {
-            <div class="mb-6 rounded-lg bg-green-500/10 p-4 border border-green-500/20 text-green-400 flex items-start gap-3">
+            <div class="mb-6 rounded-lg bg-green-50 dark:bg-green-500/10 p-4 border border-green-200 dark:border-green-500/20 text-green-700 dark:text-green-400 flex items-start gap-3 font-medium">
                 <i class="bi bi-check-circle-fill mt-0.5"></i>
                 <div>@TempData["SuccessMessage"]</div>
             </div>
         }
         @if (TempData["ErrorMessage"] != null)
         {
-            <div class="mb-6 rounded-lg bg-red-500/10 p-4 border border-red-500/20 text-red-400 flex items-start gap-3">
+            <div class="mb-6 rounded-lg bg-red-50 dark:bg-red-500/10 p-4 border border-red-200 dark:border-red-500/20 text-red-700 dark:text-red-400 flex items-start gap-3 font-medium">
                 <i class="bi bi-exclamation-triangle-fill mt-0.5"></i>
                 <div>@TempData["ErrorMessage"]</div>
             </div>
         }
         @if (TempData["WarningMessage"] != null)
         {
-            <div class="mb-6 rounded-lg bg-yellow-500/10 p-4 border border-yellow-500/20 text-yellow-400 flex items-start gap-3">
+            <div class="mb-6 rounded-lg bg-yellow-50 dark:bg-yellow-500/10 p-4 border border-yellow-200 dark:border-yellow-500/20 text-yellow-700 dark:text-yellow-400 flex items-start gap-3 font-medium">
                 <i class="bi bi-exclamation-circle-fill mt-0.5"></i>
                 <div>@TempData["WarningMessage"]</div>
             </div>
@@ -177,9 +195,9 @@
         @RenderBody()
     </main>
 
-    <footer class="mt-auto border-t border-gym-border py-6 bg-gym-card/50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm text-zinc-500">
-            &copy; @DateTime.Now.Year - Power Fitness - <a href="#" class="text-neon-cyan hover:text-white transition-colors">Privacy Policy</a>
+    <footer class="mt-auto border-t border-zinc-200 dark:border-gym-border py-6 bg-white/50 dark:bg-gym-card/50 backdrop-blur-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm font-medium text-zinc-500">
+            &copy; @DateTime.Now.Year - Power Fitness - <a href="#" class="text-neon-cyan hover:text-[#00e6e6] transition-colors">Privacy Policy</a>
         </div>
     </footer>
 
@@ -205,19 +223,19 @@
                 badge.textContent = current + 1;
 
                 const item = document.createElement("li");
-                item.className = "px-4 py-3 hover:bg-zinc-800 transition-colors border-b border-gym-border/50";
-                item.innerHTML = `<a class="block text-sm text-zinc-300" href="/Notifications">${message}</a>`;
+                item.className = "px-4 py-3 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors border-b border-zinc-100 dark:border-gym-border/50";
+                item.innerHTML = `<a class="block text-sm text-zinc-700 dark:text-zinc-300 font-medium" href="/Notifications">${message}</a>`;
                 list.insertBefore(item, list.firstChild);
 
                 // Toast Notification using Tailwind
                 const toast = document.createElement("div");
-                toast.className = "fixed bottom-4 right-4 z-[9999] bg-gym-card border border-neon-cyan rounded-lg shadow-neon-cyan p-4 flex items-center gap-3 transition-opacity duration-300";
+                toast.className = "fixed bottom-4 right-4 z-[9999] bg-white dark:bg-gym-card border border-neon-cyan rounded-lg shadow-lg dark:shadow-neon-cyan p-4 flex items-center gap-3 transition-opacity duration-300";
                 toast.innerHTML = `
-                    <div class="w-8 h-8 rounded-full bg-neon-cyan/20 flex items-center justify-center text-neon-cyan">
+                    <div class="w-8 h-8 rounded-full bg-neon-cyan/20 flex items-center justify-center text-neon-cyan shrink-0">
                         <i class="bi bi-bell-fill"></i>
                     </div>
-                    <div class="text-sm text-zinc-200">${message}</div>
-                    <button type="button" class="ml-2 text-zinc-500 hover:text-white" onclick="this.parentElement.remove()">
+                    <div class="text-sm font-medium text-zinc-800 dark:text-zinc-200">${message}</div>
+                    <button type="button" class="ml-2 text-zinc-400 hover:text-zinc-900 dark:text-zinc-500 dark:hover:text-white" onclick="this.parentElement.remove()">
                         <i class="bi bi-x-lg"></i>
                     </button>
                 `;
@@ -250,29 +268,29 @@
             
             <!-- Header -->
             <div class="bg-gradient-to-r from-neon-cyan to-neon-green p-4 flex justify-between items-center shrink-0">
-                <strong class="text-black font-display text-lg">Gym Assistant</strong>
+                <strong class="text-black font-display text-lg font-bold">Gym Assistant</strong>
                 <button @@click="chatOpen = false" class="text-black/70 hover:text-black transition-colors">
                     <i class="bi bi-x-lg text-lg"></i>
                 </button>
             </div>
             
             <!-- Messages Area -->
-            <div id="chatbot-messages" class="flex-1 overflow-y-auto p-4 space-y-3 bg-gym-card/50">
+            <div id="chatbot-messages" class="flex-1 overflow-y-auto p-4 space-y-3 bg-zinc-50/90 dark:bg-gym-card/50">
                 <!-- Messages will be injected here -->
                 <div id="chatbot-suggestions" class="flex flex-wrap gap-2 mt-auto"></div>
             </div>
             
             <!-- Input Area -->
-            <div class="p-3 bg-zinc-900 border-t border-gym-border flex gap-2 shrink-0">
-                <input id="chatbot-input" type="text" class="flex-1 bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan transition-colors" placeholder="Type a message..." @@keydown.enter="window.ask()" />
-                <button id="chatbot-send" onclick="window.ask()" class="btn-secondary px-3 py-2 rounded-lg">
+            <div class="p-3 bg-white dark:bg-zinc-900 border-t border-zinc-200 dark:border-gym-border flex gap-2 shrink-0">
+                <input id="chatbot-input" type="text" class="flex-1 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan transition-colors" placeholder="Type a message..." @@keydown.enter="window.ask()" />
+                <button id="chatbot-send" onclick="window.ask()" class="btn-secondary px-3 py-2 rounded-lg shadow-[0_0_10px_rgba(0,255,255,0.3)]">
                     <i class="bi bi-send-fill text-black"></i>
                 </button>
             </div>
         </div>
 
         <!-- Chat Toggle Button -->
-        <button @@click="chatOpen = !chatOpen" class="w-14 h-14 rounded-full bg-neon-green flex items-center justify-center text-black shadow-neon-green hover:bg-[#32e011] hover:scale-105 transition-all duration-300 focus:outline-none">
+        <button @@click="chatOpen = !chatOpen" class="w-14 h-14 rounded-full bg-neon-green flex items-center justify-center text-black shadow-[0_0_15px_rgba(57,255,20,0.5)] hover:bg-[#32e011] hover:scale-105 transition-all duration-300 focus:outline-none">
             <i class="bi bi-chat-dots-fill text-2xl" x-show="!chatOpen"></i>
             <i class="bi bi-x-lg text-2xl" x-show="chatOpen" style="display:none;"></i>
         </button>
@@ -290,14 +308,18 @@
                 'What are your opening hours?',
                 'What plans do you have?',
                 'Do you have a free trial?',
-                'What classes are available?'
+                'What classes are available?',
+                'مواعيد العمل؟',
+                'الخطط المتاحة؟',
+                'هل يوجد تجربة مجانية؟',
+                'ما هي الحصص المتاحة؟'
             ];
 
             function showSuggestions() {
                 suggestions.innerHTML = '';
                 chips.forEach(function (text) {
                     var chip = document.createElement('button');
-                    chip.className = 'px-3 py-1.5 rounded-full border border-neon-cyan/50 text-neon-cyan text-xs hover:bg-neon-cyan hover:text-black transition-colors text-left';
+                    chip.className = 'px-3 py-1.5 rounded-full border border-neon-cyan/50 text-zinc-700 dark:text-neon-cyan text-xs font-semibold hover:bg-neon-cyan hover:text-black transition-colors text-left bg-white dark:bg-transparent';
                     chip.textContent = text;
                     chip.onclick = function () { window.askMessage(text); };
                     suggestions.appendChild(chip);
@@ -310,7 +332,7 @@
 
             function addMessage(text, isUser) {
                 var div = document.createElement('div');
-                div.className = 'max-w-[85%] rounded-2xl px-4 py-2 text-sm ' + (isUser ? 'bg-neon-cyan text-black ml-auto rounded-br-sm' : 'bg-zinc-800 text-zinc-200 mr-auto rounded-bl-sm border border-zinc-700');
+                div.className = 'max-w-[85%] rounded-2xl px-4 py-2 text-sm font-medium ' + (isUser ? 'bg-neon-cyan text-black ml-auto rounded-br-sm shadow-sm' : 'bg-white dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 mr-auto rounded-bl-sm border border-zinc-200 dark:border-zinc-700 shadow-sm');
                 div.textContent = text;
                 messages.insertBefore(div, suggestions);
                 messages.scrollTop = messages.scrollHeight;
@@ -322,7 +344,7 @@
                 hideSuggestions();
                 
                 var typing = document.createElement('div');
-                typing.className = 'bg-zinc-800 text-zinc-400 rounded-2xl rounded-bl-sm px-4 py-2 text-sm mr-auto w-16 border border-zinc-700';
+                typing.className = 'bg-white dark:bg-zinc-800 text-zinc-400 rounded-2xl rounded-bl-sm px-4 py-2 text-sm mr-auto w-16 border border-zinc-200 dark:border-zinc-700 shadow-sm';
                 typing.innerHTML = '<span class="animate-pulse">...</span>';
                 typing.id = 'typing-indicator';
                 messages.insertBefore(typing, suggestions);

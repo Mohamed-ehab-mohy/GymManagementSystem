@@ -4,8 +4,8 @@
 }
 
 <div class="mb-8">
-    <h1 class="text-3xl font-display font-bold text-white mb-2">Gym <span class="text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan to-neon-green">Dashboard</span></h1>
-    <p class="text-zinc-400">@DateTime.Now.ToString("dddd, MMMM dd, yyyy")</p>
+    <h1 class="text-3xl font-display font-bold text-zinc-900 dark:text-white mb-2">Gym <span class="text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan to-neon-green">Dashboard</span></h1>
+    <p class="text-zinc-500 dark:text-zinc-400">@DateTime.Now.ToString("dddd, MMMM dd, yyyy")</p>
 </div>
 
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-10">
@@ -17,8 +17,8 @@
                 <i class="bi bi-people-fill text-neon-green text-xl"></i>
             </div>
         </div>
-        <div class="font-display text-4xl font-bold text-white mb-1">@Model.TotalMembers</div>
-        <div class="text-sm font-medium text-zinc-400">Total Members</div>
+        <div class="font-display text-4xl font-bold text-zinc-900 dark:text-white mb-1">@Model.TotalMembers</div>
+        <div class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Total Members</div>
     </div>
 
     <!-- Total Trainers -->
@@ -29,8 +29,8 @@
                 <i class="bi bi-person-badge-fill text-neon-cyan text-xl"></i>
             </div>
         </div>
-        <div class="font-display text-4xl font-bold text-white mb-1">@Model.TotalTrainers</div>
-        <div class="text-sm font-medium text-zinc-400">Total Trainers</div>
+        <div class="font-display text-4xl font-bold text-zinc-900 dark:text-white mb-1">@Model.TotalTrainers</div>
+        <div class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Total Trainers</div>
     </div>
 
     <!-- Active Plans -->
@@ -41,8 +41,8 @@
                 <i class="bi bi-card-checklist text-neon-green text-xl"></i>
             </div>
         </div>
-        <div class="font-display text-4xl font-bold text-white mb-1">@Model.ActivePlans</div>
-        <div class="text-sm font-medium text-zinc-400">Active Plans</div>
+        <div class="font-display text-4xl font-bold text-zinc-900 dark:text-white mb-1">@Model.ActivePlans</div>
+        <div class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Active Plans</div>
     </div>
 
     <!-- Today's Sessions -->
@@ -53,8 +53,8 @@
                 <i class="bi bi-calendar-event-fill text-purple-400 text-xl"></i>
             </div>
         </div>
-        <div class="font-display text-4xl font-bold text-white mb-1">@Model.TodaySessions</div>
-        <div class="text-sm font-medium text-zinc-400">Today's Sessions</div>
+        <div class="font-display text-4xl font-bold text-zinc-900 dark:text-white mb-1">@Model.TodaySessions</div>
+        <div class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Today's Sessions</div>
     </div>
 
     <!-- Today's Attendance -->
@@ -65,8 +65,8 @@
                 <i class="bi bi-check-circle-fill text-neon-cyan text-xl"></i>
             </div>
         </div>
-        <div class="font-display text-4xl font-bold text-white mb-1">@Model.TodayAttendance</div>
-        <div class="text-sm font-medium text-zinc-400">Today's Attendance</div>
+        <div class="font-display text-4xl font-bold text-zinc-900 dark:text-white mb-1">@Model.TodayAttendance</div>
+        <div class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Today's Attendance</div>
     </div>
 
     <!-- Expiring Memberships -->
@@ -80,29 +80,29 @@
                 Critical
             </span>
         </div>
-        <div class="font-display text-4xl font-bold text-white mb-1">@Model.ExpiringMemberships</div>
-        <div class="text-sm font-medium text-zinc-400">Expiring (&lt; 7 days)</div>
+        <div class="font-display text-4xl font-bold text-zinc-900 dark:text-white mb-1">@Model.ExpiringMemberships</div>
+        <div class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Expiring (&lt; 7 days)</div>
     </div>
 
     <!-- Total Plans -->
     <div class="glass-card p-6 relative overflow-hidden group">
-        <div class="absolute top-0 left-0 w-full h-1 bg-zinc-600"></div>
+        <div class="absolute top-0 left-0 w-full h-1 bg-zinc-300 dark:bg-zinc-600"></div>
         <div class="flex items-center justify-between mb-4">
-            <div class="w-12 h-12 rounded-xl bg-zinc-800 flex items-center justify-center border border-zinc-700 transition-all duration-300">
-                <i class="bi bi-layers-fill text-zinc-400 text-xl"></i>
+            <div class="w-12 h-12 rounded-xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center border border-zinc-200 dark:border-zinc-700 transition-all duration-300">
+                <i class="bi bi-layers-fill text-zinc-500 dark:text-zinc-400 text-xl"></i>
             </div>
         </div>
-        <div class="font-display text-4xl font-bold text-white mb-1">@Model.TotalPlans</div>
-        <div class="text-sm font-medium text-zinc-400">Total Plans</div>
+        <div class="font-display text-4xl font-bold text-zinc-900 dark:text-white mb-1">@Model.TotalPlans</div>
+        <div class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Total Plans</div>
     </div>
 </div>
 
-<div class="border-t border-gym-border my-8"></div>
+<div class="border-t border-zinc-200 dark:border-gym-border my-8"></div>
 
 <div class="glass-card overflow-hidden">
-    <div class="px-6 py-5 border-b border-gym-border bg-zinc-900/50 flex items-center gap-3">
+    <div class="px-6 py-5 border-b border-zinc-200 dark:border-gym-border bg-zinc-50 dark:bg-zinc-900/50 flex items-center gap-3">
         <i class="bi bi-lightning-charge-fill text-neon-orange text-xl"></i>
-        <h2 class="text-lg font-bold text-white m-0">Quick Actions</h2>
+        <h2 class="text-lg font-bold text-zinc-900 dark:text-white m-0">Quick Actions</h2>
     </div>
     <div class="p-6">
         <div class="flex flex-wrap gap-4">
@@ -118,7 +118,7 @@
             <a asp-controller="ClassSessions" asp-action="Create" class="btn-outline">
                 <i class="bi bi-calendar-plus mr-2"></i> Create Session
             </a>
-            <a asp-controller="Attendance" asp-action="Scan" class="btn-outline border-neon-cyan text-neon-cyan hover:bg-neon-cyan hover:text-black hover:border-neon-cyan">
+            <a asp-controller="Attendance" asp-action="Scan" class="btn-outline border-neon-cyan text-neon-cyan hover:bg-neon-cyan hover:text-black hover:border-neon-cyan dark:hover:text-black">
                 <i class="bi bi-qr-code-scan mr-2"></i> Scan QR
             </a>
         </div>

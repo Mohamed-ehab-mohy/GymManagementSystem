@@ -5,75 +5,101 @@
 }
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" x-data="{ darkMode: localStorage.getItem('gympro-theme') !== 'light' }" x-bind:class="{ 'dark': darkMode }">
 <head>
-    <script>(function(){var t=localStorage.getItem('gympro-theme');if(!t){t=window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'}document.documentElement.setAttribute('data-theme',t)})();</script>
+    <script>
+        if (localStorage.getItem('gympro-theme') === 'light' || (!('gympro-theme' in localStorage) && !window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.remove('dark')
+        } else {
+            document.documentElement.classList.add('dark')
+        }
+    </script>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login — GymPro Management</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <title>Login — GymPro</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
-    <link rel="stylesheet" href="~/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
-<body>
-    <div class="auth-wrapper">
-        <div class="auth-card">
-            <div class="auth-card-body">
-                <div class="auth-brand">
-                    <span class="brand-icon-lg"><i class="bi bi-dumbbell"></i></span>
-                    <h2><span class="text-gradient">GymPro</span></h2>
-                    <p>Sign in to manage your gym</p>
+<body class="bg-zinc-50 dark:bg-gym-darker text-zinc-900 dark:text-zinc-100 font-sans min-h-screen flex items-center justify-center relative overflow-hidden transition-colors duration-300">
+    
+    <!-- Theme Toggle -->
+    <button @@click="darkMode = !darkMode; localStorage.setItem('gympro-theme', darkMode ? 'dark' : 'light')" class="absolute top-6 right-6 p-2 text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white transition-colors bg-white dark:bg-zinc-800 rounded-full shadow-sm dark:shadow-none border border-zinc-200 dark:border-zinc-700">
+        <i class="bi bi-moon-fill" x-show="!darkMode"></i>
+        <i class="bi bi-brightness-high-fill text-yellow-400" x-show="darkMode" style="display: none;"></i>
+    </button>
+
+    <!-- Background Decoration -->
+    <div class="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] rounded-full bg-neon-cyan/10 dark:bg-neon-cyan/5 blur-[120px] pointer-events-none"></div>
+    <div class="absolute -bottom-[20%] -right-[10%] w-[50%] h-[50%] rounded-full bg-neon-green/10 dark:bg-neon-green/5 blur-[120px] pointer-events-none"></div>
+
+    <div class="w-full max-w-md p-4 relative z-10">
+        <div class="glass-card p-8 md:p-10 border-zinc-200 dark:border-gym-border shadow-lg dark:shadow-glass">
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-neon-green/10 border border-neon-green/30 shadow-[0_0_15px_rgba(57,255,20,0.2)] mb-4">
+                    <i class="bi bi-dumbbell text-3xl text-neon-green"></i>
+                </div>
+                <h1 class="text-3xl font-display font-bold text-zinc-900 dark:text-white">Gym<span class="text-transparent bg-clip-text bg-gradient-to-r from-neon-green to-neon-cyan">Pro</span></h1>
+                <p class="text-zinc-500 dark:text-zinc-400 mt-2 font-medium">Welcome back! Sign in to manage.</p>
+            </div>
+
+            <form method="post" asp-action="Login" asp-controller="Account">
+                <div asp-validation-summary="ModelOnly" class="text-red-500 text-sm mb-4 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 p-3 rounded-lg font-medium"></div>
+
+                <div class="mb-5">
+                    <label asp-for="Email" class="form-label"></label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="bi bi-envelope text-zinc-400"></i>
+                        </div>
+                        <input asp-for="Email" class="form-input pl-10" autofocus placeholder="you@gym.com" />
+                    </div>
+                    <span asp-validation-for="Email" class="text-red-500 text-xs mt-1 block"></span>
                 </div>
 
-                <form method="post" asp-action="Login" asp-controller="Account">
-                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-
-                    <div class="mb-3">
-                        <label asp-for="Email" class="form-label"></label>
-                        <input asp-for="Email" class="form-control" autofocus placeholder="you@gym.com" />
-                        <span asp-validation-for="Email" class="text-danger"></span>
+                <div class="mb-6">
+                    <div class="flex justify-between items-center mb-1.5">
+                        <label asp-for="Password" class="block text-sm font-medium text-zinc-700 dark:text-zinc-400"></label>
+                        <a asp-action="ForgotPassword" asp-controller="Account" class="text-sm font-semibold text-neon-cyan hover:text-[#00e6e6] transition-colors">Forgot Password?</a>
                     </div>
-
-                    <div class="mb-4">
-                        <label asp-for="Password" class="form-label"></label>
-                        <input asp-for="Password" class="form-control" placeholder="••••••••" />
-                        <span asp-validation-for="Password" class="text-danger"></span>
-                    </div>
-
-                    <button type="submit" class="btn btn-gradient w-100 mb-3 py-3">Sign In</button>
-
-                    <div class="text-center mb-3">
-                        <a asp-action="ForgotPassword" asp-controller="Account" class="small" style="color: var(--text-muted);">Forgot Password?</a>
-                    </div>
-
-                    @if (ViewBag.GoogleAuthEnabled == true)
-                    {
-                        <div class="text-center mb-3">
-                            <span class="small text-muted">or continue with</span>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="bi bi-lock text-zinc-400"></i>
                         </div>
+                        <input asp-for="Password" class="form-input pl-10" placeholder="••••••••" />
+                    </div>
+                    <span asp-validation-for="Password" class="text-red-500 text-xs mt-1 block"></span>
+                </div>
 
-                        <a asp-action="GoogleLogin" asp-controller="Account" class="btn btn-glass w-100 mb-3 py-3">
-                            <i class="bi bi-google me-2"></i>Google
-                        </a>
-                    }
+                <button type="submit" class="btn-primary w-full py-3 text-lg shadow-[0_0_15px_rgba(57,255,20,0.3)]">
+                    Sign In
+                </button>
 
-                    <p class="text-center text-muted small mb-0">
-                        Don't have an account? <a asp-action="Register" class="text-primary-theme fw-semibold">Register</a>
+                @if (ViewBag.GoogleAuthEnabled == true)
+                {
+                    <div class="my-6 flex items-center">
+                        <div class="flex-grow border-t border-zinc-200 dark:border-zinc-800"></div>
+                        <span class="flex-shrink-0 mx-4 text-zinc-400 dark:text-zinc-500 text-sm font-medium">or continue with</span>
+                        <div class="flex-grow border-t border-zinc-200 dark:border-zinc-800"></div>
+                    </div>
+
+                    <a asp-action="GoogleLogin" asp-controller="Account" class="w-full flex items-center justify-center px-4 py-2.5 border border-zinc-300 dark:border-zinc-700 rounded-lg text-zinc-700 dark:text-zinc-300 bg-white dark:bg-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-colors shadow-sm font-semibold">
+                        <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="w-5 h-5 mr-2" />
+                        Google
+                    </a>
+                }
+
+                <div class="mt-8 text-center">
+                    <p class="text-zinc-500 dark:text-zinc-400 text-sm font-medium">
+                        Don't have an account? <a asp-action="Register" class="text-neon-cyan hover:text-[#00e6e6] font-semibold ml-1">Register here</a>
                     </p>
-                </form>
-            </div>
+                </div>
+            </form>
         </div>
     </div>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <partial name="_ValidationScriptsPartial" />
 </body>
 </html>
-
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}

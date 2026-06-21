@@ -3,145 +3,167 @@
     ViewData["Title"] = "My Dashboard";
 }
 
-<div class="welcome-header">
-    <h1>Welcome, <span class="text-gradient">@Model.MemberName</span></h1>
-    <p>Member since @Model.JoinDate.ToString("MMM yyyy")</p>
+<div class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-200 dark:border-gym-border pb-6">
+    <div>
+        <h1 class="text-3xl font-display font-bold text-zinc-900 dark:text-white mb-2">Welcome, <span class="text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan to-blue-500">@Model.MemberName</span></h1>
+        <p class="text-zinc-500 dark:text-zinc-400">Member since @Model.JoinDate.ToString("MMM yyyy")</p>
+    </div>
 </div>
 
-<div class="row g-4">
-    <div class="col-lg-4">
-        <div class="stat-card h-100">
-            <div class="stat-icon primary">
-                <i class="bi bi-card-text"></i>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+    <!-- Membership -->
+    <div class="glass-card p-6 relative overflow-hidden group h-full flex flex-col">
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-400 to-green-600"></div>
+        <div class="flex items-center gap-3 mb-4">
+            <div class="w-12 h-12 rounded-xl bg-green-500/10 flex items-center justify-center border border-green-500/20 group-hover:shadow-[0_0_15px_rgba(34,197,94,0.4)] transition-all duration-300">
+                <i class="bi bi-card-text text-green-500 text-xl"></i>
             </div>
-            <h5 class="fw-bold mb-3">Membership</h5>
-            @if (Model.HasActiveMembership)
-            {
-                <span class="badge bg-success mb-2">Active</span>
-                <h4 class="fw-bold" style="color: var(--primary);">@Model.PlanName</h4>
-                <p class="text-muted small mb-1">
+            <h5 class="text-xl font-bold text-zinc-900 dark:text-white m-0">Membership</h5>
+        </div>
+        
+        @if (Model.HasActiveMembership)
+        {
+            <div class="mb-3">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-500/10 text-green-500 border border-green-500/20 mb-2">Active</span>
+                <h4 class="text-2xl font-bold text-green-500">@Model.PlanName</h4>
+                <p class="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
                     <i class="bi bi-calendar-check me-1"></i>@Model.MembershipStart?.ToString("dd MMM yyyy") - @Model.MembershipEnd?.ToString("dd MMM yyyy")
                 </p>
-                <div class="mt-3">
-                    <div class="d-flex justify-content-between mb-1 small">
-                        <span class="text-muted">Days Remaining</span>
-                        <span class="fw-bold @(Model.DaysRemaining <= 7 ? "" : "")" style="color: @(Model.DaysRemaining <= 7 ? "var(--danger)" : "var(--success)")">@Model.DaysRemaining</span>
-                    </div>
-                    <div class="progress">
-                        <div class="progress-bar" style="width:@Math.Min(100, Model.DaysRemaining * 100 / 365)%"></div>
-                    </div>
-                </div>
-            }
-            else
-            {
-                <div class="text-center py-3">
-                    <i class="bi bi-exclamation-circle" style="font-size: 2.5rem; color: var(--text-muted);"></i>
-                    <p class="text-muted mt-2 small">No active membership</p>
-                    <a asp-controller="Plans" asp-action="Index" class="btn btn-sm btn-gradient">Browse Plans</a>
-                </div>
-            }
-        </div>
-    </div>
-
-    <div class="col-lg-4">
-        <div class="stat-card h-100">
-            <div class="stat-icon secondary">
-                <i class="bi bi-heart-pulse"></i>
             </div>
-            <h5 class="fw-bold mb-3">Health Stats</h5>
-            @if (Model.Bmi.HasValue)
-            {
-                <div class="text-center">
-                    <canvas id="bmiChart" width="140" height="140" style="max-width:140px;margin:0 auto"></canvas>
-                            <h3 class="fw-bold mt-2 mb-0" style="font-size: 1.5rem;">@Model.Bmi.Value.ToString("F1", null) <small class="text-muted" style="font-size:0.75rem;">BMI</small></h3>
-                    <span class="badge bg-info">@Model.BmiCategory</span>
+            <div class="mt-auto">
+                <div class="flex justify-between items-center mb-1 text-sm">
+                    <span class="text-zinc-500 dark:text-zinc-400">Days Remaining</span>
+                    <span class="font-bold @(Model.DaysRemaining <= 7 ? "text-red-500" : "text-green-500")">@Model.DaysRemaining</span>
                 </div>
-                <div class="row mt-3 g-2">
-                    <div class="col-6">
-                        <div class="detail-group text-center p-2">
-                            <div class="detail-label">Weight</div>
-                            <div class="fw-bold">@Model.Weight kg</div>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="detail-group text-center p-2">
-                            <div class="detail-label">Height</div>
-                            <div class="fw-bold">@Model.Height cm</div>
-                        </div>
-                    </div>
+                <div class="w-full bg-zinc-200 dark:bg-zinc-800 rounded-full h-2">
+                    <div class="bg-green-500 h-2 rounded-full" style="width: @Math.Min(100, Model.DaysRemaining * 100 / 365)%"></div>
                 </div>
-            }
-            else
-            {
-                <div class="text-center py-3">
-                    <i class="bi bi-clipboard-data" style="font-size: 2.5rem; color: var(--text-muted);"></i>
-                    <p class="text-muted mt-2 small">No health data recorded</p>
-                </div>
-            }
-        </div>
-    </div>
-
-    <div class="col-lg-4">
-        <div class="stat-card h-100">
-            <div class="stat-icon success">
-                <i class="bi bi-bar-chart"></i>
-            </div>
-            <h5 class="fw-bold mb-3">Attendance</h5>
-            <div class="text-center">
-                <canvas id="attendanceChart" width="140" height="140" style="max-width:140px;margin:0 auto"></canvas>
-                <div class="row mt-3 g-2">
-                    <div class="col-6">
-                        <div class="detail-group text-center p-2">
-                            <div class="detail-label">Booked</div>
-                            <div class="fw-bold">@Model.TotalBooked</div>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="detail-group text-center p-2">
-                            <div class="detail-label">Attended</div>
-                            <div class="fw-bold" style="color: var(--success);">@Model.TotalAttended</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="premium-card mt-4">
-    <div class="premium-card-header">
-        <h5 class="mb-0"><i class="bi bi-calendar-event me-2" style="color: var(--primary);"></i>Upcoming Sessions</h5>
-        <a asp-controller="Bookings" asp-action="Index" class="btn btn-sm btn-gradient">Book a Session</a>
-    </div>
-    <div class="premium-card-body">
-        @if (Model.UpcomingSessions.Count == 0)
-        {
-            <div class="empty-state">
-                <div class="empty-icon"><i class="bi bi-calendar-plus"></i></div>
-                <h5>No upcoming sessions</h5>
-                <p class="small">Book your first session to get started.</p>
             </div>
         }
         else
         {
-            <div class="table-responsive">
-                <table class="table align-middle mb-0">
+            <div class="flex flex-col items-center justify-center py-4 mt-auto">
+                <i class="bi bi-exclamation-circle text-4xl text-zinc-400 dark:text-zinc-500 mb-3"></i>
+                <p class="text-sm text-zinc-500 dark:text-zinc-400 mb-4">No active membership</p>
+                <a asp-controller="Plans" asp-action="Index" class="btn-primary py-2 px-4 text-sm">Browse Plans</a>
+            </div>
+        }
+    </div>
+
+    <!-- Health Stats -->
+    <div class="glass-card p-6 relative overflow-hidden group h-full flex flex-col">
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-pink-500"></div>
+        <div class="flex items-center gap-3 mb-4">
+            <div class="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center border border-purple-500/20 group-hover:shadow-[0_0_15px_rgba(168,85,247,0.4)] transition-all duration-300">
+                <i class="bi bi-heart-pulse text-purple-400 text-xl"></i>
+            </div>
+            <h5 class="text-xl font-bold text-zinc-900 dark:text-white m-0">Health Stats</h5>
+        </div>
+
+        @if (Model.Bmi.HasValue)
+        {
+            <div class="text-center relative">
+                <div class="w-36 h-36 mx-auto relative">
+                    <canvas id="bmiChart"></canvas>
+                    <div class="absolute inset-0 flex flex-col items-center justify-center">
+                        <span class="text-2xl font-bold text-zinc-900 dark:text-white">@Model.Bmi.Value.ToString("F1", null)</span>
+                        <span class="text-[10px] uppercase tracking-wider text-zinc-500">BMI</span>
+                    </div>
+                </div>
+                <div class="mt-2">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-neon-cyan/10 text-neon-cyan border border-neon-cyan/20">@Model.BmiCategory</span>
+                </div>
+            </div>
+            <div class="grid grid-cols-2 gap-4 mt-auto pt-4">
+                <div class="bg-zinc-50 dark:bg-zinc-800/50 rounded-xl p-3 text-center border border-zinc-200 dark:border-zinc-800">
+                    <div class="text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1">Weight</div>
+                    <div class="font-bold text-zinc-900 dark:text-white">@Model.Weight kg</div>
+                </div>
+                <div class="bg-zinc-50 dark:bg-zinc-800/50 rounded-xl p-3 text-center border border-zinc-200 dark:border-zinc-800">
+                    <div class="text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1">Height</div>
+                    <div class="font-bold text-zinc-900 dark:text-white">@Model.Height cm</div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="flex flex-col items-center justify-center py-4 mt-auto h-full">
+                <i class="bi bi-clipboard-data text-4xl text-zinc-400 dark:text-zinc-500 mb-3"></i>
+                <p class="text-sm text-zinc-500 dark:text-zinc-400">No health data recorded</p>
+            </div>
+        }
+    </div>
+
+    <!-- Attendance -->
+    <div class="glass-card p-6 relative overflow-hidden group h-full flex flex-col">
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-neon-orange to-yellow-500"></div>
+        <div class="flex items-center gap-3 mb-4">
+            <div class="w-12 h-12 rounded-xl bg-neon-orange/10 flex items-center justify-center border border-neon-orange/20 group-hover:shadow-[0_0_15px_rgba(255,165,0,0.4)] transition-all duration-300">
+                <i class="bi bi-bar-chart text-neon-orange text-xl"></i>
+            </div>
+            <h5 class="text-xl font-bold text-zinc-900 dark:text-white m-0">Attendance</h5>
+        </div>
+
+        <div class="text-center relative">
+            <div class="w-36 h-36 mx-auto relative">
+                <canvas id="attendanceChart"></canvas>
+            </div>
+            <div class="grid grid-cols-2 gap-4 mt-auto pt-4">
+                <div class="bg-zinc-50 dark:bg-zinc-800/50 rounded-xl p-3 text-center border border-zinc-200 dark:border-zinc-800">
+                    <div class="text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1">Booked</div>
+                    <div class="font-bold text-zinc-900 dark:text-white">@Model.TotalBooked</div>
+                </div>
+                <div class="bg-zinc-50 dark:bg-zinc-800/50 rounded-xl p-3 text-center border border-zinc-200 dark:border-zinc-800">
+                    <div class="text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1">Attended</div>
+                    <div class="font-bold text-green-500">@Model.TotalAttended</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="glass-card overflow-hidden">
+    <div class="px-6 py-5 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <i class="bi bi-calendar-event text-neon-cyan text-xl"></i>
+            <h5 class="text-lg font-bold text-zinc-900 dark:text-white m-0">Upcoming Sessions</h5>
+        </div>
+        <a asp-controller="Bookings" asp-action="Index" class="btn-primary py-1.5 px-4 text-sm shadow-[0_0_15px_rgba(57,255,20,0.3)]">Book a Session</a>
+    </div>
+    
+    <div class="p-0">
+        @if (Model.UpcomingSessions.Count == 0)
+        {
+            <div class="flex flex-col items-center justify-center py-12">
+                <div class="w-16 h-16 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center mb-4 border border-zinc-200 dark:border-zinc-700">
+                    <i class="bi bi-calendar-plus text-3xl text-zinc-400 dark:text-zinc-500"></i>
+                </div>
+                <h5 class="text-lg font-bold text-zinc-900 dark:text-white mb-2">No upcoming sessions</h5>
+                <p class="text-zinc-500 dark:text-zinc-400">Book your first session to get started.</p>
+            </div>
+        }
+        else
+        {
+            <div class="overflow-x-auto w-full">
+                <table class="w-full text-left border-collapse whitespace-nowrap">
                     <thead>
-                        <tr>
-                            <th>Session</th>
-                            <th>Date & Time</th>
-                            <th>Trainer</th>
-                            <th>Category</th>
+                        <tr class="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/30">
+                            <th class="py-4 px-6 font-semibold text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Session</th>
+                            <th class="py-4 px-6 font-semibold text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Date & Time</th>
+                            <th class="py-4 px-6 font-semibold text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Trainer</th>
+                            <th class="py-4 px-6 font-semibold text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Category</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="divide-y divide-zinc-200 dark:divide-zinc-800 text-zinc-700 dark:text-zinc-300">
                         @foreach (var session in Model.UpcomingSessions)
                         {
-                            <tr>
-                                <td class="fw-semibold">@session.SessionName</td>
-                                <td>@session.ScheduleTime.ToString("dd MMM yyyy HH:mm")</td>
-                                <td>@session.TrainerName</td>
-                                <td><span class="badge bg-primary">@session.CategoryName</span></td>
+                            <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-800/40 transition-colors">
+                                <td class="py-4 px-6 font-semibold text-zinc-900 dark:text-white">@session.SessionName</td>
+                                <td class="py-4 px-6">@session.ScheduleTime.ToString("dd MMM yyyy HH:mm")</td>
+                                <td class="py-4 px-6">@session.TrainerName</td>
+                                <td class="py-4 px-6">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-neon-cyan/10 text-neon-cyan border border-neon-cyan/20">@session.CategoryName</span>
+                                </td>
                             </tr>
                         }
                     </tbody>
@@ -155,49 +177,68 @@
 {
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script>
-        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-        const textColor = isDark ? '#f5f5f4' : '#292524';
+        document.addEventListener('alpine:init', () => {
+            Alpine.effect(() => {
+                const isDark = document.documentElement.classList.contains('dark');
+                const emptyColor = isDark ? '#27272a' : '#f4f4f5'; // zinc-800 : zinc-100
+                
+                Chart.helpers.each(Chart.instances, function(instance){
+                    instance.destroy();
+                });
 
-        @if (Model.Bmi.HasValue)
-        {
-            <text>
-            new Chart(document.getElementById('bmiChart'), {
-                type: 'doughnut',
-                data: {
-                    labels: ['BMI', 'Remaining'],
-                    datasets: [{
-                        data: [@Model.Bmi.Value.ToString("F1", null), Math.Max(0, 40 - (double)@Model.Bmi.Value)],
-                        backgroundColor: ['#a855f7', isDark ? '#292524' : '#f5f5f0'],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    cutout: '78%',
-                    responsive: false,
-                    plugins: { legend: { display: false }, tooltip: { enabled: false } }
+                @if (Model.Bmi.HasValue)
+                {
+                    <text>
+                    new Chart(document.getElementById('bmiChart'), {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['BMI', 'Remaining'],
+                            datasets: [{
+                                data: [@Model.Bmi.Value.ToString("F1", null), Math.max(0, 40 - @Model.Bmi.Value.ToString("F1", null))],
+                                backgroundColor: ['#06b6d4', emptyColor],
+                                borderWidth: 0
+                            }]
+                        },
+                        options: {
+                            cutout: '80%',
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: { legend: { display: false }, tooltip: { enabled: false } }
+                        }
+                    });
+                    </text>
+                }
+
+                new Chart(document.getElementById('attendanceChart'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Attended', 'Missed'],
+                        datasets: [{
+                            data: [@Model.TotalAttended, Math.max(0, @Model.TotalBooked - @Model.TotalAttended)],
+                            backgroundColor: ['#22c55e', emptyColor],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        cutout: '80%',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: { callbacks: { label: ctx => ctx.label + ': ' + ctx.parsed + ' sessions' } }
+                        }
+                    }
+                });
+            });
+        });
+
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.attributeName === 'class') {
+                    window.dispatchEvent(new Event('theme-changed'));
                 }
             });
-            </text>
-        }
-
-        new Chart(document.getElementById('attendanceChart'), {
-            type: 'doughnut',
-            data: {
-                labels: ['Attended', 'Missed'],
-                datasets: [{
-                    data: [@Model.TotalAttended, Math.max(0, @Model.TotalBooked - @Model.TotalAttended)],
-                    backgroundColor: ['#22c55e', isDark ? '#292524' : '#f5f5f0'],
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                cutout: '73%',
-                responsive: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: { callbacks: { label: ctx => ctx.label + ': ' + ctx.parsed + ' sessions' } }
-                }
-            }
         });
+        observer.observe(document.documentElement, { attributes: true });
     </script>
 }

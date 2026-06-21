@@ -3,114 +3,136 @@
     ViewData["Title"] = "Analytics Dashboard";
 }
 
-<div class="welcome-header">
-    <h1>Analytics <span class="text-gradient">Dashboard</span></h1>
-    <p>@DateTime.Now.ToString("dddd, MMMM dd, yyyy")</p>
-</div>
-
-<div class="row g-4 mb-4">
-    <div class="col-md-3">
-        <div class="stat-card">
-            <div class="stat-icon success">
-                <i class="bi bi-currency-dollar"></i>
-            </div>
-            <div class="stat-value" style="font-size:1.5rem;">@Model.MonthlyRevenue.ToString("C")</div>
-            <div class="stat-label">Revenue This Month</div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="stat-card">
-            <div class="stat-icon primary">
-                <i class="bi bi-people-fill"></i>
-            </div>
-            <div class="stat-value">@Model.ActiveMemberCount</div>
-            <div class="stat-label">Active Members</div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="stat-card">
-            <div class="stat-icon accent">
-                <i class="bi bi-calendar-check-fill"></i>
-            </div>
-            <div class="stat-value">@Model.TodaySessionsCount</div>
-            <div class="stat-label">Today's Sessions</div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="stat-card">
-            <div class="stat-icon danger">
-                <i class="bi bi-exclamation-triangle-fill"></i>
-            </div>
-            <div class="stat-value">@Model.ExpiringSoonCount</div>
-            <div class="stat-label">Expiring (7 days)</div>
-        </div>
+<div class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-200 dark:border-gym-border pb-6">
+    <div>
+        <h1 class="text-3xl font-display font-bold text-zinc-900 dark:text-white mb-2">Analytics <span class="text-transparent bg-clip-text bg-gradient-to-r from-neon-orange to-neon-cyan">Dashboard</span></h1>
+        <p class="text-zinc-500 dark:text-zinc-400">@DateTime.Now.ToString("dddd, MMMM dd, yyyy")</p>
     </div>
 </div>
 
-<div class="row g-4 mb-4">
-    <div class="col-md-6">
-        <div class="premium-card">
-            <div class="premium-card-header">
-                <h5 class="mb-0"><i class="bi bi-people me-2" style="color: var(--primary);"></i>New Members Per Month</h5>
-            </div>
-            <div class="premium-card-body">
-                <canvas id="membersChart" height="200"></canvas>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+    <!-- Revenue -->
+    <div class="glass-card p-6 relative overflow-hidden group">
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-400 to-green-600"></div>
+        <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 rounded-xl bg-green-500/10 flex items-center justify-center border border-green-500/20 group-hover:shadow-[0_0_15px_rgba(34,197,94,0.4)] transition-all duration-300">
+                <i class="bi bi-currency-dollar text-green-500 text-xl"></i>
             </div>
         </div>
+        <div class="font-display text-3xl font-bold text-zinc-900 dark:text-white mb-1">@Model.MonthlyRevenue.ToString("C")</div>
+        <div class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Revenue This Month</div>
     </div>
-    <div class="col-md-6">
-        <div class="premium-card">
-            <div class="premium-card-header">
-                <h5 class="mb-0"><i class="bi bi-cash-stack me-2" style="color: var(--success);"></i>Revenue Per Month</h5>
+
+    <!-- Active Members -->
+    <div class="glass-card p-6 relative overflow-hidden group">
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-neon-cyan to-blue-500"></div>
+        <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 rounded-xl bg-neon-cyan/10 flex items-center justify-center border border-neon-cyan/20 group-hover:shadow-[0_0_15px_rgba(0,255,255,0.4)] transition-all duration-300">
+                <i class="bi bi-people-fill text-neon-cyan text-xl"></i>
             </div>
-            <div class="premium-card-body">
-                <canvas id="revenueChart" height="200"></canvas>
+        </div>
+        <div class="font-display text-4xl font-bold text-zinc-900 dark:text-white mb-1">@Model.ActiveMemberCount</div>
+        <div class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Active Members</div>
+    </div>
+
+    <!-- Today's Sessions -->
+    <div class="glass-card p-6 relative overflow-hidden group">
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-pink-500"></div>
+        <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center border border-purple-500/20 group-hover:shadow-[0_0_15px_rgba(168,85,247,0.4)] transition-all duration-300">
+                <i class="bi bi-calendar-check-fill text-purple-400 text-xl"></i>
             </div>
+        </div>
+        <div class="font-display text-4xl font-bold text-zinc-900 dark:text-white mb-1">@Model.TodaySessionsCount</div>
+        <div class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Today's Sessions</div>
+    </div>
+
+    <!-- Expiring Soon -->
+    <div class="glass-card p-6 relative overflow-hidden group">
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 to-red-700"></div>
+        <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 rounded-xl bg-red-500/10 flex items-center justify-center border border-red-500/20 group-hover:shadow-[0_0_15px_rgba(239,68,68,0.4)] transition-all duration-300">
+                <i class="bi bi-exclamation-triangle-fill text-red-500 text-xl"></i>
+            </div>
+            <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-xs font-semibold bg-red-500/10 text-red-500 border border-red-500/20">
+                Action Needed
+            </span>
+        </div>
+        <div class="font-display text-4xl font-bold text-zinc-900 dark:text-white mb-1">@Model.ExpiringSoonCount</div>
+        <div class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Expiring (7 days)</div>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+    <div class="glass-card overflow-hidden">
+        <div class="px-6 py-5 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 flex items-center gap-3">
+            <i class="bi bi-people text-neon-cyan text-xl"></i>
+            <h5 class="text-lg font-bold text-zinc-900 dark:text-white m-0">New Members Per Month</h5>
+        </div>
+        <div class="p-6">
+            <canvas id="membersChart" height="250"></canvas>
+        </div>
+    </div>
+    
+    <div class="glass-card overflow-hidden">
+        <div class="px-6 py-5 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 flex items-center gap-3">
+            <i class="bi bi-cash-stack text-green-500 text-xl"></i>
+            <h5 class="text-lg font-bold text-zinc-900 dark:text-white m-0">Revenue Per Month</h5>
+        </div>
+        <div class="p-6">
+            <canvas id="revenueChart" height="250"></canvas>
         </div>
     </div>
 </div>
 
-<div class="row g-4 mb-4">
-    <div class="col-md-6">
-        <div class="premium-card">
-            <div class="premium-card-header">
-                <h5 class="mb-0"><i class="bi bi-pie-chart me-2" style="color: var(--secondary);"></i>Members by Plan</h5>
-            </div>
-            <div class="premium-card-body">
-                <canvas id="planChart" height="200"></canvas>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
+    <div class="glass-card overflow-hidden">
+        <div class="px-6 py-5 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 flex items-center gap-3">
+            <i class="bi bi-pie-chart text-purple-400 text-xl"></i>
+            <h5 class="text-lg font-bold text-zinc-900 dark:text-white m-0">Members by Plan</h5>
+        </div>
+        <div class="p-6 flex justify-center">
+            <div style="height: 300px; width: 100%; display: flex; justify-content: center;">
+                <canvas id="planChart"></canvas>
             </div>
         </div>
     </div>
-    <div class="col-md-6">
-        <div class="premium-card">
-            <div class="premium-card-header">
-                <h5 class="mb-0"><i class="bi bi-trophy me-2" style="color: var(--accent);"></i>Top 5 Sessions</h5>
-            </div>
-            <div class="premium-card-body">
-                <table class="table align-middle mb-0">
-                    <thead>
-                        <tr><th>Session</th><th>Bookings</th><th>Capacity</th><th>Fill Rate</th></tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var s in Model.TopSessions)
-                        {
-                            <tr>
-                                <td class="fw-semibold">@s.SessionName</td>
-                                <td>@s.BookingCount</td>
-                                <td>@s.Capacity</td>
-                                <td>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <div class="progress flex-grow-1" style="height:6px">
-                                            <div class="progress-bar" style="width:@(s.Capacity > 0 ? (s.BookingCount * 100 / s.Capacity) : 0)%"></div>
-                                        </div>
-                                        <small class="fw-semibold" style="color: var(--primary);">@(s.Capacity > 0 ? (s.BookingCount * 100 / s.Capacity) : 0)%</small>
+    
+    <div class="glass-card overflow-hidden flex flex-col">
+        <div class="px-6 py-5 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 flex items-center gap-3">
+            <i class="bi bi-trophy text-neon-orange text-xl"></i>
+            <h5 class="text-lg font-bold text-zinc-900 dark:text-white m-0">Top 5 Sessions</h5>
+        </div>
+        <div class="p-0 overflow-x-auto">
+            <table class="w-full text-left border-collapse whitespace-nowrap">
+                <thead>
+                    <tr class="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/30">
+                        <th class="py-4 px-6 font-semibold text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Session</th>
+                        <th class="py-4 px-6 font-semibold text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Bookings</th>
+                        <th class="py-4 px-6 font-semibold text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Capacity</th>
+                        <th class="py-4 px-6 font-semibold text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Fill Rate</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-800 text-zinc-700 dark:text-zinc-300">
+                    @foreach (var s in Model.TopSessions)
+                    {
+                        var fillRate = s.Capacity > 0 ? (s.BookingCount * 100 / s.Capacity) : 0;
+                        <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-800/40 transition-colors">
+                            <td class="py-4 px-6 font-semibold text-zinc-900 dark:text-white">@s.SessionName</td>
+                            <td class="py-4 px-6">@s.BookingCount</td>
+                            <td class="py-4 px-6">@s.Capacity</td>
+                            <td class="py-4 px-6 w-48">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-full bg-zinc-200 dark:bg-zinc-800 rounded-full h-2">
+                                        <div class="bg-neon-cyan h-2 rounded-full" style="width: @fillRate%"></div>
                                     </div>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
+                                    <span class="text-xs font-bold text-neon-cyan">@fillRate%</span>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
@@ -119,72 +141,105 @@
 {
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script>
-        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-        const textColor = isDark ? '#f5f5f4' : '#292524';
-        const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
+        document.addEventListener('alpine:init', () => {
+            // Re-render charts when theme changes
+            Alpine.effect(() => {
+                const isDark = document.documentElement.classList.contains('dark');
+                const textColor = isDark ? '#f5f5f4' : '#292524';
+                const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
+                
+                // Destroy existing charts to recreate them with new theme
+                Chart.helpers.each(Chart.instances, function(instance){
+                    instance.destroy();
+                });
 
-        new Chart(document.getElementById('membersChart'), {
-            type: 'line',
-            data: {
-                labels: [@Html.Raw(string.Join(",", Model.NewMembersPerMonth.Select(m => $"'{m.Label}'")))],
-                datasets: [{
-                    label: 'New Members',
-                    data: [@string.Join(",", Model.NewMembersPerMonth.Select(m => m.Count))],
-                    borderColor: '#f97316',
-                    backgroundColor: 'rgba(249,115,22,0.08)',
-                    fill: true,
-                    tension: 0.4,
-                    pointBackgroundColor: '#f97316',
-                    pointRadius: 4
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: { legend: { labels: { color: textColor } } },
-                scales: {
-                    x: { ticks: { color: textColor }, grid: { color: gridColor } },
-                    y: { ticks: { color: textColor }, grid: { color: gridColor } }
-                }
-            }
+                new Chart(document.getElementById('membersChart'), {
+                    type: 'line',
+                    data: {
+                        labels: [@Html.Raw(string.Join(",", Model.NewMembersPerMonth.Select(m => $"'{m.Label}'")))],
+                        datasets: [{
+                            label: 'New Members',
+                            data: [@string.Join(",", Model.NewMembersPerMonth.Select(m => m.Count))],
+                            borderColor: '#f97316',
+                            backgroundColor: 'rgba(249,115,22,0.08)',
+                            fill: true,
+                            tension: 0.4,
+                            pointBackgroundColor: '#f97316',
+                            pointRadius: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { labels: { color: textColor } } },
+                        scales: {
+                            x: { ticks: { color: textColor }, grid: { color: gridColor } },
+                            y: { ticks: { color: textColor }, grid: { color: gridColor } }
+                        }
+                    }
+                });
+
+                new Chart(document.getElementById('revenueChart'), {
+                    type: 'bar',
+                    data: {
+                        labels: [@Html.Raw(string.Join(",", Model.RevenuePerMonth.Select(m => $"'{m.Label}'")))],
+                        datasets: [{
+                            label: 'Revenue',
+                            data: [@string.Join(",", Model.RevenuePerMonth.Select(r => r.Revenue))],
+                            backgroundColor: isDark ? 'rgba(34,197,94,0.6)' : 'rgba(34,197,94,0.8)',
+                            borderColor: '#22c55e',
+                            borderWidth: 1,
+                            borderRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { labels: { color: textColor } } },
+                        scales: {
+                            x: { ticks: { color: textColor }, grid: { color: gridColor } },
+                            y: { ticks: { color: textColor }, grid: { color: gridColor } }
+                        }
+                    }
+                });
+
+                new Chart(document.getElementById('planChart'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: [@Html.Raw(string.Join(",", Model.MembersByPlan.Select(p => $"'{p.PlanName}'")))],
+                        datasets: [{
+                            data: [@string.Join(",", Model.MembersByPlan.Select(p => p.MemberCount))],
+                            backgroundColor: ['#f97316', '#a855f7', '#22c55e', '#06b6d4', '#eab308', '#ef4444'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '65%',
+                        plugins: { legend: { position: 'bottom', labels: { color: textColor, padding: 16 } } }
+                    }
+                });
+            });
         });
-
-        new Chart(document.getElementById('revenueChart'), {
-            type: 'bar',
-            data: {
-                labels: [@Html.Raw(string.Join(",", Model.RevenuePerMonth.Select(m => $"'{m.Label}'")))],
-                datasets: [{
-                    label: 'Revenue',
-                    data: [@string.Join(",", Model.RevenuePerMonth.Select(r => r.Revenue))],
-                    backgroundColor: isDark ? 'rgba(249,115,22,0.6)' : 'rgba(249,115,22,0.8)',
-                    borderColor: '#f97316',
-                    borderWidth: 1,
-                    borderRadius: 6
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: { legend: { labels: { color: textColor } } },
-                scales: {
-                    x: { ticks: { color: textColor }, grid: { color: gridColor } },
-                    y: { ticks: { color: textColor }, grid: { color: gridColor } }
+        
+        // Ensure chart updates on theme toggle correctly via Alpine class observer
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.attributeName === 'class') {
+                    // Trigger Alpine effect by reading a fake property or we can just reload the charts
+                    // since we put the Chart creation in an effect it might trigger, but let's dispatch an event if needed
+                    window.dispatchEvent(new Event('theme-changed'));
                 }
-            }
+            });
         });
-
-        new Chart(document.getElementById('planChart'), {
-            type: 'doughnut',
-            data: {
-                labels: [@Html.Raw(string.Join(",", Model.MembersByPlan.Select(p => $"'{p.PlanName}'")))],
-                datasets: [{
-                    data: [@string.Join(",", Model.MembersByPlan.Select(p => p.MemberCount))],
-                    backgroundColor: ['#f97316', '#a855f7', '#22c55e', '#06b6d4', '#eab308', '#ef4444'],
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                responsive: true,
-                cutout: '60%',
-                plugins: { legend: { position: 'bottom', labels: { color: textColor, padding: 16 } } }
+        observer.observe(document.documentElement, { attributes: true });
+        
+        // Optional standalone initialization in case alpine effect is not enough
+        window.addEventListener('theme-changed', () => {
+            if(window.Alpine) {
+                 // The alpine effect should handle it automatically if tied to the class correctly.
+                 // Otherwise we could just manually recreate charts here.
             }
         });
     </script>

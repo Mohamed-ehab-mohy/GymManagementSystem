@@ -1,105 +1,88 @@
-@using GymManagementSystem.Domain
 @model GymManagementSystem.PL.ViewModels.TrainerViewModel
 
 @{
     ViewData["Title"] = "Trainer Details";
 }
 
-<div class="container py-4">
-    <header class="d-flex justify-content-between mb-4 align-items-center border-bottom pb-3" style="border-color: var(--border-color) !important;">
-        <div>
-            <h2 class="display-6 fw-bold mb-1">Trainer <span class="text-gradient">Profile</span></h2>
-            <p class="text-secondary fs-6 mb-0">Detailed professional information.</p>
-        </div>
-        <div class="d-flex gap-2">
-            <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-gradient">
-                <i class="bi bi-pencil me-2"></i> Edit Trainer
-            </a>
-            <a asp-action="Index" class="btn btn-outline-secondary">
-                <i class="bi bi-list me-2"></i> Back to List
-            </a>
-        </div>
-    </header>
+<div class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-200 dark:border-gym-border pb-6">
+    <div>
+        <h2 class="text-3xl font-display font-bold text-zinc-900 dark:text-white mb-1">Trainer <span class="text-transparent bg-clip-text bg-gradient-to-r from-neon-green to-neon-cyan">Profile</span></h2>
+        <p class="text-zinc-500 dark:text-zinc-400">Detailed professional information.</p>
+    </div>
+    <div class="flex flex-wrap gap-3">
+        <a asp-action="Index" class="btn-outline border-zinc-300 dark:border-zinc-700 py-2 text-sm">
+            <i class="bi bi-list mr-2"></i> Back to List
+        </a>
+        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn-primary py-2 text-sm shadow-[0_0_15px_rgba(57,255,20,0.3)]">
+            <i class="bi bi-pencil mr-2"></i> Edit Trainer
+        </a>
+    </div>
+</div>
 
-    <div class="row g-4">
-        <!-- Profile Card -->
-        <div class="col-12 col-lg-4">
-            <div class="premium-card p-4 text-center h-100 d-flex flex-column justify-content-center">
-                <div class="bg-primary text-white rounded-circle d-flex justify-content-center align-items-center mx-auto mb-4" style="width: 120px; height: 120px; font-size: 3rem; font-weight: bold; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)) !important;">
-                    @Model?.FirstName.Substring(0, 1)@Model?.LastName.Substring(0, 1)
-                </div>
-                <h3 class="fw-bold mb-1">@Model?.FirstName @Model?.LastName</h3>
-                <span class="badge bg-secondary mb-3 px-3 py-2 fs-6">@Model?.Specialty</span>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+    <!-- Profile Card -->
+    <div class="glass-card p-8 flex flex-col items-center text-center">
+        <div class="w-32 h-32 rounded-full bg-gradient-to-tr from-neon-green to-neon-cyan flex items-center justify-center text-black text-5xl font-bold shadow-[0_0_20px_rgba(57,255,20,0.4)] mb-6 border-4 border-white dark:border-zinc-800">
+            @Model?.FirstName?.Substring(0, 1)@Model?.LastName?.Substring(0, 1)
+        </div>
+        
+        <h3 class="text-2xl font-bold text-zinc-900 dark:text-white mb-2">@Model?.FirstName @Model?.LastName</h3>
+        <span class="inline-flex items-center px-4 py-1.5 rounded-full text-sm font-bold bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-white mb-6 border border-zinc-200 dark:border-zinc-700 shadow-sm">
+            @Model?.Specialty
+        </span>
+
+        <div class="w-full space-y-3 mt-4">
+            <button class="w-full btn-outline border-zinc-300 dark:border-zinc-700 py-2.5 text-sm hover:border-blue-500 hover:text-blue-500 dark:hover:border-blue-500 dark:hover:text-blue-500 group transition-colors">
+                <i class="bi bi-envelope mr-2 text-zinc-400 group-hover:text-blue-500 transition-colors"></i> Send Email
+            </button>
+            <button class="w-full btn-outline border-zinc-300 dark:border-zinc-700 py-2.5 text-sm hover:border-green-500 hover:text-green-500 dark:hover:border-green-500 dark:hover:text-green-500 group transition-colors">
+                <i class="bi bi-whatsapp mr-2 text-zinc-400 group-hover:text-green-500 transition-colors"></i> Message
+            </button>
+        </div>
+    </div>
+
+    <!-- Details Card with Alpine Tabs -->
+    <div class="lg:col-span-2 glass-card overflow-hidden flex flex-col" x-data="{ tab: 'overview' }">
+        <div class="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 px-6 pt-4 flex gap-6">
+            <button @@click="tab = 'overview'" 
+                    class="pb-4 font-semibold text-sm transition-colors relative"
+                    :class="tab === 'overview' ? 'text-neon-cyan' : 'text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200'">
+                Overview
+                <div x-show="tab === 'overview'" class="absolute bottom-0 left-0 w-full h-0.5 bg-neon-cyan shadow-[0_0_8px_rgba(0,255,255,0.6)]"></div>
+            </button>
+        </div>
+
+        <div class="p-8">
+            <div x-show="tab === 'overview'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0">
+                <h4 class="text-lg font-bold text-zinc-900 dark:text-white mb-6 flex items-center gap-2">
+                    <i class="bi bi-info-circle-fill text-neon-cyan"></i> Professional Information
+                </h4>
                 
-                <div class="d-grid gap-2 mt-auto">
-                    <button class="btn btn-outline-info">
-                        <i class="bi bi-envelope me-2"></i> Send Email
-                    </button>
-                    <button class="btn btn-outline-success">
-                        <i class="bi bi-whatsapp me-2"></i> Message
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Details Card -->
-        <div class="col-12 col-lg-8">
-            <div class="premium-card p-4 h-100">
-                <ul class="nav nav-tabs custom-tabs mb-4" id="trainerTabs" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab" aria-selected="true">Overview</button>
-                    </li>
-                </ul>
-
-                <div class="tab-content" id="trainerTabsContent">
-                    <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
-                        <div class="row g-4">
-                            <div class="col-md-6">
-                                <div class="detail-group">
-                                    <label class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-envelope me-2"></i>Email Address</label>
-                                    <p class="fs-5 fw-medium mb-0">@Model?.Email</p>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="detail-group">
-                                    <label class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-telephone me-2"></i>Phone Number</label>
-                                    <p class="fs-5 fw-medium mb-0">@Model?.PhoneNumber</p>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="detail-group">
-                                    <label class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-calendar me-2"></i>Date of Birth</label>
-                                    <p class="fs-5 fw-medium mb-0">@Model?.DateOfBirth.ToString("MMM dd, yyyy")</p>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="detail-group">
-                                    <label class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-person me-2"></i>Gender</label>
-                                    <p class="fs-5 fw-medium mb-0">@Model?.Gender</p>
-                                </div>
-                            </div>
-                            
-                            <div class="col-12">
-                                <hr style="border-color: var(--border-color);" />
-                            </div>
-
-                            <div class="col-12">
-                                <div class="detail-group">
-                                    <label class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-geo-alt me-2"></i>Address</label>
-                                    <p class="fs-5 fw-medium mb-0">@Model?.Street, @Model?.City, @Model?.State @Model?.ZipCode</p>
-                                </div>
-                            </div>
-
-                            <div class="col-12">
-                                <hr style="border-color: var(--border-color);" />
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="detail-group border-info" style="border-left: 4px solid var(--info-color) !important;">
-                                    <label class="text-info small text-uppercase fw-bold mb-1"><i class="bi bi-calendar-check me-2"></i>Hire Date</label>
-                                    <p class="fs-5 fw-medium mb-0">@Model?.HireDate.ToString("MMMM dd, yyyy")</p>
-                                </div>
-                            </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-8">
+                    <div>
+                        <label class="block text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1">Email Address</label>
+                        <p class="text-zinc-900 dark:text-zinc-200 font-medium">@Model?.Email</p>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1">Phone Number</label>
+                        <p class="text-zinc-900 dark:text-zinc-200 font-medium">@Model?.PhoneNumber</p>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1">Date of Birth</label>
+                        <p class="text-zinc-900 dark:text-zinc-200 font-medium">@Model?.DateOfBirth.ToString("MMM dd, yyyy")</p>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1">Gender</label>
+                        <p class="text-zinc-900 dark:text-zinc-200 font-medium">@Model?.Gender</p>
+                    </div>
+                    <div class="md:col-span-2 border-t border-zinc-200 dark:border-zinc-800 pt-6 mt-2">
+                        <label class="block text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1">Address</label>
+                        <p class="text-zinc-900 dark:text-zinc-200 font-medium">@Model?.Street, @Model?.City, @Model?.State @Model?.ZipCode</p>
+                    </div>
+                    <div class="md:col-span-2 border-t border-zinc-200 dark:border-zinc-800 pt-6 mt-2">
+                        <div class="bg-blue-50 dark:bg-blue-500/10 border-l-4 border-blue-500 p-4 rounded-r-lg">
+                            <label class="block text-xs font-bold text-blue-500 dark:text-blue-400 uppercase tracking-wider mb-1 flex items-center gap-2"><i class="bi bi-calendar-check"></i> Hire Date</label>
+                            <p class="text-blue-900 dark:text-blue-100 font-medium m-0 text-lg">@Model?.HireDate.ToString("MMMM dd, yyyy")</p>
                         </div>
                     </div>
                 </div>

@@ -5,117 +5,117 @@
     ViewData["Title"] = "Add New Trainer";
 }
 
-<div class="container py-4">
-    <div class="row justify-content-center">
-        <div class="col-12 col-xl-10">
-            <header class="d-flex justify-content-between mb-4 align-items-center border-bottom pb-3" style="border-color: var(--border-color) !important;">
+<div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <div>
+        <h2 class="text-3xl font-display font-bold text-zinc-900 dark:text-white">Add <span class="text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan to-neon-green">Trainer</span></h2>
+        <p class="text-zinc-500 dark:text-zinc-400 mt-1">Register a new trainer to the gym system.</p>
+    </div>
+    <a asp-action="Index" class="btn-outline">
+        <i class="bi bi-arrow-left mr-2"></i> Back to List
+    </a>
+</div>
+
+<div class="glass-card p-6 md:p-8">
+    <form asp-action="Create" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-red-500 mb-4 bg-red-50 dark:bg-red-500/10 p-3 rounded-lg text-sm border border-red-200 dark:border-red-500/20"></div>
+
+        <div class="mb-8">
+            <h5 class="flex items-center text-lg font-bold text-zinc-900 dark:text-white mb-4 pb-2 border-b border-zinc-200 dark:border-zinc-800">
+                <i class="bi bi-person-badge text-neon-cyan mr-2"></i> Personal Details
+            </h5>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <h2 class="display-6 fw-bold mb-1">Add <span class="text-gradient">Trainer</span></h2>
-                    <p class="text-secondary fs-6 mb-0">Register a new trainer to the gym system.</p>
+                    <label asp-for="FirstName" class="form-label"></label>
+                    <input asp-for="FirstName" class="form-input" placeholder="Enter first name" />
+                    <span asp-validation-for="FirstName" class="text-red-500 text-xs mt-1 block"></span>
                 </div>
-                <a asp-action="Index" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-left me-2"></i> Back to List
-                </a>
-            </header>
-
-            <div class="premium-card p-4 p-md-5">
-                <form asp-action="Create" method="post">
-                    <div asp-validation-summary="ModelOnly" class="text-danger mb-4"></div>
-
-                    <h5 class="text-primary-theme fw-bold mb-4 border-bottom pb-2" style="border-color: var(--border-color) !important;">
-                        <i class="bi bi-person-badge me-2"></i>Personal Details
-                    </h5>
-                    <div class="row g-4 mb-5">
-                        <div class="col-md-6">
-                            <label asp-for="FirstName" class="form-label text-secondary fw-semibold"></label>
-                            <input asp-for="FirstName" class="form-control form-control-lg premium-input" placeholder="Enter first name" />
-                            <span asp-validation-for="FirstName" class="text-danger small mt-1"></span>
-                        </div>
-                        <div class="col-md-6">
-                            <label asp-for="LastName" class="form-label text-secondary fw-semibold"></label>
-                            <input asp-for="LastName" class="form-control form-control-lg premium-input" placeholder="Enter last name" />
-                            <span asp-validation-for="LastName" class="text-danger small mt-1"></span>
-                        </div>
-                        <div class="col-md-6">
-                            <label asp-for="Email" class="form-label text-secondary fw-semibold"></label>
-                            <input asp-for="Email" class="form-control form-control-lg premium-input" placeholder="example@email.com" />
-                            <span asp-validation-for="Email" class="text-danger small mt-1"></span>
-                        </div>
-                        <div class="col-md-6">
-                            <label asp-for="PhoneNumber" class="form-label text-secondary fw-semibold"></label>
-                            <input asp-for="PhoneNumber" class="form-control form-control-lg premium-input" placeholder="01xxxxxxxxx" />
-                            <span asp-validation-for="PhoneNumber" class="text-danger small mt-1"></span>
-                        </div>
-                        <div class="col-md-6">
-                            <label asp-for="DateOfBirth" class="form-label text-secondary fw-semibold"></label>
-                            <input asp-for="DateOfBirth" class="form-control form-control-lg premium-input" type="date" />
-                            <span asp-validation-for="DateOfBirth" class="text-danger small mt-1"></span>
-                        </div>
-                        <div class="col-md-6">
-                            <label asp-for="Gender" class="form-label text-secondary fw-semibold"></label>
-                            <select asp-for="Gender" class="form-select form-select-lg premium-input">
-                                <option value="">-- Select Gender --</option>
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
-                            </select>
-                            <span asp-validation-for="Gender" class="text-danger small mt-1"></span>
-                        </div>
-                    </div>
-
-                    <h5 class="text-primary-theme fw-bold mb-4 border-bottom pb-2" style="border-color: var(--border-color) !important;">
-                        <i class="bi bi-geo-alt me-2"></i>Address Information
-                    </h5>
-                    <div class="row g-4 mb-5">
-                        <div class="col-12">
-                            <label asp-for="Street" class="form-label text-secondary fw-semibold"></label>
-                            <input asp-for="Street" class="form-control form-control-lg premium-input" placeholder="Street name and building number" />
-                            <span asp-validation-for="Street" class="text-danger small mt-1"></span>
-                        </div>
-                        <div class="col-md-4">
-                            <label asp-for="City" class="form-label text-secondary fw-semibold"></label>
-                            <input asp-for="City" class="form-control form-control-lg premium-input" placeholder="City" />
-                            <span asp-validation-for="City" class="text-danger small mt-1"></span>
-                        </div>
-                        <div class="col-md-4">
-                            <label asp-for="State" class="form-label text-secondary fw-semibold"></label>
-                            <input asp-for="State" class="form-control form-control-lg premium-input" placeholder="State/Province" />
-                            <span asp-validation-for="State" class="text-danger small mt-1"></span>
-                        </div>
-                        <div class="col-md-4">
-                            <label asp-for="ZipCode" class="form-label text-secondary fw-semibold"></label>
-                            <input asp-for="ZipCode" class="form-control form-control-lg premium-input" placeholder="Postal Code" />
-                            <span asp-validation-for="ZipCode" class="text-danger small mt-1"></span>
-                        </div>
-                    </div>
-
-                    <h5 class="text-info fw-bold mb-4 border-bottom pb-2" style="border-color: var(--border-color) !important;">
-                        <i class="bi bi-briefcase me-2"></i>Employment Information
-                    </h5>
-                    <div class="row g-4 mb-5">
-                        <div class="col-md-6">
-                            <label asp-for="Specialty" class="form-label text-secondary fw-semibold"></label>
-                            <select asp-for="Specialty" class="form-select form-select-lg premium-input" asp-items="Html.GetEnumSelectList<TrainerSpecialty>()">
-                                <option value="">-- Select Specialty --</option>
-                            </select>
-                            <span asp-validation-for="Specialty" class="text-danger small mt-1"></span>
-                        </div>
-                        <div class="col-md-6">
-                            <label asp-for="HireDate" class="form-label text-secondary fw-semibold"></label>
-                            <input asp-for="HireDate" class="form-control form-control-lg premium-input" type="date" />
-                            <span asp-validation-for="HireDate" class="text-danger small mt-1"></span>
-                        </div>
-                    </div>
-
-                    <div class="d-flex justify-content-end gap-3 mt-4 pt-4 border-top" style="border-color: var(--border-color) !important;">
-                        <button type="button" class="btn btn-outline-secondary px-4 py-2" onclick="window.history.back()">Cancel</button>
-                        <button type="submit" class="btn btn-gradient px-5 py-2 fw-bold">
-                            <i class="bi bi-check-circle me-2"></i> Save Trainer
-                        </button>
-                    </div>
-                </form>
+                <div>
+                    <label asp-for="LastName" class="form-label"></label>
+                    <input asp-for="LastName" class="form-input" placeholder="Enter last name" />
+                    <span asp-validation-for="LastName" class="text-red-500 text-xs mt-1 block"></span>
+                </div>
+                <div>
+                    <label asp-for="Email" class="form-label"></label>
+                    <input asp-for="Email" class="form-input" placeholder="example@email.com" />
+                    <span asp-validation-for="Email" class="text-red-500 text-xs mt-1 block"></span>
+                </div>
+                <div>
+                    <label asp-for="PhoneNumber" class="form-label"></label>
+                    <input asp-for="PhoneNumber" class="form-input" placeholder="01xxxxxxxxx" />
+                    <span asp-validation-for="PhoneNumber" class="text-red-500 text-xs mt-1 block"></span>
+                </div>
+                <div>
+                    <label asp-for="DateOfBirth" class="form-label"></label>
+                    <input asp-for="DateOfBirth" type="date" class="form-input" />
+                    <span asp-validation-for="DateOfBirth" class="text-red-500 text-xs mt-1 block"></span>
+                </div>
+                <div>
+                    <label asp-for="Gender" class="form-label"></label>
+                    <select asp-for="Gender" class="form-input">
+                        <option value="">-- Select Gender --</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                    <span asp-validation-for="Gender" class="text-red-500 text-xs mt-1 block"></span>
+                </div>
             </div>
         </div>
-    </div>
+
+        <div class="mb-8">
+            <h5 class="flex items-center text-lg font-bold text-zinc-900 dark:text-white mb-4 pb-2 border-b border-zinc-200 dark:border-zinc-800">
+                <i class="bi bi-geo-alt text-neon-cyan mr-2"></i> Address Information
+            </h5>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="md:col-span-4">
+                    <label asp-for="Street" class="form-label"></label>
+                    <input asp-for="Street" class="form-input" placeholder="Street name and building number" />
+                    <span asp-validation-for="Street" class="text-red-500 text-xs mt-1 block"></span>
+                </div>
+                <div class="md:col-span-2">
+                    <label asp-for="City" class="form-label"></label>
+                    <input asp-for="City" class="form-input" placeholder="City" />
+                    <span asp-validation-for="City" class="text-red-500 text-xs mt-1 block"></span>
+                </div>
+                <div>
+                    <label asp-for="State" class="form-label"></label>
+                    <input asp-for="State" class="form-input" placeholder="State/Province" />
+                    <span asp-validation-for="State" class="text-red-500 text-xs mt-1 block"></span>
+                </div>
+                <div>
+                    <label asp-for="ZipCode" class="form-label"></label>
+                    <input asp-for="ZipCode" class="form-input" placeholder="Postal Code" />
+                    <span asp-validation-for="ZipCode" class="text-red-500 text-xs mt-1 block"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-8">
+            <h5 class="flex items-center text-lg font-bold text-neon-orange dark:text-neon-orange mb-4 pb-2 border-b border-zinc-200 dark:border-zinc-800">
+                <i class="bi bi-briefcase mr-2"></i> Employment Information
+            </h5>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label asp-for="Specialty" class="form-label"></label>
+                    <select asp-for="Specialty" class="form-input" asp-items="Html.GetEnumSelectList<TrainerSpecialty>()">
+                        <option value="">-- Select Specialty --</option>
+                    </select>
+                    <span asp-validation-for="Specialty" class="text-red-500 text-xs mt-1 block"></span>
+                </div>
+                <div>
+                    <label asp-for="HireDate" class="form-label"></label>
+                    <input asp-for="HireDate" type="date" class="form-input" />
+                    <span asp-validation-for="HireDate" class="text-red-500 text-xs mt-1 block"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex justify-end gap-3 mt-8 pt-6 border-t border-zinc-200 dark:border-zinc-800">
+            <button type="button" class="btn-outline" onclick="window.history.back()">Cancel</button>
+            <button type="submit" class="btn-primary">
+                <i class="bi bi-check-circle mr-2"></i> Save Trainer
+            </button>
+        </div>
+    </form>
 </div>
 
 @section Scripts {

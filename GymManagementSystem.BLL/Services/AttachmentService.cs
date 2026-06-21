@@ -7,7 +7,8 @@ namespace GymManagementSystem.BLL.Services;
 
 public class AttachmentService : IAttachmentService
 {
-    private readonly Cloudinary _cloudinary;
+    private readonly Cloudinary? _cloudinary;
+    private readonly bool _isConfigured;
 
     public AttachmentService(IConfiguration configuration)
     {
@@ -16,14 +17,22 @@ public class AttachmentService : IAttachmentService
         var apiSecret = configuration["Cloudinary:ApiSecret"];
 
         if (string.IsNullOrEmpty(cloudName) || string.IsNullOrEmpty(apiKey) || string.IsNullOrEmpty(apiSecret))
-            throw new InvalidOperationException("Cloudinary credentials are missing from configuration.");
-
-        var account = new Account(cloudName, apiKey, apiSecret);
-        _cloudinary = new Cloudinary(account);
+        {
+            _isConfigured = false;
+        }
+        else
+        {
+            var account = new Account(cloudName, apiKey, apiSecret);
+            _cloudinary = new Cloudinary(account);
+            _isConfigured = true;
+        }
     }
 
     public async Task<string?> SaveFileAsync(string subFolder, int entityId, string fileName, Stream content)
     {
+        if (!_isConfigured || _cloudinary == null)
+            return "https://ui-avatars.com/api/?name=User&background=random"; // Dummy URL
+
         var ext = Path.GetExtension(fileName);
         var publicId = $"{subFolder}/{subFolder}_{entityId}_{DateTime.Now:yyyyMMdd_HHmmss}";
 
@@ -43,6 +52,9 @@ public class AttachmentService : IAttachmentService
 
     public async Task<bool> DeleteFileAsync(string relativePath)
     {
+        if (!_isConfigured || _cloudinary == null)
+            return true; // Simulate success
+
         var publicId = ExtractPublicId(relativePath);
         if (string.IsNullOrEmpty(publicId))
             return false;

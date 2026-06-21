@@ -4,51 +4,87 @@
     ViewData["Title"] = "Class Session Details";
 }
 
-<div class="container py-4">
-    <header class="d-flex justify-content-between mb-5 align-items-center border-bottom pb-4" style="border-color: var(--border-color) !important;">
-        <div>
-            <h2 class="display-5 fw-bold mb-2">Session <span class="text-gradient">Details</span></h2>
-            <p class="text-secondary fs-5 mb-0">Full information about the class session.</p>
-        </div>
-        <div>
-            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-gradient btn-lg me-2"><i class="bi bi-pencil me-1"></i> Edit</a>
-            <a asp-action="Index" class="btn btn-outline-secondary btn-lg"><i class="bi bi-arrow-left me-1"></i> Back to List</a>
-        </div>
-    </header>
+<div class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-200 dark:border-gym-border pb-6">
+    <div>
+        <h2 class="text-3xl font-display font-bold text-zinc-900 dark:text-white mb-1">Session <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500">Details</span></h2>
+        <p class="text-zinc-500 dark:text-zinc-400">Full information about the class session.</p>
+    </div>
+    <div class="flex flex-wrap gap-3">
+        <a asp-action="Index" class="btn-outline border-zinc-300 dark:border-zinc-700 py-2 text-sm">
+            <i class="bi bi-list mr-2"></i> Back to List
+        </a>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn-primary py-2 text-sm shadow-[0_0_15px_rgba(57,255,20,0.3)]">
+            <i class="bi bi-pencil mr-2"></i> Edit Session
+        </a>
+    </div>
+</div>
 
-    <div class="premium-card p-4">
-        <div class="row g-4">
-            <div class="col-md-4 text-center">
-                <div class="bg-primary text-white rounded-circle d-flex justify-content-center align-items-center mx-auto" style="width: 120px; height: 120px; font-size: 3rem; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)) !important;">
-                    <i class="bi bi-stopwatch"></i>
+<div class="glass-card overflow-hidden">
+    <div class="grid grid-cols-1 md:grid-cols-3">
+        <div class="p-8 flex flex-col items-center justify-center text-center bg-zinc-50/50 dark:bg-zinc-900/30 border-b md:border-b-0 md:border-r border-zinc-200 dark:border-zinc-800">
+            <div class="w-32 h-32 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-5xl mb-6 shadow-[0_0_25px_rgba(168,85,247,0.4)] border-4 border-white dark:border-zinc-800">
+                <i class="bi bi-stopwatch"></i>
+            </div>
+            <h4 class="text-2xl font-bold text-zinc-900 dark:text-white mb-3">@Model.Description</h4>
+            
+            @{
+                string badgeClass = Model.Status == "Upcoming" ? "bg-neon-cyan/10 text-neon-cyan border-neon-cyan/20" : 
+                                  Model.Status == "Ongoing" ? "bg-neon-orange/10 text-neon-orange border-neon-orange/20" : 
+                                  "bg-zinc-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border-zinc-300 dark:border-zinc-700";
+            }
+            <span class="inline-flex items-center px-4 py-1.5 rounded-full text-sm font-bold border @badgeClass mb-3">
+                @Model.Status
+            </span>
+            <span class="text-sm font-medium text-zinc-500 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-800 px-3 py-1 rounded-full">
+                Capacity: @Model.Capacity
+            </span>
+        </div>
+        
+        <div class="col-span-2 p-8 md:p-10">
+            <h4 class="text-lg font-bold text-zinc-900 dark:text-white mb-6 flex items-center gap-2">
+                <i class="bi bi-info-circle-fill text-purple-400"></i> Session Information
+            </h4>
+            
+            <dl class="grid grid-cols-1 sm:grid-cols-2 gap-y-8 gap-x-6">
+                <div>
+                    <dt class="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1">Trainer</dt>
+                    <dd class="text-lg font-medium text-zinc-900 dark:text-zinc-200 flex items-center gap-2">
+                        <i class="bi bi-person-circle text-zinc-400"></i> @Model.TrainerName
+                    </dd>
                 </div>
-                <h4 class="mt-3 fw-bold">@Model.Description</h4>
-                <span class="badge @(Model.Status == "Upcoming" ? "bg-success" : Model.Status == "Ongoing" ? "bg-warning text-dark" : "bg-secondary") px-3 py-2 mt-2">
-                    @Model.Status
-                </span>
-                <small class="text-secondary d-block mt-2">Capacity: @Model.Capacity</small>
-            </div>
-            <div class="col-md-8">
-                <dl class="row">
-                    <dt class="col-sm-4 fw-bold">Trainer</dt>
-                    <dd class="col-sm-8">@Model.TrainerName</dd>
 
-                    <dt class="col-sm-4 fw-bold">Category</dt>
-                    <dd class="col-sm-8">@Model.CategoryName</dd>
+                <div>
+                    <dt class="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1">Category</dt>
+                    <dd class="text-lg font-medium text-zinc-900 dark:text-zinc-200 flex items-center gap-2">
+                        <span class="inline-block w-2 h-2 rounded-full bg-purple-500"></span> @Model.CategoryName
+                    </dd>
+                </div>
 
-                    <dt class="col-sm-4 fw-bold">Date</dt>
-                    <dd class="col-sm-8">@Model.DateDisplay</dd>
+                <div>
+                    <dt class="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1">Date</dt>
+                    <dd class="text-lg font-medium text-zinc-900 dark:text-zinc-200 flex items-center gap-2">
+                        <i class="bi bi-calendar-event text-zinc-400"></i> @Model.DateDisplay
+                    </dd>
+                </div>
 
-                    <dt class="col-sm-4 fw-bold">Time</dt>
-                    <dd class="col-sm-8">@Model.TimeRangeDisplay</dd>
+                <div>
+                    <dt class="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1">Time</dt>
+                    <dd class="text-lg font-medium text-zinc-900 dark:text-zinc-200 flex items-center gap-2">
+                        <i class="bi bi-clock text-zinc-400"></i> @Model.TimeRangeDisplay
+                    </dd>
+                </div>
 
-                    <dt class="col-sm-4 fw-bold">Duration</dt>
-                    <dd class="col-sm-8">@Model.Duration.ToString(@"h\h\ m\m")</dd>
-
-                    <dt class="col-sm-4 fw-bold">Available Slots</dt>
-                    <dd class="col-sm-8">@Model.AvailableSlots</dd>
-                </dl>
-            </div>
+                <div class="sm:col-span-2 border-t border-zinc-200 dark:border-zinc-800 pt-6 mt-2 grid grid-cols-2 gap-6">
+                    <div>
+                        <dt class="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1">Duration</dt>
+                        <dd class="text-xl font-bold text-zinc-900 dark:text-white">@Model.Duration.ToString(@"h\h\ m\m")</dd>
+                    </div>
+                    <div>
+                        <dt class="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1">Available Slots</dt>
+                        <dd class="text-xl font-bold @(Model.AvailableSlots > 0 ? "text-green-500" : "text-red-500")">@Model.AvailableSlots</dd>
+                    </div>
+                </div>
+            </dl>
         </div>
     </div>
 </div>
