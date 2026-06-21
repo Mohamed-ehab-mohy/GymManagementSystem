@@ -23,22 +23,41 @@ public class MembersController : Controller
         _attachmentService = attachmentService;
     }
 
-    public async Task<IActionResult> Index(int page = 1, string? search = null, string? sortBy = null, bool ascending = true)
+    public IActionResult Index()
     {
-        const int pageSize = 10;
-        var pagedMembers = await _memberService.GetPagedMembersAsync(page, pageSize, search, sortBy, ascending);
-        var viewModels = pagedMembers.Items.Adapt<IEnumerable<MemberViewModel>>();
+        return View();
+    }
 
-        ViewBag.Search = search;
-        ViewBag.SortBy = sortBy;
-        ViewBag.Ascending = ascending;
+    [HttpPost]
+    public async Task<IActionResult> DataTableData([FromForm] DataTableRequest request)
+    {
+        var page = (request.Start / request.Length) + 1;
+        var pageSize = request.Length;
+        var search = request.Search?.Value;
+        string? sortBy = null;
+        var ascending = true;
 
-        return View(new PagedResultDisplay<MemberViewModel>
+        if (request.Order.Count > 0)
         {
-            Items = viewModels,
-            TotalCount = pagedMembers.TotalCount,
-            Page = pagedMembers.Page,
-            PageSize = pagedMembers.PageSize
+            sortBy = request.Columns[request.Order[0].Column].Name;
+            ascending = request.Order[0].Dir != "desc";
+        }
+
+        var paged = await _memberService.GetPagedMembersAsync(page, pageSize, search, sortBy, ascending);
+        var data = paged.Items.Select(m => (object)new
+        {
+            name = $@"<div class=""d-flex align-items-center"">{(string.IsNullOrEmpty(m.Photo) ? $@"<div class=""rounded-circle d-flex justify-content-center align-items-center me-3 text-white fw-bold"" style=""width:40px;height:40px;background:linear-gradient(135deg,var(--primary-color),var(--secondary-color));"">{m.FirstName[0]}{m.LastName[0]}</div>" : $@"<img src=""{m.Photo}"" alt="""" class=""rounded-circle me-3"" style=""width:40px;height:40px;object-fit:cover;""/>")}<div><h6 class=""mb-0 fw-bold"">{m.FirstName} {m.LastName}</h6></div></div>",
+            contact = $@"<div class=""d-flex flex-column""><span class=""text-secondary mb-1""><i class=""bi bi-envelope me-2""></i>{m.Email}</span><span class=""text-secondary""><i class=""bi bi-telephone me-2""></i>{m.PhoneNumber}</span></div>",
+            city = m.Address?.City ?? "",
+            actions = $@"<div class=""btn-group"" role=""group""><a href=""{Url.Action("Details", "Members", new { id = m.Id })}"" class=""btn btn-sm btn-outline-info"" title=""Details""><i class=""bi bi-eye""></i></a><a href=""{Url.Action("Edit", "Members", new { id = m.Id })}"" class=""btn btn-sm btn-outline-warning"" title=""Edit""><i class=""bi bi-pencil""></i></a><form action=""{Url.Action("Delete", "Members", new { id = m.Id })}"" method=""post"" style=""display:inline;""><button type=""submit"" class=""btn btn-sm btn-outline-danger"" title=""Delete"" onclick=""return confirm('Are you sure?');""><i class=""bi bi-trash""></i></button></form></div>"
+        }).ToList();
+
+        return Json(new DataTableResponse<object>
+        {
+            Draw = request.Draw,
+            RecordsTotal = paged.TotalCount,
+            RecordsFiltered = paged.TotalCount,
+            Data = data
         });
     }
 

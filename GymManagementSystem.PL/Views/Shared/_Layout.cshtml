@@ -197,16 +197,6 @@
         })();
     </script>
     @await RenderSectionAsync("Scripts", required: false)
-    <script>
-        $(document).ready(function () {
-            $('#dataTable').DataTable({
-                pageLength: 10,
-                lengthMenu: [10, 25, 50, 100],
-                order: [[0, 'asc']],
-                language: { search: "Search:" }
-            });
-        });
-    </script>
 
     <div id="chatbot-widget" class="chatbot-widget">
         <button id="chatbot-toggle" class="chatbot-btn" aria-label="Toggle Chatbot">

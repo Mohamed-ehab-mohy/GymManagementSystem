@@ -1,6 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using GymManagementSystem.BLL.Interfaces;
 using GymManagementSystem.BLL.Abstractions;
@@ -25,6 +25,16 @@ public class TrainerService : ITrainerService
     public async Task<IEnumerable<Trainer>> GetAllTrainersAsync()
     {
         return await _trainerRepository.GetAllAsync();
+    }
+
+    public async Task<PagedResult<Trainer>> GetPagedTrainersAsync(int page, int pageSize, string? search = null, string? sortBy = null, bool ascending = true)
+    {
+        Expression<Func<Trainer, bool>>? filter = null;
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            filter = t => t.FirstName.Contains(search) || t.LastName.Contains(search) || t.Email.Contains(search) || t.PhoneNumber.Contains(search) || t.Specialty.ToString().Contains(search);
+        }
+        return await _trainerRepository.GetPagedAsync(page, pageSize, filter, sortBy, ascending);
     }
 
     public async Task<Trainer?> GetTrainerByIdAsync(int id)

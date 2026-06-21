@@ -19,27 +19,42 @@ public class TrainersController : Controller
         _trainerService = trainerService;
     }
 
-    public async Task<IActionResult> Index()
+    public IActionResult Index()
     {
-        var trainers = await _trainerService.GetAllTrainersAsync();
-        var viewModels = trainers.Select(t => new TrainerViewModel
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> DataTableData([FromForm] DataTableRequest request)
+    {
+        var page = (request.Start / request.Length) + 1;
+        var pageSize = request.Length;
+        var search = request.Search?.Value;
+        string? sortBy = null;
+        var ascending = true;
+
+        if (request.Order.Count > 0)
         {
-            Id = t.Id,
-            FirstName = t.FirstName,
-            LastName = t.LastName,
-            Email = t.Email,
-            PhoneNumber = t.PhoneNumber,
-            DateOfBirth = t.DateOfBirth,
-            Gender = t.Gender,
-            Street = t.Address?.Street ?? "",
-            City = t.Address?.City ?? "",
-            State = t.Address?.State ?? "",
-            ZipCode = t.Address?.ZipCode ?? "",
-            Specialty = t.Specialty,
-            HireDate = t.HireDate.GetValueOrDefault(DateTime.Today)
+            sortBy = request.Columns[request.Order[0].Column].Name;
+            ascending = request.Order[0].Dir != "desc";
+        }
+
+        var paged = await _trainerService.GetPagedTrainersAsync(page, pageSize, search, sortBy, ascending);
+        var data = paged.Items.Select(t => (object)new
+        {
+            name = $@"<div class=""d-flex align-items-center""><div class=""bg-primary text-white rounded-circle d-flex justify-content-center align-items-center me-3"" style=""width:40px;height:40px;font-weight:bold;background:linear-gradient(135deg,var(--primary-color),var(--secondary-color))!important;"">{t.FirstName[0]}{t.LastName[0]}</div><div><h6 class=""mb-0 fw-bold"">{t.FirstName} {t.LastName}</h6><small class=""text-secondary"">Hired: {t.HireDate?.ToString("MMM dd, yyyy")}</small></div></div>",
+            specialty = $"<span class=\"badge bg-secondary\">{t.Specialty}</span>",
+            contact = $@"<div class=""d-flex flex-column""><span class=""text-secondary mb-1""><i class=""bi bi-envelope me-2""></i>{t.Email}</span><span class=""text-secondary""><i class=""bi bi-telephone me-2""></i>{t.PhoneNumber}</span></div>",
+            actions = $@"<div class=""btn-group"" role=""group""><a href=""{Url.Action("Details", "Trainers", new { id = t.Id })}"" class=""btn btn-sm btn-outline-info"" title=""Details""><i class=""bi bi-eye""></i></a><a href=""{Url.Action("Edit", "Trainers", new { id = t.Id })}"" class=""btn btn-sm btn-outline-warning"" title=""Edit""><i class=""bi bi-pencil""></i></a><form action=""{Url.Action("Delete", "Trainers", new { id = t.Id })}"" method=""post"" style=""display:inline;""><button type=""submit"" class=""btn btn-sm btn-outline-danger"" title=""Delete"" onclick=""return confirm('Are you sure you want to delete this trainer?');""><i class=""bi bi-trash""></i></button></form></div>"
         }).ToList();
 
-        return View(viewModels);
+        return Json(new DataTableResponse<object>
+        {
+            Draw = request.Draw,
+            RecordsTotal = paged.TotalCount,
+            RecordsFiltered = paged.TotalCount,
+            Data = data
+        });
     }
 
     public IActionResult Create()

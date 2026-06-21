@@ -21,23 +21,47 @@ public class ClassSessionsController : Controller
         _categoryService = categoryService;
     }
 
-    public async Task<IActionResult> Index()
+    public IActionResult Index()
     {
-        var sessions = await _classSessionService.GetAllClassSessionsAsync();
+        return View();
+    }
 
-        var viewModels = sessions.Select(cs => new SessionViewModel
+    [HttpPost]
+    public async Task<IActionResult> DataTableData([FromForm] DataTableRequest request)
+    {
+        var page = (request.Start / request.Length) + 1;
+        var pageSize = request.Length;
+        var search = request.Search?.Value;
+        string? sortBy = null;
+        var ascending = true;
+
+        if (request.Order.Count > 0)
         {
-            Id = cs.Id,
-            Description = cs.Name,
-            StartDate = cs.StartTime,
-            EndDate = cs.EndTime,
-            Capacity = cs.Capacity,
-            TrainerName = cs.Trainer?.FirstName + " " + cs.Trainer?.LastName,
-            CategoryName = cs.Category?.CategoryName,
-            AvailableSlots = cs.Capacity
-        }).OrderBy(cs => cs.StartDate).ToList();
+            sortBy = request.Columns[request.Order[0].Column].Name;
+            ascending = request.Order[0].Dir != "desc";
+        }
 
-        return View(viewModels);
+        var paged = await _classSessionService.GetPagedSessionsAsync(page, pageSize, search, sortBy, ascending);
+
+        var now = DateTime.Now;
+        var data = paged.Items.Select(s => (object)new
+        {
+            session = $@"<div class=""d-flex align-items-center""><div class=""bg-primary text-white rounded d-flex justify-content-center align-items-center me-3"" style=""width:45px;height:45px;background:linear-gradient(135deg,var(--primary-color),var(--secondary-color))!important;""><i class=""bi bi-stopwatch fs-4""></i></div><h6 class=""mb-0 fw-bold"">{s.Name}</h6></div>",
+            category = $"<span class=\"badge bg-info bg-opacity-10 text-info px-3 py-2\"><i class=\"bi bi-tag me-1\"></i> {(s.Category?.CategoryName ?? "")}</span>",
+            schedule = $@"<div class=""d-flex flex-column""><span class=""text-primary fw-medium mb-1""><i class=""bi bi-calendar-event me-2 text-info""></i>{s.StartTime:dddd, MMMM dd, yyyy}</span><span class=""text-secondary""><i class=""bi bi-clock me-2""></i>{s.StartTime:hh:mm tt} - {s.EndTime:hh:mm tt}</span></div>",
+            capacity = $"<span class=\"badge bg-dark border border-secondary px-3 py-2\"><i class=\"bi bi-people-fill me-2\"></i> {s.Capacity}</span>",
+            status = now < s.StartTime ? "<span class=\"badge bg-success px-3 py-2\">Upcoming</span>" : now >= s.StartTime && now <= s.EndTime ? "<span class=\"badge bg-warning text-dark px-3 py-2\">Ongoing</span>" : "<span class=\"badge bg-secondary px-3 py-2\">Completed</span>",
+            trainer = $"<span class=\"text-secondary\"><i class=\"bi bi-person-badge me-2\"></i>{s.Trainer?.FirstName} {s.Trainer?.LastName}</span>",
+            actions = $@"<div class=""btn-group"" role=""group""><a href=""{Url.Action("Details", "ClassSessions", new { id = s.Id })}"" class=""btn btn-sm btn-outline-info"" title=""Details""><i class=""bi bi-eye""></i></a><a href=""{Url.Action("Edit", "ClassSessions", new { id = s.Id })}"" class=""btn btn-sm btn-outline-warning"" title=""Edit""><i class=""bi bi-pencil""></i></a><form action=""{Url.Action("Delete", "ClassSessions", new { id = s.Id })}"" method=""post"" style=""display:inline;""><button type=""submit"" class=""btn btn-sm btn-outline-danger"" title=""Cancel Session"" onclick=""return confirm('Are you sure you want to cancel this session?');""><i class=""bi bi-trash""></i></button></form></div>"
+        }).ToList();
+
+        return Json(new DataTableResponse<object>
+        {
+            Draw = request.Draw,
+            RecordsTotal = paged.TotalCount,
+            RecordsFiltered = paged.TotalCount,
+            Data = data
+        });
     }
 
     public async Task<IActionResult> Create()

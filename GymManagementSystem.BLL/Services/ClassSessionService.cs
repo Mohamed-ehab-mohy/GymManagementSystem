@@ -1,6 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using GymManagementSystem.BLL.Interfaces;
 using GymManagementSystem.BLL.Abstractions;
@@ -25,6 +25,16 @@ public class ClassSessionService : IClassSessionService
     public async Task<IEnumerable<ClassSession>> GetAllClassSessionsAsync()
     {
         return await _classSessionRepository.GetAllAsync();
+    }
+
+    public async Task<PagedResult<ClassSession>> GetPagedSessionsAsync(int page, int pageSize, string? search = null, string? sortBy = null, bool ascending = true)
+    {
+        Expression<Func<ClassSession, bool>>? filter = null;
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            filter = s => s.Name.Contains(search);
+        }
+        return await _classSessionRepository.GetPagedAsync(page, pageSize, filter, sortBy, ascending);
     }
 
     public async Task<ClassSession?> GetClassSessionByIdAsync(int id)

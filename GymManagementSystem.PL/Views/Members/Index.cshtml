@@ -1,9 +1,5 @@
-@model PagedResultDisplay<MemberViewModel>
 @{
     ViewData["Title"] = "Members";
-    var search = ViewBag.Search as string;
-    var sortBy = ViewBag.SortBy as string;
-    var ascending = ViewBag.Ascending;
 }
 
 <div class="container py-4">
@@ -28,119 +24,39 @@
         </div>
     </header>
 
-    <form method="get" class="mb-4">
-        <div class="row g-2 align-items-center">
-            <div class="col-md-6">
-                <div class="input-group">
-                    <input type="text" name="search" value="@search" class="form-control form-control-lg" placeholder="Search by name, email, or phone..." />
-                    <button type="submit" class="btn btn-gradient btn-lg"><i class="bi bi-search"></i> Search</button>
-                </div>
-            </div>
-            <div class="col-md-auto">
-                <span class="text-secondary">@Model.TotalCount member(s) found</span>
-            </div>
-        </div>
-    </form>
-
     <div class="premium-card p-4">
         <div class="table-responsive">
             <table id="dataTable" class="table table-hover align-middle mb-0">
                 <thead>
                     <tr style="border-bottom: 2px solid var(--border-color);">
-                        <th class="py-3 px-4 fw-bold">
-                            <a asp-route-search="@search" asp-route-sortBy="FirstName" asp-route-ascending="@(sortBy == "FirstName" && ascending ? "false" : "true")" class="text-decoration-none text-light">
-                                Name <i class="bi bi-arrow-down-up"></i>
-                            </a>
-                        </th>
+                        <th class="py-3 px-4 fw-bold">Name</th>
                         <th class="py-3 px-4 fw-bold">Contact</th>
                         <th class="py-3 px-4 fw-bold">Address</th>
                         <th class="py-3 px-4 fw-bold text-end">Actions</th>
                     </tr>
                 </thead>
-                <tbody>
-                    @if (Model.Items.Any())
-                    {
-                        foreach (var item in Model.Items)
-                        {
-                            <tr style="border-bottom: 1px solid var(--border-color);">
-                                <td class="py-3 px-4">
-                                    <div class="d-flex align-items-center">
-                                        @if (!string.IsNullOrEmpty(item.Photo))
-                                        {
-                                            <img src="@item.Photo" alt="@item.FirstName @item.LastName" class="rounded-circle me-3" style="width: 40px; height: 40px; object-fit: cover;" />
-                                        }
-                                        else
-                                        {
-                                            <div class="rounded-circle d-flex justify-content-center align-items-center me-3 text-white fw-bold" style="width: 40px; height: 40px; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));">
-                                                @item.FirstName.Substring(0, 1)@item.LastName.Substring(0, 1)
-                                            </div>
-                                        }
-                                        <div>
-                                            <h6 class="mb-0 fw-bold">@item.FirstName @item.LastName</h6>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="py-3 px-4">
-                                    <div class="d-flex flex-column">
-                                        <span class="text-secondary mb-1"><i class="bi bi-envelope me-2"></i>@item.Email</span>
-                                        <span class="text-secondary"><i class="bi bi-telephone me-2"></i>@item.PhoneNumber</span>
-                                    </div>
-                                </td>
-                                <td class="py-3 px-4">
-                                    <span class="text-secondary">@item.City</span>
-                                </td>
-                                <td class="py-3 px-4 text-end">
-                                    <div class="btn-group" role="group">
-                                        <a asp-controller="Booking" asp-action="Index" class="btn btn-sm btn-outline-warning" title="Bookings">
-                                            <i class="bi bi-qr-code"></i>
-                                        </a>
-                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info" title="Details">
-                                            <i class="bi bi-eye"></i>
-                                        </a>
-                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-warning" title="Edit">
-                                            <i class="bi bi-pencil"></i>
-                                        </a>
-                                        <form asp-action="Delete" asp-route-id="@item.Id" method="post" style="display:inline;">
-                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete" onclick="return confirm('Are you sure?');">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
-                        }
-                    }
-                    else
-                    {
-                        <tr>
-                            <td colspan="4" class="text-center py-5">
-                                <i class="bi bi-people display-4 text-secondary mb-3 d-block"></i>
-                                <h5 class="text-secondary">No members found</h5>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
             </table>
         </div>
-
-        @if (Model.TotalPages > 1)
-        {
-            <nav class="mt-4">
-                <ul class="pagination justify-content-center mb-0">
-                    <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
-                        <a class="page-link" asp-route-page="@(Model.Page - 1)" asp-route-search="@search" asp-route-sortBy="@sortBy" asp-route-ascending="@ascending"><i class="bi bi-chevron-left"></i></a>
-                    </li>
-                    @for (int i = 1; i <= Model.TotalPages; i++)
-                    {
-                        <li class="page-item @(i == Model.Page ? "active" : "")">
-                            <a class="page-link" asp-route-page="@i" asp-route-search="@search" asp-route-sortBy="@sortBy" asp-route-ascending="@ascending">@i</a>
-                        </li>
-                    }
-                    <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
-                        <a class="page-link" asp-route-page="@(Model.Page + 1)" asp-route-search="@search" asp-route-sortBy="@sortBy" asp-route-ascending="@ascending"><i class="bi bi-chevron-right"></i></a>
-                    </li>
-                </ul>
-            </nav>
-        }
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#dataTable').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: { url: '@Url.Action("DataTableData", "Members")', type: 'POST' },
+                pageLength: 10,
+                lengthMenu: [10, 25, 50, 100],
+                columns: [
+                    { data: 'name', name: 'FirstName', orderable: true },
+                    { data: 'contact', name: '', orderable: false },
+                    { data: 'city', name: '', orderable: false },
+                    { data: 'actions', name: '', orderable: false }
+                ],
+                language: { search: "Search:" }
+            });
+        });
+    </script>
+}
