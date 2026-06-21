@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <Target Name="ZeroPeTimestamp" AfterTargets="AfterBuild">
+  <Target Name="ZeroPeTimestamp" AfterTargets="AfterBuild" Condition="$([MSBuild]::IsOSPlatform('Windows'))">
     <Exec Command="powershell -NoProfile -NonInteractive -ExecutionPolicy Bypass -File &quot;$(MSBuildThisFileDirectory)..\ZeroPeTimestamp.ps1&quot; -Path &quot;$(TargetPath)&quot;" />
   </Target>
 
