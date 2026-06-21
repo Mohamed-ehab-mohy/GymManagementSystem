@@ -1,48 +1,59 @@
 @model GymManagementSystem.PL.ViewModels.PlanViewModel
 
-<div class="premium-card h-100 d-flex flex-column">
-    <div class="premium-card-header text-center @(Model.IsActive ? "active-plan" : "")">
+<div class="relative glass-card flex flex-col h-full transform transition-all duration-300 @(Model.IsActive ? "border-neon-green shadow-[0_0_25px_rgba(57,255,20,0.4)] hover:shadow-[0_0_40px_rgba(57,255,20,0.6)] z-10 scale-105" : "hover:-translate-y-2 hover:border-zinc-500")">
+    
+    @if (Model.IsActive)
+    {
+        <div class="absolute -top-4 left-1/2 -translate-x-1/2 z-20">
+            <span class="bg-neon-green text-black text-xs font-bold uppercase tracking-wider py-1.5 px-4 rounded-full shadow-[0_0_15px_rgba(57,255,20,0.6)]">Most Popular</span>
+        </div>
+    }
+
+    <div class="p-8 border-b border-zinc-800/50 text-center relative overflow-hidden">
         @if (Model.IsActive)
         {
-            <span class="badge bg-success position-absolute top-0 end-0 m-3 fs-6 rounded-pill px-3 py-2">Active</span>
+            <div class="absolute inset-0 bg-gradient-to-b from-neon-green/10 to-transparent pointer-events-none"></div>
+        }
+        <h3 class="text-2xl font-display font-bold text-white mb-2 mt-2 relative z-10">@Model.Name</h3>
+        @if (Model.IsActive)
+        {
+            <span class="relative z-10 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-500/10 text-green-400 border border-green-500/20 mb-4">Active</span>
         }
         else
         {
-            <span class="badge bg-secondary position-absolute top-0 end-0 m-3 fs-6 rounded-pill px-3 py-2">Inactive</span>
+            <span class="relative z-10 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-zinc-500/10 text-zinc-400 border border-zinc-500/20 mb-4">Inactive</span>
         }
-        <h3 class="fw-bold mb-0 mt-2">@Model.Name</h3>
+
+        <div class="mt-4 flex items-baseline justify-center gap-2 relative z-10">
+            <span class="text-5xl font-extrabold tracking-tight text-white">@Model.Price.ToString("G29")</span>
+            <span class="text-lg font-semibold text-zinc-400">EGP</span>
+        </div>
+        <p class="text-zinc-500 mt-2 font-medium relative z-10">/ @Model.DurationDays Days</p>
     </div>
     
-    <div class="card-body p-4 d-flex flex-column flex-grow-1">
-        <div class="text-center mb-4 pb-3 border-bottom" style="border-color: var(--border-color) !important;">
-            <div class="display-4 fw-bold text-primary-theme">@Model.Price.ToString("G29")</div>
-            <span class="text-secondary fw-semibold">EGP / @Model.DurationDays Days</span>
-        </div>
+    <div class="p-8 flex-1 flex flex-col">
+        <p class="text-zinc-300 mb-8 flex-1 leading-relaxed text-center font-medium">
+            @Model.Description
+        </p>
 
-        <div class="mb-4 flex-grow-1">
-            <p class="text-secondary mb-0">
-                @Model.Description
-            </p>
-        </div>
-
-        <div class="mt-auto pt-3">
-            <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-gradient w-100 mb-3 py-2">
-                <i class="bi bi-eye me-2"></i> View Details
+        <div class="mt-auto space-y-3">
+            <a asp-action="Details" asp-route-id="@Model.Id" class="w-full @(Model.IsActive ? "btn-primary shadow-[0_0_15px_rgba(57,255,20,0.4)]" : "btn-outline border-zinc-600 text-zinc-300 hover:text-white") block text-center py-2.5 rounded-lg font-semibold transition-all">
+                <i class="bi bi-eye mr-2"></i> View Details
             </a>
 
-            <div class="d-flex gap-2">
-                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-soft flex-fill py-2 text-center">
-                    <i class="bi bi-pencil me-1"></i> Edit
+            <div class="flex gap-3">
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="flex-1 btn-outline py-2 text-sm text-center border-zinc-700">
+                    <i class="bi bi-pencil mr-1"></i> Edit
                 </a>
-                <form asp-action="ToggleActive" asp-route-id="@Model.Id" method="post" class="flex-fill m-0">
-                    <button type="submit" class="btn btn-soft w-100 py-2 @(Model.IsActive ? "hover-danger" : "hover-success")">
+                <form asp-action="ToggleActive" asp-route-id="@Model.Id" method="post" class="flex-1">
+                    <button type="submit" class="w-full h-full btn-outline py-2 text-sm flex items-center justify-center border-zinc-700 @(Model.IsActive ? "hover:border-red-500 hover:text-red-500 hover:bg-red-500/10" : "hover:border-green-500 hover:text-green-500 hover:bg-green-500/10") transition-colors">
                         @if (Model.IsActive)
                         {
-                            <i class="bi bi-x-circle me-1"></i> <span>Disable</span>
+                            <i class="bi bi-x-circle mr-1"></i> <span>Disable</span>
                         }
                         else
                         {
-                            <i class="bi bi-check-circle me-1"></i> <span>Enable</span>
+                            <i class="bi bi-check-circle mr-1"></i> <span>Enable</span>
                         }
                     </button>
                 </form>

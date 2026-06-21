@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-gym-darker text-zinc-100 font-sans antialiased selection:bg-neon-green selection:text-black;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display font-bold tracking-tight text-white;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center px-6 py-2.5 rounded-full font-semibold text-black bg-neon-green hover:bg-[#32e011] transition-all duration-300 shadow-neon-green hover:shadow-[0_0_15px_rgba(57,255,20,0.6),0_0_30px_rgba(57,255,20,0.4)] focus:outline-none focus:ring-2 focus:ring-neon-green focus:ring-offset-2 focus:ring-offset-gym-darker;
+  }
+  
+  .btn-secondary {
+    @apply inline-flex items-center justify-center px-6 py-2.5 rounded-full font-semibold text-black bg-neon-cyan hover:bg-[#00e6e6] transition-all duration-300 shadow-neon-cyan hover:shadow-[0_0_15px_rgba(0,255,255,0.6),0_0_30px_rgba(0,255,255,0.4)] focus:outline-none focus:ring-2 focus:ring-neon-cyan focus:ring-offset-2 focus:ring-offset-gym-darker;
+  }
+  
+  .btn-accent {
+    @apply inline-flex items-center justify-center px-6 py-2.5 rounded-full font-semibold text-white bg-neon-orange hover:bg-[#e65400] transition-all duration-300 shadow-neon-orange hover:shadow-[0_0_15px_rgba(255,94,0,0.6),0_0_30px_rgba(255,94,0,0.4)] focus:outline-none focus:ring-2 focus:ring-neon-orange focus:ring-offset-2 focus:ring-offset-gym-darker;
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center justify-center px-6 py-2.5 rounded-full font-semibold text-zinc-300 border border-zinc-700 bg-transparent hover:bg-zinc-800 hover:text-white transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-gym-darker;
+  }
+
+  .glass-card {
+    @apply bg-gym-card/80 backdrop-blur-md border border-gym-border rounded-2xl shadow-glass overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:border-zinc-700;
+  }
+  
+  .form-input {
+    @apply w-full rounded-lg bg-zinc-900 border border-zinc-800 px-4 py-2.5 text-white placeholder-zinc-500 focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan transition-colors outline-none;
+  }
+  
+  .form-label {
+    @apply block text-sm font-medium text-zinc-400 mb-1.5;
+  }
+}
