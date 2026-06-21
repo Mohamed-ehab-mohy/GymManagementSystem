@@ -8,6 +8,7 @@ namespace GymManagementSystem.BLL.Attendance
     {
         private static string ComputeSignature(int bookingId, string secretKey)
         {
+            ArgumentNullException.ThrowIfNull(secretKey);
             var data = bookingId.ToString();
             var keyBytes = Encoding.UTF8.GetBytes(secretKey);
             using (var hmac = new HMACSHA256(keyBytes))
