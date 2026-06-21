@@ -1,6 +1,13 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
+    <script>
+        (function() {
+            var theme = localStorage.getItem('gympro-theme');
+            if (!theme) { theme = window.matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light'; }
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] — GymPro Management</title>
@@ -211,27 +218,16 @@
                 <button id="chatbot-close" class="btn btn-sm btn-link text-white text-decoration-none">&times;</button>
             </div>
             <div id="chatbot-messages" class="chatbot-messages px-3 py-2">
-                <div class="text-muted small text-center mb-2">Ask me about hours, pricing, classes, and more!</div>
+                <div id="chatbot-suggestions" class="chatbot-suggestions"></div>
             </div>
             <div class="chatbot-input d-flex p-2 border-top">
-                <input id="chatbot-input" type="text" class="form-control form-control-sm" placeholder="Type a message..." />
-                <button id="chatbot-send" class="btn btn-sm btn-gradient ms-2">Send</button>
+                <input id="chatbot-input" type="text" class="form-control form-control-sm" placeholder="Type a message / اكتب رسالة..." />
+                <button id="chatbot-send" class="btn btn-sm btn-gradient ms-2">ارسل / Send</button>
             </div>
         </div>
     </div>
 
-    <style>
-        .chatbot-widget { position: fixed; bottom: 20px; right: 20px; z-index: 9999; }
-        .chatbot-btn { width: 56px; height: 56px; border-radius: 50%; border: none; background: linear-gradient(135deg, #e63946, #457b9d); color: #fff; box-shadow: 0 4px 15px rgba(0,0,0,.3); cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .chatbot-panel { position: absolute; bottom: 70px; right: 0; width: 340px; max-height: 460px; background: var(--card-bg, #1a1a2e); border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,.5); display: flex; flex-direction: column; overflow: hidden; }
-        .chatbot-header { background: linear-gradient(135deg, #e63946, #457b9d); color: #fff; }
-        .chatbot-messages { flex: 1; overflow-y: auto; max-height: 320px; font-size: 0.85rem; }
-        .chatbot-messages .bot-msg, .chatbot-messages .user-msg { margin-bottom: 8px; padding: 6px 12px; border-radius: 12px; max-width: 85%; word-wrap: break-word; }
-        .chatbot-messages .user-msg { background: #457b9d; color: #fff; margin-left: auto; border-bottom-right-radius: 4px; }
-        .chatbot-messages .bot-msg { background: var(--glass-bg, rgba(255,255,255,.08)); color: var(--text-color, #e0e0e0); margin-right: auto; border-bottom-left-radius: 4px; }
-        .chatbot-input { border-color: var(--border-color, #333) !important; }
-        .chatbot-input input { background: var(--glass-bg, rgba(255,255,255,.05)); color: var(--text-color, #ccc); border: 1px solid var(--border-color, #333); }
-    </style>
+
 
     <script>
         (function () {
@@ -241,23 +237,52 @@
             var input = document.getElementById('chatbot-input');
             var send = document.getElementById('chatbot-send');
             var messages = document.getElementById('chatbot-messages');
+            var suggestions = document.getElementById('chatbot-suggestions');
 
-            toggle.onclick = function () { panel.style.display = panel.style.display === 'none' ? 'flex' : 'none'; };
-            close.onclick = function () { panel.style.display = 'none'; };
+            var chips = [
+                'What are your opening hours? / مواعيد العمل؟',
+                'What plans do you have? / الخطط المتاحة؟',
+                'Do you have a free trial? / في فترة تجربة؟',
+                'What classes are available? / إيه الجيم كلاسات؟',
+                'How do I book a session? / ازاي أحجز؟',
+                'Tell me about trainers / المدربين',
+                'What is the location? / موقع الجيم؟',
+                'Contact info / معلومات الاتصال'
+            ];
+
+            function showSuggestions() {
+                suggestions.innerHTML = '';
+                chips.forEach(function (text) {
+                    var chip = document.createElement('button');
+                    chip.className = 'chip';
+                    chip.textContent = text;
+                    chip.onclick = function () { askMessage(text); };
+                    suggestions.appendChild(chip);
+                });
+            }
+
+            function hideSuggestions() {
+                suggestions.innerHTML = '';
+            }
 
             function addMessage(text, cls) {
                 var div = document.createElement('div');
                 div.className = cls;
                 div.textContent = text;
-                messages.appendChild(div);
+                messages.insertBefore(div, suggestions);
                 messages.scrollTop = messages.scrollHeight;
             }
 
-            function ask() {
-                var msg = input.value.trim();
+            function askMessage(msg) {
                 if (!msg) return;
                 addMessage(msg, 'user-msg');
-                input.value = '';
+                hideSuggestions();
+                var typing = document.createElement('div');
+                typing.className = 'bot-msg';
+                typing.textContent = '...';
+                typing.id = 'typing-indicator';
+                messages.insertBefore(typing, suggestions);
+                messages.scrollTop = messages.scrollHeight;
 
                 fetch('/Chatbot/Ask', {
                     method: 'POST',
@@ -265,9 +290,35 @@
                     body: 'message=' + encodeURIComponent(msg)
                 })
                 .then(function (r) { return r.json(); })
-                .then(function (d) { addMessage(d.response, 'bot-msg'); })
-                .catch(function () { addMessage('Sorry, something went wrong.', 'bot-msg'); });
+                .then(function (d) {
+                    var t = document.getElementById('typing-indicator');
+                    if (t) t.remove();
+                    addMessage(d.response, 'bot-msg');
+                    showSuggestions();
+                })
+                .catch(function () {
+                    var t = document.getElementById('typing-indicator');
+                    if (t) t.remove();
+                    addMessage('Sorry, something went wrong.', 'bot-msg');
+                    showSuggestions();
+                });
             }
+
+            function ask() {
+                askMessage(input.value.trim());
+                input.value = '';
+            }
+
+            toggle.onclick = function () {
+                var isHidden = panel.style.display === 'none';
+                panel.style.display = isHidden ? 'flex' : 'none';
+                var hasMessages = messages.querySelectorAll('.bot-msg, .user-msg').length > 0;
+                if (isHidden && !hasMessages) {
+                    addMessage('Ask me anything / اسألني أي شيء', 'bot-msg');
+                    showSuggestions();
+                }
+            };
+            close.onclick = function () { panel.style.display = 'none'; };
 
             send.onclick = ask;
             input.onkeypress = function (e) { if (e.key === 'Enter') ask(); };

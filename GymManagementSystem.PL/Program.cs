@@ -55,6 +55,8 @@ try
 
     var builder = WebApplication.CreateBuilder(options);
 
+    builder.Configuration.AddJsonFile("appsettings.Local.json", optional: true, reloadOnChange: true);
+
     builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
     builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
     {
@@ -132,14 +134,14 @@ try
 
 builder.Services.AddHttpClient();
 builder.Services.AddMemoryCache();
-builder.Services.AddMapster();
 builder.Services.AddDistributedMemoryCache();
-builder.Services.AddSession(opt =>
+builder.Services.AddSession(options =>
 {
-    opt.IdleTimeout = TimeSpan.FromMinutes(30);
-    opt.Cookie.HttpOnly = true;
-    opt.Cookie.IsEssential = true;
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
 });
+builder.Services.AddMapster();
 builder.Services.AddControllersWithViews();
 builder.Services.AddSignalR();
 

@@ -9,15 +9,18 @@ namespace GymManagementSystem.PL.Controllers;
 public class AccountController : Controller
 {
     private readonly IAuthService _authService;
+    private readonly IConfiguration _configuration;
 
-    public AccountController(IAuthService authService)
+    public AccountController(IAuthService authService, IConfiguration configuration)
     {
         _authService = authService;
+        _configuration = configuration;
     }
 
     [HttpGet]
     public IActionResult Login()
     {
+        ViewBag.GoogleAuthEnabled = !string.IsNullOrEmpty(_configuration["Authentication:Google:ClientId"]);
         return View();
     }
 

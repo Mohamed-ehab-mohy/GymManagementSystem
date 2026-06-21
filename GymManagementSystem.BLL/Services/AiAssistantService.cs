@@ -1,125 +1,132 @@
-using System.ClientModel;
-using GymManagementSystem.BLL.Abstractions.Repositories;
+using System.Net.Http.Json;
+using System.Text.Json;
 using GymManagementSystem.BLL.Interfaces;
-using GymManagementSystem.Domain;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using OpenAI;
-using OpenAI.Chat;
-using ChatMessage = GymManagementSystem.BLL.Models.ChatMessage;
+using GymManagementSystem.BLL.Models;
+using GymManagementSystem.BLL.Abstractions.Repositories;
 
 namespace GymManagementSystem.BLL.Services;
 
 public class AiAssistantService : IAiAssistantService
 {
+    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly string _apiKey;
+    private readonly string _model;
+    private readonly int _maxTokens;
     private readonly IPlanRepository _planRepo;
     private readonly IClassSessionRepository _sessionRepo;
     private readonly ITrainerRepository _trainerRepo;
-    private readonly IConfiguration _config;
-    private readonly ILogger<AiAssistantService> _logger;
-    private readonly ChatClient _chatClient;
 
     public AiAssistantService(
+        IHttpClientFactory httpClientFactory,
+        string apiKey,
         IPlanRepository planRepo,
         IClassSessionRepository sessionRepo,
-        ITrainerRepository trainerRepo,
-        IConfiguration config,
-        ILogger<AiAssistantService> logger)
+        ITrainerRepository trainerRepo)
     {
+        _httpClientFactory = httpClientFactory;
+        _apiKey = apiKey;
+        _model = "gpt-4o-mini";
+        _maxTokens = 300;
         _planRepo = planRepo;
         _sessionRepo = sessionRepo;
         _trainerRepo = trainerRepo;
-        _config = config;
-        _logger = logger;
-
-        var apiKey = config["OpenAI:ApiKey"]
-            ?? throw new InvalidOperationException("OpenAI:ApiKey is not configured. Set it via User Secrets or appsettings.");
-        var model = config["OpenAI:Model"] ?? "gpt-4o-mini";
-
-        _chatClient = new ChatClient(model, new ApiKeyCredential(apiKey));
     }
 
     public async Task<string> GetResponseAsync(string message, List<ChatMessage> history)
     {
-        if (string.IsNullOrWhiteSpace(message))
-            return "Please ask me something!";
+        if (string.IsNullOrEmpty(_apiKey))
+            return "AI assistant is not configured. Please set the OpenAI API key.";
 
         var systemPrompt = await BuildSystemPromptAsync();
 
-        var messages = new List<ChatMessage> { new("system", systemPrompt) };
-        messages.AddRange(history.TakeLast(20));
-        messages.Add(new ChatMessage("user", message));
-
-        var openAiMessages = messages.Select<ChatMessage, OpenAI.Chat.ChatMessage>(m => m.Role switch
+        var requestBody = new
         {
-            "system" => new SystemChatMessage(m.Content),
-            "user" => new UserChatMessage(m.Content),
-            "assistant" => new AssistantChatMessage(m.Content),
-            _ => new UserChatMessage(m.Content)
-        }).ToList();
+            model = _model,
+            messages = BuildMessages(systemPrompt, message, history),
+            max_tokens = _maxTokens
+        };
 
-        try
+        using var client = _httpClientFactory.CreateClient();
+        client.DefaultRequestHeaders.Authorization = new("Bearer", _apiKey);
+
+        int[] delays = [2000, 4000, 8000, 15000];
+
+        for (int retry = 0; retry <= delays.Length; retry++)
         {
-            var maxTokens = _config.GetValue<int>("OpenAI:MaxTokens", 500);
-            var temperature = _config.GetValue<float>("OpenAI:Temperature", 0.7f);
+            var response = await client.PostAsJsonAsync("https://api.openai.com/v1/chat/completions", requestBody);
 
-            var completion = await _chatClient.CompleteChatAsync(openAiMessages, new ChatCompletionOptions
+            if (response.IsSuccessStatusCode)
             {
-                MaxOutputTokenCount = maxTokens
-            });
+                var result = await response.Content.ReadFromJsonAsync<OpenAiResponse>();
+                return result?.Choices?.FirstOrDefault()?.Message?.Content?.Trim()
+                       ?? "Sorry, I couldn't process that request.";
+            }
 
-            var reply = completion.Value.Content[0].Text;
-            _logger.LogInformation("Chat: user={UserMessage} -> assistant={AssistantReply}", message, reply);
-            return reply;
+            if ((int)response.StatusCode == 429 && retry < delays.Length)
+            {
+                await Task.Delay(delays[retry]);
+                continue;
+            }
+
+            return "The AI service is currently busy. Please wait a moment and try again / الخدمة مشغولة حالياً، برجاء الانتظار ثم المحاولة مرة أخرى.";
         }
-        catch (Exception ex)
+
+        return "The AI service is currently busy. Please wait a moment and try again / الخدمة مشغولة حالياً، برجاء الانتظار ثم المحاولة مرة أخرى.";
+    }
+
+    private List<object> BuildMessages(string systemPrompt, string userMessage, List<ChatMessage> history)
+    {
+        var messages = new List<object>
         {
-            _logger.LogError(ex, "OpenAI API call failed for message: {Message}", message);
-            return "Sorry, I'm having trouble connecting to my brain right now. Please try again in a moment.";
+            new { role = "system", content = systemPrompt }
+        };
+
+        foreach (var msg in history)
+        {
+            messages.Add(new { role = msg.Role, content = msg.Content });
         }
+
+        messages.Add(new { role = "user", content = userMessage });
+        return messages;
     }
 
     private async Task<string> BuildSystemPromptAsync()
     {
-        var plans = (await _planRepo.GetAllAsync()).Where(p => p.IsActive).ToList();
-        var sessions = (await _sessionRepo.GetAllAsync()).Where(s => s.ScheduleTime.Date == DateTime.Today && !s.IsDeleted).ToList();
-        var trainers = (await _trainerRepo.GetAllAsync()).Where(t => !t.IsDeleted).ToList();
+        var plans = await _planRepo.GetAllAsync();
+        var sessions = await _sessionRepo.GetAllAsync();
+        var trainers = await _trainerRepo.GetAllAsync();
 
-        var plansSummary = plans.Count != 0
-            ? string.Join("\n", plans.Select(p => $"- {p.Name}: {p.Price:C} for {p.DurationDays} days{(p.Description != null ? $" — {p.Description}" : "")}"))
-            : "- No active plans available.";
+        var planList = string.Join("\n", plans.Select(p => $"- {p.Name}: ${p.Price}/{(p.DurationDays >= 30 ? "month" : $"{p.DurationDays} days")}{(p.IsActive ? "" : " (inactive)")}"));
+        var today = DateTime.Today;
+        var todaySessions = sessions.Where(s => s.StartTime.Date == today).ToList();
+        var sessionList = string.Join("\n", todaySessions.Select(s => $"- {s.Name} at {s.StartTime:HH:mm} (capacity: {s.Capacity})"));
+        var trainerList = string.Join("\n", trainers.Select(t => $"- {t.FirstName} {t.LastName} ({t.Specialty})"));
 
-        var sessionsSummary = sessions.Count != 0
-            ? string.Join("\n", sessions.Select(s => $"- {s.Name} at {s.StartTime:HH:mm}{(s.Trainer?.FirstName is not null ? $" with {s.Trainer.FirstName}" : "")}{(s.Category?.CategoryName is not null ? $" ({s.Category.CategoryName})" : "")}, capacity {s.Capacity}"))
-            : "- No sessions scheduled for today.";
+        return $@"You are a helpful gym assistant for Power Fitness / GymPro management system.
+You must respond in the SAME LANGUAGE as the user's message (Arabic or English).
 
-        var trainersSummary = trainers.Count != 0
-            ? string.Join("\n", trainers.Select(t => $"- {t.FirstName} {t.LastName}, specialty: {t.Specialty}"))
-            : "- No trainers available.";
+Current gym context:
+- Today's date: {today:yyyy-MM-dd}
+- Active plans:\n{planList}
+- Today's sessions ({todaySessions.Count}):\n{sessionList}
+- Available trainers:\n{trainerList}
 
-        return $"""
-You are GymPro Assistant, a helpful AI assistant for GymPro — a professional gym management system.
+Provide concise, accurate answers about gym services, plans, sessions, trainers, bookings, hours (Mon-Fri 6AM-10PM, Sat 7AM-8PM, Sun 8AM-6PM), location (123 Fitness Street, downtown), and facilities.
+If you don't know something, suggest the user contact support at support@powerfitness.com.";
+    }
 
-Your role: Answer questions ONLY about the gym, its services, plans, sessions, trainers, and facilities.
-If asked anything outside gym topics, politely decline and redirect to gym-related questions.
+    private class OpenAiResponse
+    {
+        public List<Choice>? Choices { get; set; }
+    }
 
-IMPORTANT: You MUST respond in the same language the user writes in. If they write in Arabic, respond in Arabic. If they write in English, respond in English. Support Arabic fully.
+    private class Choice
+    {
+        public Message? Message { get; set; }
+    }
 
-=== ACTIVE PLANS ===
-{plansSummary}
-
-=== TODAY'S SESSIONS ===
-{sessionsSummary}
-
-=== TRAINERS ===
-{trainersSummary}
-
-Rules:
-- Keep answers concise and friendly (1-3 sentences).
-- If you don't know something, say so and suggest asking staff at the front desk.
-- Do NOT make up pricing or availability.
-- Use the actual gym data above to answer.
-- The gym name is "GymPro" (not Power Fitness).
-""";
+    private class Message
+    {
+        public string? Content { get; set; }
     }
 }

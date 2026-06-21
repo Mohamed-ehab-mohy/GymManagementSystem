@@ -1,4 +1,5 @@
 using Autofac;
+using GymManagementSystem.BLL.Abstractions.Repositories;
 using GymManagementSystem.BLL.Attendance;
 using GymManagementSystem.BLL.Export;
 using GymManagementSystem.BLL.Interfaces;
@@ -25,7 +26,18 @@ public class ServiceModule : Module
         builder.RegisterType<EmailService>().As<IEmailService>().InstancePerLifetimeScope();
         builder.RegisterType<AnalyticsService>().As<IAnalyticsService>().InstancePerLifetimeScope();
         builder.RegisterType<CacheService>().As<ICacheService>().SingleInstance();
-        builder.RegisterType<AiAssistantService>().As<IAiAssistantService>().InstancePerLifetimeScope();
+        builder.Register(c =>
+        {
+            var config = c.Resolve<Microsoft.Extensions.Configuration.IConfiguration>();
+            var apiKey = config["OpenAI:ApiKey"] ?? Environment.GetEnvironmentVariable("OpenAI__ApiKey") ?? "";
+            return new AiAssistantService(
+                c.Resolve<IHttpClientFactory>(),
+                apiKey,
+                c.Resolve<IPlanRepository>(),
+                c.Resolve<IClassSessionRepository>(),
+                c.Resolve<ITrainerRepository>()
+            );
+        }).As<IAiAssistantService>().InstancePerLifetimeScope();
         builder.RegisterType<PaymentService>().As<IPaymentService>().InstancePerLifetimeScope();
         builder.RegisterType<NotificationService>().As<INotificationService>().InstancePerLifetimeScope();
         builder.RegisterType<AttachmentService>().As<IAttachmentService>().InstancePerLifetimeScope()
