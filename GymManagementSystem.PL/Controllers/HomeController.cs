@@ -1,9 +1,9 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Diagnostics;
-using GymManagementSystem.Models;
+using GymManagementSystem.PL.Models;
 
-namespace GymManagementSystem.Controllers;
+namespace GymManagementSystem.PL.Controllers;
 
 public class HomeController : Controller
 {

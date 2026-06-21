@@ -1,4 +1,4 @@
-namespace GymManagementSystem.Models;
+namespace GymManagementSystem.PL.Models;
 
 public class ErrorViewModel
 {

@@ -38,9 +38,6 @@ public class AccountController : Controller
 
         await HttpContext.SignInAsync(result.Value!);
 
-        if (User.IsInRole("Member"))
-            return RedirectToAction("Index", "Dashboard");
-
         return RedirectToAction("Index", "Dashboard");
     }
 
