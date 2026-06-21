@@ -22,17 +22,19 @@ A complete gym management web application built on .NET 10.0 with Clean Architec
 
 ### Packages
 
-**Mapping:** Mapster, Mapster.DependencyInjection
-**DI:** Autofac.Extensions.DependencyInjection
-**Logging:** Serilog.AspNetCore, Serilog.Sinks.Seq, Serilog.Sinks.Postgresql.Alternative, Serilog.Enrichers.Environment, Serilog.Enrichers.Thread
-**Export:** ClosedXML (Excel), QuestPDF (PDF)
-**AI:** OpenAI (GPT-4o-mini)
-**Payments:** CloudinaryDotNet (images), QRCoder (QR codes)
-**Auth:** BCrypt.Net-Next, Microsoft.AspNetCore.Authentication.Google
-**Email:** MailKit
-**Scheduling:** Quartz, Quartz.Extensions.Hosting
-**Monitoring:** prometheus-net.AspNetCore, AspNetCore.HealthChecks.SqlServer, AspNetCore.HealthChecks.NpgSql, AspNetCore.HealthChecks.UI
-**Testing:** xUnit, Shouldly, NSubstitute, NetArchTest.Rules, Microsoft.AspNetCore.Mvc.Testing, coverlet.collector
+| Category | Packages |
+|----------|----------|
+| Mapping | Mapster, Mapster.DependencyInjection |
+| DI | Autofac.Extensions.DependencyInjection |
+| Logging | Serilog.AspNetCore, Serilog.Sinks.Seq, Serilog.Sinks.Postgresql.Alternative, Serilog.Enrichers.Environment, Serilog.Enrichers.Thread |
+| Export | ClosedXML (Excel), QuestPDF (PDF) |
+| AI | OpenAI (GPT-4o-mini) |
+| Images / QR | CloudinaryDotNet, QRCoder |
+| Auth | BCrypt.Net-Next, Microsoft.AspNetCore.Authentication.Google |
+| Email | MailKit |
+| Scheduling | Quartz, Quartz.Extensions.Hosting |
+| Monitoring | prometheus-net.AspNetCore, AspNetCore.HealthChecks.SqlServer, AspNetCore.HealthChecks.NpgSql, AspNetCore.HealthChecks.UI |
+| Testing | xUnit, Shouldly, NSubstitute, NetArchTest.Rules, Microsoft.AspNetCore.Mvc.Testing, coverlet.collector |
 
 ## Architecture
 
