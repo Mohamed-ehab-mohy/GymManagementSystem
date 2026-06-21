@@ -1,8 +1,6 @@
-using System;
-using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 using GymManagementSystem.BLL.Abstractions;
 using GymManagementSystem.BLL.Interfaces;
 using GymManagementSystem.Domain;
@@ -56,7 +54,7 @@ public class RenewalReminderJobTests
             }
         };
 
-        var queryable = TestAsyncEnumerable(memberships);
+        var queryable = CreateTestQueryable(memberships);
         membershipRepo.Query().Returns(queryable);
 
         var scope = Substitute.For<IServiceScope>();
@@ -122,7 +120,7 @@ public class RenewalReminderJobTests
             }
         };
 
-        var queryable = TestAsyncEnumerable(memberships);
+        var queryable = CreateTestQueryable(memberships);
         membershipRepo.Query().Returns(queryable);
 
         var scope = Substitute.For<IServiceScope>();
@@ -149,28 +147,19 @@ public class RenewalReminderJobTests
         await unitOfWork.DidNotReceive().CompleteAsync();
     }
 
-    private static IQueryable<T> TestAsyncEnumerable<T>(List<T> source) where T : class
+    private static IQueryable<T> CreateTestQueryable<T>(List<T> source) where T : class
     {
         return new TestAsyncEnumerableQueryable<T>(source);
     }
 
-    private class TestAsyncEnumerableQueryable<T> : List<T>, IAsyncEnumerable<T>, IQueryable<T>
+    private class TestAsyncEnumerableQueryable<T> : EnumerableQuery<T>, IAsyncEnumerable<T>, IQueryable<T>
     {
-        private readonly IQueryable<T> _queryable;
-
-        public TestAsyncEnumerableQueryable(IEnumerable<T> items) : base(items)
-        {
-            _queryable = this.AsQueryable();
-        }
+        public TestAsyncEnumerableQueryable(IEnumerable<T> enumerable) : base(enumerable) { }
 
         public IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default)
-        {
-            return new TestAsyncEnumerator<T>(GetEnumerator());
-        }
+            => new TestAsyncEnumerator<T>(this.AsEnumerable().GetEnumerator());
 
-        IQueryProvider IQueryable.Provider => new TestAsyncQueryProvider<T>(_queryable.Provider);
-        Expression IQueryable.Expression => _queryable.Expression;
-        Type IQueryable.ElementType => _queryable.ElementType;
+        IQueryProvider IQueryable.Provider => new TestAsyncQueryProvider<T>(this);
     }
 
     private class TestAsyncEnumerator<T> : IAsyncEnumerator<T>
@@ -190,10 +179,33 @@ public class RenewalReminderJobTests
         public IQueryable<TElement> CreateQuery<TElement>(Expression expression) => new TestAsyncEnumerableQueryable<TElement>(_inner.CreateQuery<TElement>(expression));
         public object? Execute(Expression expression) => _inner.Execute(expression);
         public TResult Execute<TResult>(Expression expression) => _inner.Execute<TResult>(expression);
+
         public TResult ExecuteAsync<TResult>(Expression expression, CancellationToken cancellationToken = default)
         {
             var result = Execute(expression);
-            if (result is Task task) return (TResult)((dynamic)task);
+            if (result is Task task)
+            {
+                var taskType = task.GetType();
+                if (taskType.IsGenericType)
+                {
+                    var innerResult = taskType.GetProperty("Result")?.GetValue(task);
+                    var tResultType = typeof(TResult);
+                    if (tResultType.IsGenericType && tResultType.GetGenericTypeDefinition() == typeof(Task<>))
+                    {
+                        var innerType = tResultType.GetGenericArguments()[0];
+                        var fromResult = typeof(Task).GetMethod(nameof(Task.FromResult))!.MakeGenericMethod(innerType);
+                        return (TResult)fromResult.Invoke(null, [innerResult])!;
+                    }
+                }
+                return (TResult)(object)Task.CompletedTask;
+            }
+            var resultType = typeof(TResult);
+            if (resultType.IsGenericType && resultType.GetGenericTypeDefinition() == typeof(Task<>))
+            {
+                var innerType = resultType.GetGenericArguments()[0];
+                var fromResult = typeof(Task).GetMethod(nameof(Task.FromResult))!.MakeGenericMethod(innerType);
+                return (TResult)fromResult.Invoke(null, [result])!;
+            }
             return (TResult)result!;
         }
     }
