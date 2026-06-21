@@ -49,6 +49,11 @@
     <PackageVersion Include="OpenAI" Version="2.2.0" />
   </ItemGroup>
 
+  <!-- Cloudinary -->
+  <ItemGroup>
+    <PackageVersion Include="CloudinaryDotNet" Version="1.27.4" />
+  </ItemGroup>
+
   <!-- Other -->
   <ItemGroup>
     <PackageVersion Include="BCrypt.Net-Next" Version="4.0.3" />

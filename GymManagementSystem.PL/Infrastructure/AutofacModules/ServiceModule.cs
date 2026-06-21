@@ -40,9 +40,6 @@ public class ServiceModule : Module
         }).As<IAiAssistantService>().InstancePerLifetimeScope();
         builder.RegisterType<PaymentService>().As<IPaymentService>().InstancePerLifetimeScope();
         builder.RegisterType<NotificationService>().As<INotificationService>().InstancePerLifetimeScope();
-        builder.RegisterType<AttachmentService>().As<IAttachmentService>().InstancePerLifetimeScope()
-            .WithParameter(
-                (pi, ctx) => pi.Name == "storagePath",
-                (pi, ctx) => Path.Combine(ctx.Resolve<IWebHostEnvironment>().ContentRootPath, "App_Data"));
+        builder.RegisterType<AttachmentService>().As<IAttachmentService>().InstancePerLifetimeScope();
     }
 }

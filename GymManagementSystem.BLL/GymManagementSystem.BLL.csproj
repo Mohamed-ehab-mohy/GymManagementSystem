@@ -13,6 +13,7 @@
     <PackageReference Include="QRCoder" />
     <PackageReference Include="QuestPDF" />
     <PackageReference Include="OpenAI" />
+    <PackageReference Include="CloudinaryDotNet" />
   </ItemGroup>
 
   <PropertyGroup>

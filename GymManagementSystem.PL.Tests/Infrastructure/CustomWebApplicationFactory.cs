@@ -85,7 +85,10 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
         {
             config.AddInMemoryCollection(new Dictionary<string, string?>
             {
-                ["AttendanceSettings:SecretKey"] = "test-secret-key-for-integration-tests"
+                ["AttendanceSettings:SecretKey"] = "test-secret-key-for-integration-tests",
+                ["Cloudinary:CloudName"] = "test",
+                ["Cloudinary:ApiKey"] = "test",
+                ["Cloudinary:ApiSecret"] = "test"
             });
         });
 
