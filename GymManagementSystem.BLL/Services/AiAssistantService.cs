@@ -1,70 +1,125 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.ClientModel;
+using GymManagementSystem.BLL.Abstractions.Repositories;
 using GymManagementSystem.BLL.Interfaces;
+using GymManagementSystem.Domain;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using OpenAI;
+using OpenAI.Chat;
+using ChatMessage = GymManagementSystem.BLL.Models.ChatMessage;
 
 namespace GymManagementSystem.BLL.Services;
 
 public class AiAssistantService : IAiAssistantService
 {
-    private static readonly Dictionary<string, string> Responses = new(StringComparer.OrdinalIgnoreCase)
-    {
-        ["hello"] = "Hi there! Welcome to Power Fitness. How can I help you today?",
-        ["hi"] = "Hello! How can I assist you with your gym experience?",
-        ["hours"] = "We're open Mon-Fri 6AM-10PM, Sat 7AM-8PM, and Sun 8AM-6PM.",
-        ["opening hours"] = "Mon-Fri: 6AM-10PM | Sat: 7AM-8PM | Sun: 8AM-6PM",
-        ["price"] = "Our plans start at $29/month for Basic, $49/month for Standard, and $79/month for Premium.",
-        ["pricing"] = "Plans: Basic $29/mo, Standard $49/mo, Premium $79/mo. Each with increasing perks!",
-        ["membership"] = "We have 3 membership tiers. Visit the Plans section to see full details.",
-        ["plans"] = "Basic ($29): Gym access | Standard ($49): Gym + Classes | Premium ($79): All access + PT sessions",
-        ["trainer"] = "We have certified personal trainers available. Visit the Trainers page to view profiles.",
-       ["personal trainer"] = "Our trainers specialize in strength, cardio, yoga, and more. Book a session today!",
-        ["class"] = "We offer yoga, pilates, spinning, HIIT, and strength training classes. Check the Sessions page!",
-        ["yoga"] = "Our yoga classes run Mon/Wed/Fri at 7AM and Tue/Thu at 6PM. Zen awaits!",
-        ["hiit"] = "HIIT sessions are Mon/Wed/Fri at 8AM and Tue/Thu at 5PM. Bring your energy!",
-        ["spinning"] = "Spinning classes: daily at 6AM and 6PM. Book your bike!",
-        ["location"] = "We're located at 123 Fitness Street, downtown. Come visit us!",
-        ["parking"] = "Free parking is available for members in the rear lot.",
-        ["pool"] = "Yes! Our Premium members have access to the rooftop pool.",
-        ["sauna"] = "Sauna access is included with Standard and Premium memberships.",
-        ["shower"] = "Locker rooms with showers and changing areas are available for all members.",
-        ["free trial"] = "Yes! We offer a 3-day free trial. Sign up to claim yours!",
-        ["trial"] = "New members can enjoy a 3-day free trial with full access.",
-        ["cancel"] = "You can cancel your membership anytime from your Dashboard or contact admin.",
-        ["refund"] = "Refunds are available within 14 days of purchase. Contact admin for details.",
-        ["contact"] = "You can reach us at support@powerfitness.com or call (555) 123-4567.",
-        ["email"] = "Our support email is support@powerfitness.com.",
-        ["phone"] = "Call us at (555) 123-4567 during business hours.",
-        ["diet"] = "We have a nutritionist on site for consultations. Book a session through the Dashboard.",
-        ["nutrition"] = "Our nutritionist offers personalized meal plans. Ask at the front desk!",
-        ["water"] = "Water fountains and refill stations are available throughout the gym.",
-        ["wifi"] = "Free Wi-Fi is available for all members. Password: powerfit2024",
-        ["age"] = "Members must be at least 14 years old. Minors need parental consent.",
-        ["guest"] = "Members can bring a guest for $10 per visit. Premium members get 2 free guest passes/month.",
-        ["help"] = "I can answer questions about: hours, pricing, memberships, classes, trainers, location, facilities, and more!"
-    };
+    private readonly IPlanRepository _planRepo;
+    private readonly IClassSessionRepository _sessionRepo;
+    private readonly ITrainerRepository _trainerRepo;
+    private readonly IConfiguration _config;
+    private readonly ILogger<AiAssistantService> _logger;
+    private readonly ChatClient _chatClient;
 
-    private static readonly string[] Fallbacks =
+    public AiAssistantService(
+        IPlanRepository planRepo,
+        IClassSessionRepository sessionRepo,
+        ITrainerRepository trainerRepo,
+        IConfiguration config,
+        ILogger<AiAssistantService> logger)
     {
-        "Great question! For more details, please contact our team at support@powerfitness.com.",
-        "I'm not sure about that one. Try asking about hours, pricing, or classes!",
-        "That's beyond my knowledge. Our staff at the front desk would be happy to help!",
-        "Hmm, I don't have that info yet. Feel free to ask something else!"
-    };
+        _planRepo = planRepo;
+        _sessionRepo = sessionRepo;
+        _trainerRepo = trainerRepo;
+        _config = config;
+        _logger = logger;
 
-    public Task<string> GetResponseAsync(string message)
+        var apiKey = config["OpenAI:ApiKey"]
+            ?? throw new InvalidOperationException("OpenAI:ApiKey is not configured. Set it via User Secrets or appsettings.");
+        var model = config["OpenAI:Model"] ?? "gpt-4o-mini";
+
+        _chatClient = new ChatClient(model, new ApiKeyCredential(apiKey));
+    }
+
+    public async Task<string> GetResponseAsync(string message, List<ChatMessage> history)
     {
         if (string.IsNullOrWhiteSpace(message))
-            return Task.FromResult("Please ask me something!");
+            return "Please ask me something!";
 
-        foreach (var kvp in Responses)
+        var systemPrompt = await BuildSystemPromptAsync();
+
+        var messages = new List<ChatMessage> { new("system", systemPrompt) };
+        messages.AddRange(history.TakeLast(20));
+        messages.Add(new ChatMessage("user", message));
+
+        var openAiMessages = messages.Select<ChatMessage, OpenAI.Chat.ChatMessage>(m => m.Role switch
         {
-            if (message.Contains(kvp.Key, StringComparison.OrdinalIgnoreCase))
-                return Task.FromResult(kvp.Value);
-        }
+            "system" => new SystemChatMessage(m.Content),
+            "user" => new UserChatMessage(m.Content),
+            "assistant" => new AssistantChatMessage(m.Content),
+            _ => new UserChatMessage(m.Content)
+        }).ToList();
 
-        var random = new Random();
-        return Task.FromResult(Fallbacks[random.Next(Fallbacks.Length)]);
+        try
+        {
+            var maxTokens = _config.GetValue<int>("OpenAI:MaxTokens", 500);
+            var temperature = _config.GetValue<float>("OpenAI:Temperature", 0.7f);
+
+            var completion = await _chatClient.CompleteChatAsync(openAiMessages, new ChatCompletionOptions
+            {
+                MaxOutputTokenCount = maxTokens
+            });
+
+            var reply = completion.Value.Content[0].Text;
+            _logger.LogInformation("Chat: user={UserMessage} -> assistant={AssistantReply}", message, reply);
+            return reply;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "OpenAI API call failed for message: {Message}", message);
+            return "Sorry, I'm having trouble connecting to my brain right now. Please try again in a moment.";
+        }
+    }
+
+    private async Task<string> BuildSystemPromptAsync()
+    {
+        var plans = (await _planRepo.GetAllAsync()).Where(p => p.IsActive).ToList();
+        var sessions = (await _sessionRepo.GetAllAsync()).Where(s => s.ScheduleTime.Date == DateTime.Today && !s.IsDeleted).ToList();
+        var trainers = (await _trainerRepo.GetAllAsync()).Where(t => !t.IsDeleted).ToList();
+
+        var plansSummary = plans.Count != 0
+            ? string.Join("\n", plans.Select(p => $"- {p.Name}: {p.Price:C} for {p.DurationDays} days{(p.Description != null ? $" — {p.Description}" : "")}"))
+            : "- No active plans available.";
+
+        var sessionsSummary = sessions.Count != 0
+            ? string.Join("\n", sessions.Select(s => $"- {s.Name} at {s.StartTime:HH:mm}{(s.Trainer?.FirstName is not null ? $" with {s.Trainer.FirstName}" : "")}{(s.Category?.CategoryName is not null ? $" ({s.Category.CategoryName})" : "")}, capacity {s.Capacity}"))
+            : "- No sessions scheduled for today.";
+
+        var trainersSummary = trainers.Count != 0
+            ? string.Join("\n", trainers.Select(t => $"- {t.FirstName} {t.LastName}, specialty: {t.Specialty}"))
+            : "- No trainers available.";
+
+        return $"""
+You are GymPro Assistant, a helpful AI assistant for GymPro — a professional gym management system.
+
+Your role: Answer questions ONLY about the gym, its services, plans, sessions, trainers, and facilities.
+If asked anything outside gym topics, politely decline and redirect to gym-related questions.
+
+IMPORTANT: You MUST respond in the same language the user writes in. If they write in Arabic, respond in Arabic. If they write in English, respond in English. Support Arabic fully.
+
+=== ACTIVE PLANS ===
+{plansSummary}
+
+=== TODAY'S SESSIONS ===
+{sessionsSummary}
+
+=== TRAINERS ===
+{trainersSummary}
+
+Rules:
+- Keep answers concise and friendly (1-3 sentences).
+- If you don't know something, say so and suggest asking staff at the front desk.
+- Do NOT make up pricing or availability.
+- Use the actual gym data above to answer.
+- The gym name is "GymPro" (not Power Fitness).
+""";
     }
 }

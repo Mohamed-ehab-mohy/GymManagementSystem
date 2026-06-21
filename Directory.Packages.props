@@ -44,6 +44,11 @@
     <PackageVersion Include="Serilog.Sinks.Postgresql.Alternative" Version="4.2.0" />
   </ItemGroup>
 
+  <!-- AI -->
+  <ItemGroup>
+    <PackageVersion Include="OpenAI" Version="2.2.0" />
+  </ItemGroup>
+
   <!-- Other -->
   <ItemGroup>
     <PackageVersion Include="BCrypt.Net-Next" Version="4.0.3" />

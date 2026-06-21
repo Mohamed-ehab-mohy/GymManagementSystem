@@ -12,6 +12,7 @@
     <PackageReference Include="MailKit" />
     <PackageReference Include="QRCoder" />
     <PackageReference Include="QuestPDF" />
+    <PackageReference Include="OpenAI" />
   </ItemGroup>
 
   <PropertyGroup>
