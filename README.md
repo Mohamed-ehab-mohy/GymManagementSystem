@@ -185,6 +185,17 @@ Members ──> Memberships ──> Plans
 
 All entities inherit from `BaseEntity`: Id, CreatedAt, CreatedBy, UpdatedAt, UpdatedBy, IsDeleted (soft delete), DeletedAt.
 
+## Default Credentials
+
+After running the app (Docker or manual), the seeder creates these accounts:
+
+| Email | Password | Role |
+|-------|----------|------|
+| admin@gymy.com | Admin@123 | Admin |
+| superadmin@gymy.com | Super@123 | SuperAdmin |
+| member1@gmail.com - member100@gmail.com | Member@123 | Member |
+| trainer1@gymy.com - trainer100@gymy.com | Trainer@123 | Trainer |
+
 ## How to Run
 
 ### Prerequisites
