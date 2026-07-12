@@ -48,37 +48,39 @@
 </div>
 
 @section Scripts {
-    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 
     <script>
+        var html5QrcodeScanner = null;
+
         function onScanSuccess(decodedText, decodedResult) {
-            html5QrcodeScanner.clear();
+            if (html5QrcodeScanner) html5QrcodeScanner.clear();
             document.getElementById('payloadInput').value = decodedText;
             document.getElementById('checkInForm').submit();
         }
 
         function onScanFailure(error) { }
 
-        let html5QrcodeScanner = new Html5QrcodeScanner(
-            "qr-reader",
-            { fps: 15, qrbox: { width: 250, height: 250 }, rememberLastUsedCamera: true },
-            false);
+        document.addEventListener('DOMContentLoaded', function () {
+            html5QrcodeScanner = new Html5QrcodeScanner(
+                "qr-reader",
+                { fps: 15, qrbox: { width: 250, height: 250 }, rememberLastUsedCamera: true },
+                false);
 
-        html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+            html5QrcodeScanner.render(onScanSuccess, onScanFailure);
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const observer = new MutationObserver(() => {
-                const btn = document.getElementById('html5-qrcode-button-camera-permission');
+            var observer = new MutationObserver(function () {
+                var btn = document.getElementById('html5-qrcode-button-camera-permission');
                 if (btn) btn.className = 'btn-primary px-4 py-2 text-sm mt-4';
-                const startBtn = document.getElementById('html5-qrcode-button-camera-start');
+                var startBtn = document.getElementById('html5-qrcode-button-camera-start');
                 if (startBtn) startBtn.className = 'btn-primary px-4 py-2 text-sm m-2';
-                const stopBtn = document.getElementById('html5-qrcode-button-camera-stop');
+                var stopBtn = document.getElementById('html5-qrcode-button-camera-stop');
                 if (stopBtn) stopBtn.className = 'btn-outline px-4 py-2 text-sm m-2';
-                const select = document.getElementById('html5-qrcode-select-camera');
+                var select = document.getElementById('html5-qrcode-select-camera');
                 if (select) select.className = 'form-select w-auto inline-block m-2';
             });
 
-            const qrReader = document.getElementById('qr-reader');
+            var qrReader = document.getElementById('qr-reader');
             if (qrReader) observer.observe(qrReader, { childList: true, subtree: true });
         });
     </script>
