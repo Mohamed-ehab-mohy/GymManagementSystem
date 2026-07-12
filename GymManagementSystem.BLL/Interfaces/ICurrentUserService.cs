@@ -1,4 +1,4 @@
-namespace GymManagementSystem.DAL.Interceptors;
+namespace GymManagementSystem.BLL.Interfaces;
 
 public interface ICurrentUserService
 {

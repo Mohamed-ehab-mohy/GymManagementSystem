@@ -146,7 +146,7 @@ public static class DatabaseSeeder
                     DateOfBirth = new DateTime(Rng.Next(1970, 2000), Rng.Next(1, 13), Rng.Next(1, 28)),
                     Gender = "Male",
                     PasswordHash = BCrypt.Net.BCrypt.HashPassword("Trainer@123", 12),
-                    Role = "Trainer",
+                    Role = Domain.Roles.Trainer,
                     Specialty = (TrainerSpecialty)Rng.Next(4),
                     HireDate = DateTime.Today.AddDays(-Rng.Next(1, 1000)),
                     Address = new Address
@@ -187,7 +187,7 @@ public static class DatabaseSeeder
                     DateOfBirth = new DateTime(Rng.Next(1980, 2005), Rng.Next(1, 13), Rng.Next(1, 28)),
                     Gender = gender,
                     PasswordHash = BCrypt.Net.BCrypt.HashPassword("Member@123", 12),
-                    Role = "Member",
+                    Role = Domain.Roles.Member,
                     JoinDate = DateTime.Today.AddDays(-Rng.Next(1, 730)),
                     EmergencyContactName = $"{MaleFirstNames[Rng.Next(MaleFirstNames.Length)]} {LastNames[Rng.Next(LastNames.Length)]}",
                     EmergencyContactPhone = $"{"010011012015".Substring(Rng.Next(4) * 3, 3)}{Rng.Next(10000000, 99999999):D8}",
@@ -379,11 +379,11 @@ public static class DatabaseSeeder
     {
         var authService = scope.ServiceProvider.GetRequiredService<IAuthService>();
 
-        var adminResult = await authService.RegisterAdminAsync("admin@gymy.com", "Admin@123", "Admin");
+        var adminResult = await authService.RegisterAdminAsync("admin@gymy.com", "Admin@123", Domain.Roles.Admin);
         if (adminResult.IsSuccess)
             Log.Information("Admin user admin@gymy.com created");
 
-        var superResult = await authService.RegisterAdminAsync("superadmin@gymy.com", "Super@123", "SuperAdmin");
+        var superResult = await authService.RegisterAdminAsync("superadmin@gymy.com", "Super@123", Domain.Roles.SuperAdmin);
         if (superResult.IsSuccess)
             Log.Information("SuperAdmin user superadmin@gymy.com created");
     }

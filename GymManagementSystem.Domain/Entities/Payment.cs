@@ -5,7 +5,7 @@ namespace GymManagementSystem.Domain;
 public class Payment : BaseEntity
 {
     public int MemberId { get; set; }
-    public Member Member { get; set; } = null!;
+    public Member? Member { get; set; }
 
     public int? MembershipId { get; set; }
     public Membership? Membership { get; set; }

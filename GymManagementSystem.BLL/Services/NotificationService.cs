@@ -14,12 +14,12 @@ public class NotificationService : INotificationService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IRepository<Notification> _notificationRepository;
-    private readonly IHubContext<NotificationHub> _hubContext;
+    private readonly IHubContext<Hub> _hubContext;
 
     public NotificationService(
         IUnitOfWork unitOfWork,
         IRepository<Notification> notificationRepository,
-        IHubContext<NotificationHub> hubContext)
+        IHubContext<Hub> hubContext)
     {
         _unitOfWork = unitOfWork;
         _notificationRepository = notificationRepository;

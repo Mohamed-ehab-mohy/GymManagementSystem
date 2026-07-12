@@ -1,3 +1,4 @@
+using GymManagementSystem.BLL.Interfaces;
 using GymManagementSystem.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;

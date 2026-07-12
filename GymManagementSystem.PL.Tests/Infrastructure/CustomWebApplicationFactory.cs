@@ -59,7 +59,7 @@ public class TestAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions
             new Claim(ClaimTypes.NameIdentifier, "1"),
             new Claim(ClaimTypes.Name, "Test Admin"),
             new Claim(ClaimTypes.Email, "admin@test.com"),
-            new Claim(ClaimTypes.Role, "Admin"),
+            new Claim(ClaimTypes.Role, Domain.Roles.Admin),
         }, "TestScheme"));
 
         return Task.FromResult(AuthenticateResult.Success(new AuthenticationTicket(principal, "TestScheme")));

@@ -66,7 +66,7 @@ public class AuthService : IAuthService
             return Result.Failure("Email already registered.");
         }
 
-        var member = BuildMember(firstName, lastName, email, password, "Member", dateOfBirth, gender);
+        var member = BuildMember(firstName, lastName, email, password, Domain.Roles.Member, dateOfBirth, gender);
 
         await _memberRepository.AddAsync(member);
         await _unitOfWork.CompleteAsync();

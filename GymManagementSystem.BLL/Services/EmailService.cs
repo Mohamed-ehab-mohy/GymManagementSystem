@@ -9,23 +9,27 @@ namespace GymManagementSystem.BLL.Services;
 
 public class EmailService : IEmailService
 {
-    private readonly IConfiguration _configuration;
+    private readonly string _smtpHost;
+    private readonly int _smtpPort;
+    private readonly string _fromEmail;
+    private readonly string _username;
+    private readonly string _password;
+    private readonly string _baseUrl;
 
     public EmailService(IConfiguration configuration)
     {
-        _configuration = configuration;
+        _smtpHost = configuration["Email:SmtpHost"] ?? "smtp.gmail.com";
+        _smtpPort = int.Parse(configuration["Email:SmtpPort"] ?? "587");
+        _fromEmail = configuration["Email:From"] ?? "noreply@gymy.com";
+        _username = configuration["Email:Username"] ?? "";
+        _password = configuration["Email:Password"] ?? "";
+        _baseUrl = configuration["App:BaseUrl"] ?? "http://localhost:5000";
     }
 
     public async Task SendOtpAsync(string email, string otp)
     {
-        var smtpHost = _configuration["Email:SmtpHost"] ?? "smtp.gmail.com";
-        var smtpPort = int.Parse(_configuration["Email:SmtpPort"] ?? "587");
-        var fromEmail = _configuration["Email:From"] ?? "noreply@gymy.com";
-        var username = _configuration["Email:Username"] ?? "";
-        var password = _configuration["Email:Password"] ?? "";
-
         var message = new MimeMessage();
-        message.From.Add(new MailboxAddress("Power Fitness", fromEmail));
+        message.From.Add(new MailboxAddress("Power Fitness", _fromEmail));
         message.To.Add(new MailboxAddress("", email));
         message.Subject = "Your Password Reset OTP";
 
@@ -40,26 +44,13 @@ public class EmailService : IEmailService
             """
         };
 
-        using var client = new SmtpClient();
-        await client.ConnectAsync(smtpHost, smtpPort, MailKit.Security.SecureSocketOptions.StartTls);
-
-        if (!string.IsNullOrEmpty(username))
-            await client.AuthenticateAsync(username, password);
-
-        await client.SendAsync(message);
-        await client.DisconnectAsync(true);
+        await SendAsync(message);
     }
 
     public async Task SendRenewalReminderAsync(string email, int daysLeft, string planName)
     {
-        var smtpHost = _configuration["Email:SmtpHost"] ?? "smtp.gmail.com";
-        var smtpPort = int.Parse(_configuration["Email:SmtpPort"] ?? "587");
-        var fromEmail = _configuration["Email:From"] ?? "noreply@gymy.com";
-        var username = _configuration["Email:Username"] ?? "";
-        var password = _configuration["Email:Password"] ?? "";
-
         var message = new MimeMessage();
-        message.From.Add(new MailboxAddress("Power Fitness", fromEmail));
+        message.From.Add(new MailboxAddress("Power Fitness", _fromEmail));
         message.To.Add(new MailboxAddress("", email));
         message.Subject = daysLeft == 1
             ? "Your Membership Expires TOMORROW!"
@@ -71,18 +62,23 @@ public class EmailService : IEmailService
             <h2>Membership Renewal Reminder</h2>
             <p>Your <strong>{planName}</strong> plan is expiring in <strong>{daysLeft} day(s)</strong>.</p>
             <p>Renew now to keep enjoying unlimited access to Power Fitness!</p>
-            <p><a href="{_configuration["App:BaseUrl"] ?? "http://localhost:5000"}/Membership/Renew"
+            <p><a href="{_baseUrl}/Membership/Renew"
                   style="display:inline-block;padding:12px 24px;background:#e63946;color:white;text-decoration:none;border-radius:6px;">
                   Renew Now</a></p>
             <p>If you already renewed, please ignore this email.</p>
             """
         };
 
-        using var client = new SmtpClient();
-        await client.ConnectAsync(smtpHost, smtpPort, MailKit.Security.SecureSocketOptions.StartTls);
+        await SendAsync(message);
+    }
 
-        if (!string.IsNullOrEmpty(username))
-            await client.AuthenticateAsync(username, password);
+    private async Task SendAsync(MimeMessage message)
+    {
+        using var client = new SmtpClient();
+        await client.ConnectAsync(_smtpHost, _smtpPort, MailKit.Security.SecureSocketOptions.StartTls);
+
+        if (!string.IsNullOrEmpty(_username))
+            await client.AuthenticateAsync(_username, _password);
 
         await client.SendAsync(message);
         await client.DisconnectAsync(true);

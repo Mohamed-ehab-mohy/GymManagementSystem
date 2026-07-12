@@ -33,6 +33,7 @@ public class PaymentConfiguration : IEntityTypeConfiguration<Payment>
         builder.HasOne(p => p.Member)
             .WithMany()
             .HasForeignKey(p => p.MemberId)
+            .IsRequired(false)
             .OnDelete(DeleteBehavior.NoAction);
 
         builder.HasOne(p => p.Membership)

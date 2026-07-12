@@ -1,5 +1,4 @@
 using GymManagementSystem.BLL.Interfaces;
-using GymManagementSystem.DAL.Interceptors;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;

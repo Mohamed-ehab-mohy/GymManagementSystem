@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GymManagementSystem.PL.Controllers;
 
-[Authorize(Roles = "Member")]
+[Authorize(Roles = Domain.Roles.Member)]
 public class BookingsController : Controller
 {
     private readonly IBookingService _bookingService;

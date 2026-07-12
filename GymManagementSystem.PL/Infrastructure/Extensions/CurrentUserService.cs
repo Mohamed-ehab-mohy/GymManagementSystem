@@ -1,5 +1,5 @@
 using System.Security.Claims;
-using GymManagementSystem.DAL.Interceptors;
+using GymManagementSystem.BLL.Interfaces;
 
 namespace GymManagementSystem.PL.Infrastructure.Extensions;
 

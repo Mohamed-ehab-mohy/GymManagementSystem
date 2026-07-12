@@ -22,7 +22,7 @@ public class DashboardController : Controller
 
     public async Task<IActionResult> Index()
     {
-        if (User.IsInRole("Member"))
+        if (User.IsInRole(Domain.Roles.Member))
         {
             var memberId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
             var dto = await _memberService.GetMemberDashboardAsync(memberId);

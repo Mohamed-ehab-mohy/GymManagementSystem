@@ -2,7 +2,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 
-namespace GymManagementSystem.BLL.Services;
+namespace GymManagementSystem.PL.Services;
 
 public class NotificationHub : Hub
 {

@@ -6,14 +6,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GymManagementSystem.PL.Controllers;
 
-[Authorize]
-public class BookingController : Controller
+[Authorize(Roles = $"{Domain.Roles.Admin},{Domain.Roles.SuperAdmin}")]
+public class AdminBookingController : Controller
 {
     private readonly IBookingService _bookingService;
     private readonly IMemberService _memberService;
     private readonly IClassSessionService _sessionService;
 
-    public BookingController(IBookingService bookingService, IMemberService memberService, IClassSessionService sessionService)
+    public AdminBookingController(IBookingService bookingService, IMemberService memberService, IClassSessionService sessionService)
     {
         _bookingService = bookingService;
         _memberService = memberService;
