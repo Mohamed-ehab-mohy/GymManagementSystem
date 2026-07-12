@@ -24,7 +24,7 @@ public class HomeControllerIntegrationTests : IClassFixture<CustomWebApplication
 
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         var content = await response.Content.ReadAsStringAsync();
-        content.ShouldContain("Power Fitness");
+        content.ShouldContain("GymPro");
     }
 
     [Fact]
