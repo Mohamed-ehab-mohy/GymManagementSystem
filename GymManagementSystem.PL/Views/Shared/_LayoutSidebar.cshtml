@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en" x-data="{ darkMode: localStorage.getItem('gympro-theme') !== 'light', sidebarOpen: true, mobileSidebarOpen: false, profileOpen: false, notifOpen: false }" x-bind:class="{ 'dark': darkMode }">
+<head>
+    <script>
+        if (localStorage.getItem('gympro-theme') === 'light' || (!('gympro-theme' in localStorage) && !window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.remove('dark')
+        } else {
+            document.documentElement.classList.add('dark')
+        }
+    </script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] — GymPro</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
+
+    <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
+
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232563eb'/%3E%3Ctext x='16' y='22' text-anchor='middle' fill='white' font-size='18' font-weight='bold' font-family='sans-serif'%3EG%3C/text%3E%3C/svg%3E" />
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 font-sans antialiased min-h-screen">
+
+    <!-- Sidebar -->
+    <aside class="sidebar" :class="{ 'sidebar-collapsed': !sidebarOpen }" x-show="window.innerWidth >= 1024 || mobileSidebarOpen"
+           x-transition:enter="transition-transform duration-300" x-transition:enter-start="-translate-x-full" x-transition:enter-end="translate-x-0"
+           x-transition:leave="transition-transform duration-300" x-transition:leave-start="translate-x-0" x-transition:leave-end="-translate-x-full">
+        <!-- Logo -->
+        <div class="flex items-center gap-3 px-5 h-16 border-b border-slate-200 dark:border-slate-700 shrink-0">
+            <div class="w-8 h-8 rounded-lg bg-primary-600 flex items-center justify-center shrink-0">
+                <i class="bi bi-dumbbell text-white text-sm"></i>
+            </div>
+            <span class="font-bold text-lg text-slate-900 dark:text-white whitespace-nowrap" x-show="sidebarOpen" x-transition>GymPro</span>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="flex-1 overflow-y-auto px-3 py-4 space-y-1">
+            @if (User.IsInRole("Admin") || User.IsInRole("SuperAdmin"))
+            {
+                <a asp-controller="Dashboard" asp-action="Index" class="sidebar-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Dashboard" && ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "sidebar-link-active" : "")">
+                    <i class="bi bi-grid-1x2-fill text-lg w-5 text-center shrink-0"></i>
+                    <span x-show="sidebarOpen" x-transition>Dashboard</span>
+                </a>
+                <a asp-controller="Members" asp-action="Index" class="sidebar-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Members" ? "sidebar-link-active" : "")">
+                    <i class="bi bi-people-fill text-lg w-5 text-center shrink-0"></i>
+                    <span x-show="sidebarOpen" x-transition>Members</span>
+                </a>
+                <a asp-controller="Trainers" asp-action="Index" class="sidebar-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Trainers" ? "sidebar-link-active" : "")">
+                    <i class="bi bi-person-badge-fill text-lg w-5 text-center shrink-0"></i>
+                    <span x-show="sidebarOpen" x-transition>Trainers</span>
+                </a>
+                <a asp-controller="ClassSessions" asp-action="Index" class="sidebar-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "ClassSessions" ? "sidebar-link-active" : "")">
+                    <i class="bi bi-calendar-week-fill text-lg w-5 text-center shrink-0"></i>
+                    <span x-show="sidebarOpen" x-transition>Sessions</span>
+                </a>
+                <a asp-controller="Plans" asp-action="Index" class="sidebar-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Plans" ? "sidebar-link-active" : "")">
+                    <i class="bi bi-card-list text-lg w-5 text-center shrink-0"></i>
+                    <span x-show="sidebarOpen" x-transition>Plans</span>
+                </a>
+                <a asp-controller="AdminBooking" asp-action="Index" class="sidebar-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "AdminBooking" ? "sidebar-link-active" : "")">
+                    <i class="bi bi-journal-check text-lg w-5 text-center shrink-0"></i>
+                    <span x-show="sidebarOpen" x-transition>Bookings</span>
+                </a>
+                <a asp-controller="Analytics" asp-action="Index" class="sidebar-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Analytics" ? "sidebar-link-active" : "")">
+                    <i class="bi bi-bar-chart-line-fill text-lg w-5 text-center shrink-0"></i>
+                    <span x-show="sidebarOpen" x-transition>Analytics</span>
+                </a>
+                <div class="pt-3 mt-3 border-t border-slate-200 dark:border-slate-700" x-show="sidebarOpen" x-transition>
+                    <p class="px-3 text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2">Tools</p>
+                </div>
+                <a asp-controller="Attendance" asp-action="Scan" class="sidebar-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Attendance" ? "sidebar-link-active" : "")">
+                    <i class="bi bi-qr-code-scan text-lg w-5 text-center shrink-0"></i>
+                    <span x-show="sidebarOpen" x-transition>Scan QR</span>
+                </a>
+            }
+            else if (User.IsInRole("Member"))
+            {
+                <a asp-controller="Dashboard" asp-action="Index" class="sidebar-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Dashboard" ? "sidebar-link-active" : "")">
+                    <i class="bi bi-grid-1x2-fill text-lg w-5 text-center shrink-0"></i>
+                    <span x-show="sidebarOpen" x-transition>Dashboard</span>
+                </a>
+                <a asp-controller="Bookings" asp-action="Index" class="sidebar-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Bookings" && ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "sidebar-link-active" : "")">
+                    <i class="bi bi-calendar-plus text-lg w-5 text-center shrink-0"></i>
+                    <span x-show="sidebarOpen" x-transition>Book Session</span>
+                </a>
+                <a asp-controller="Bookings" asp-action="Mine" class="sidebar-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Bookings" && ViewContext.RouteData.Values["Action"]?.ToString() == "Mine" ? "sidebar-link-active" : "")">
+                    <i class="bi bi-journal-check text-lg w-5 text-center shrink-0"></i>
+                    <span x-show="sidebarOpen" x-transition>My Bookings</span>
+                </a>
+                <a asp-controller="Attendance" asp-action="MyQr" class="sidebar-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Attendance" ? "sidebar-link-active" : "")">
+                    <i class="bi bi-qr-code text-lg w-5 text-center shrink-0"></i>
+                    <span x-show="sidebarOpen" x-transition>My QR</span>
+                </a>
+            }
+        </nav>
+
+        <!-- User section at bottom -->
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <div class="border-t border-slate-200 dark:border-slate-700 px-3 py-3 shrink-0">
+                <div class="flex items-center gap-3 px-2">
+                    <div class="w-8 h-8 rounded-full bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center text-primary-700 dark:text-primary-400 font-semibold text-sm shrink-0">
+                        @(User.Identity.Name?.Substring(0,1).ToUpper() ?? "U")
+                    </div>
+                    <div x-show="sidebarOpen" x-transition class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-slate-900 dark:text-white truncate">@User.Identity.Name</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 truncate">@(User.IsInRole("Admin") || User.IsInRole("SuperAdmin") ? "Administrator" : "Member")</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </aside>
+
+    <!-- Mobile overlay -->
+    <div x-show="mobileSidebarOpen" @@click="mobileSidebarOpen = false" class="sidebar-overlay" x-transition.opacity style="display: none;"></div>
+
+    <!-- Main content -->
+    <div class="lg:pl-64 transition-all duration-300" :class="{ 'lg:pl-[72px]': !sidebarOpen }">
+        <!-- Top Bar -->
+        <header class="topbar">
+            <!-- Mobile menu toggle -->
+            <button @@click="mobileSidebarOpen = !mobileSidebarOpen" class="lg:hidden p-2 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700">
+                <i class="bi bi-list text-xl"></i>
+            </button>
+
+            <!-- Desktop sidebar toggle -->
+            <button @@click="sidebarOpen = !sidebarOpen" class="hidden lg:flex p-2 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700">
+                <i class="bi" :class="sidebarOpen ? 'bi-chevron-left' : 'bi-chevron-right'"></i>
+            </button>
+
+            <!-- Page title area -->
+            <div class="flex-1 min-w-0">
+                <h1 class="text-lg font-semibold text-slate-900 dark:text-white truncate">@ViewData["Title"]</h1>
+            </div>
+
+            <!-- Right actions -->
+            <div class="flex items-center gap-2">
+                <!-- Theme Toggle -->
+                <button @@click="darkMode = !darkMode; localStorage.setItem('gympro-theme', darkMode ? 'dark' : 'light')" type="button" class="btn-ghost p-2">
+                    <i class="bi bi-moon" x-show="!darkMode"></i>
+                    <i class="bi bi-sun" x-show="darkMode" style="display: none;"></i>
+                </button>
+
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <!-- Notifications -->
+                    <div class="relative" @@click.outside="notifOpen = false">
+                        <button @@click="notifOpen = !notifOpen" type="button" class="btn-ghost p-2 relative">
+                            <i class="bi bi-bell"></i>
+                            <span id="notificationBadge" class="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">0</span>
+                        </button>
+                        <div x-show="notifOpen" x-transition class="absolute right-0 mt-2 w-80 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-lg z-50 overflow-hidden" style="display: none;">
+                            <div class="px-4 py-3 border-b border-slate-200 dark:border-slate-700">
+                                <p class="text-sm font-semibold text-slate-900 dark:text-white">Notifications</p>
+                            </div>
+                            <ul id="notificationList" class="max-h-64 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-700/50">
+                                <li class="px-4 py-6 text-center text-sm text-slate-500" id="noNotifications">No notifications</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Profile -->
+                    <div class="relative" @@click.outside="profileOpen = false">
+                        <button @@click="profileOpen = !profileOpen" type="button" class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                            <div class="w-8 h-8 rounded-full bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center text-primary-700 dark:text-primary-400 font-semibold text-sm">
+                                @(User.Identity.Name?.Substring(0,1).ToUpper() ?? "U")
+                            </div>
+                            <span class="text-sm font-medium text-slate-700 dark:text-slate-300 hidden sm:block">@User.Identity.Name</span>
+                            <i class="bi bi-chevron-down text-xs text-slate-400"></i>
+                        </button>
+                        <div x-show="profileOpen" x-transition class="absolute right-0 mt-2 w-48 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-lg py-1 z-50" style="display: none;">
+                            <div class="px-4 py-2 border-b border-slate-200 dark:border-slate-700">
+                                <p class="text-sm font-medium text-slate-900 dark:text-white truncate">@User.Identity.Name</p>
+                                <p class="text-xs text-slate-500 truncate">@(User.IsInRole("Admin") || User.IsInRole("SuperAdmin") ? "Administrator" : "Member")</p>
+                            </div>
+                            <form asp-controller="Account" asp-action="Logout" method="post">
+                                <button type="submit" class="w-full text-left px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors flex items-center gap-2">
+                                    <i class="bi bi-box-arrow-right"></i> Sign out
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <a asp-controller="Account" asp-action="Login" class="btn-primary">Sign In</a>
+                }
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        <main class="p-4 sm:p-6 lg:p-8">
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="mb-6 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 p-4 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400 flex items-start gap-3 text-sm">
+                    <i class="bi bi-check-circle-fill mt-0.5"></i>
+                    <div>@TempData["SuccessMessage"]</div>
+                </div>
+            }
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="mb-6 rounded-lg bg-red-50 dark:bg-red-900/20 p-4 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 flex items-start gap-3 text-sm">
+                    <i class="bi bi-exclamation-triangle-fill mt-0.5"></i>
+                    <div>@TempData["ErrorMessage"]</div>
+                </div>
+            }
+            @if (TempData["WarningMessage"] != null)
+            {
+                <div class="mb-6 rounded-lg bg-amber-50 dark:bg-amber-900/20 p-4 border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-400 flex items-start gap-3 text-sm">
+                    <i class="bi bi-info-circle-fill mt-0.5"></i>
+                    <div>@TempData["WarningMessage"]</div>
+                </div>
+            }
+
+            @RenderBody()
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
+
+    <script>
+        (function () {
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl("/hubs/notifications")
+                .withAutomaticReconnect()
+                .build();
+
+            connection.on("ReceiveNotification", function (message) {
+                const badge = document.getElementById("notificationBadge");
+                const list = document.getElementById("notificationList");
+                const noMsg = document.getElementById("noNotifications");
+                if (noMsg) noMsg.remove();
+
+                const current = parseInt(badge.textContent) || 0;
+                badge.textContent = current + 1;
+                badge.classList.remove('hidden');
+
+                const item = document.createElement("li");
+                item.className = "px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors";
+                item.innerHTML = `<a class="block text-sm text-slate-700 dark:text-slate-300 font-medium" href="/Notifications">${message}</a>`;
+                list.insertBefore(item, list.firstChild);
+
+                const toast = document.createElement("div");
+                toast.className = "fixed bottom-4 right-4 z-[9999] bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-lg p-4 flex items-center gap-3 transition-opacity duration-300 max-w-sm";
+                toast.innerHTML = `
+                    <div class="w-8 h-8 rounded-full bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center text-primary-600 dark:text-primary-400 shrink-0">
+                        <i class="bi bi-bell-fill text-sm"></i>
+                    </div>
+                    <div class="text-sm text-slate-700 dark:text-slate-300">${message}</div>
+                    <button type="button" class="ml-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 shrink-0" onclick="this.parentElement.remove()">
+                        <i class="bi bi-x-lg text-sm"></i>
+                    </button>
+                `;
+                document.body.appendChild(toast);
+                setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 5000);
+            });
+
+            connection.start().then(function () {
+                fetch('/Notifications/GetUnreadCount')
+                    .then(r => r.json())
+                    .then(d => {
+                        if (d.count > 0) {
+                            document.getElementById("notificationBadge").textContent = d.count;
+                        } else {
+                            document.getElementById("notificationBadge").classList.add('hidden');
+                        }
+                    });
+            }).catch(function () {});
+        })();
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+    <!-- Chatbot Widget -->
+    <div x-data="{ chatOpen: false }" class="fixed bottom-6 right-6 z-[9999] flex flex-col items-end">
+        <div x-show="chatOpen"
+             x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-4 scale-95"
+             x-transition:enter-end="opacity-100 translate-y-0 scale-100" x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100 translate-y-0 scale-100" x-transition:leave-end="opacity-0 translate-y-4 scale-95"
+             class="mb-4 w-[340px] rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-lg overflow-hidden flex flex-col h-[460px]"
+             style="display:none;">
+            <div class="bg-primary-600 p-4 flex justify-between items-center shrink-0">
+                <strong class="text-white text-sm font-semibold">Gym Assistant</strong>
+                <button @@click="chatOpen = false" class="text-white/70 hover:text-white transition-colors">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+            <div id="chatbot-messages" class="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-50 dark:bg-slate-900/50">
+                <div id="chatbot-suggestions" class="flex flex-wrap gap-2 mt-auto"></div>
+            </div>
+            <div class="p-3 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex gap-2 shrink-0">
+                <input id="chatbot-input" type="text" class="flex-1 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors" placeholder="Type a message..." @@keydown.enter="window.ask()" />
+                <button id="chatbot-send" onclick="window.ask()" class="btn-primary px-3 py-2">
+                    <i class="bi bi-send-fill text-sm"></i>
+                </button>
+            </div>
+        </div>
+
+        <button @@click="chatOpen = !chatOpen" class="w-12 h-12 rounded-full bg-primary-600 flex items-center justify-center text-white shadow-lg hover:bg-primary-700 transition-all duration-200">
+            <i class="bi bi-chat-dots-fill text-lg" x-show="!chatOpen"></i>
+            <i class="bi bi-x-lg" x-show="chatOpen" style="display:none;"></i>
+        </button>
+    </div>
+
+    <script>
+        (function () {
+            var input = document.getElementById('chatbot-input');
+            var messages = document.getElementById('chatbot-messages');
+            var suggestions = document.getElementById('chatbot-suggestions');
+            var hasStarted = false;
+
+            var chips = [
+                'What are your opening hours?',
+                'What plans do you have?',
+                'Do you have a free trial?',
+                'What classes are available?',
+                'مواعيد العمل؟',
+                'الخطط المتاحة؟',
+                'هل يوجد تجربة مجانية؟',
+                'ما هي الحصص المتاحة؟'
+            ];
+
+            function showSuggestions() {
+                suggestions.innerHTML = '';
+                chips.forEach(function (text) {
+                    var chip = document.createElement('button');
+                    chip.className = 'px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-300 text-xs font-medium hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors text-left bg-white dark:bg-slate-800';
+                    chip.textContent = text;
+                    chip.onclick = function () { window.askMessage(text); };
+                    suggestions.appendChild(chip);
+                });
+            }
+
+            function hideSuggestions() { suggestions.innerHTML = ''; }
+
+            function addMessage(text, isUser) {
+                var div = document.createElement('div');
+                div.className = 'max-w-[85%] rounded-xl px-4 py-2.5 text-sm ' + (isUser ? 'bg-primary-600 text-white ml-auto rounded-br-sm' : 'bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-200 mr-auto rounded-bl-sm border border-slate-200 dark:border-slate-600 shadow-sm');
+                div.textContent = text;
+                messages.insertBefore(div, suggestions);
+                messages.scrollTop = messages.scrollHeight;
+            }
+
+            window.askMessage = function(msg) {
+                if (!msg) return;
+                addMessage(msg, true);
+                hideSuggestions();
+                var typing = document.createElement('div');
+                typing.className = 'bg-white dark:bg-slate-700 text-slate-400 rounded-xl rounded-bl-sm px-4 py-2.5 text-sm mr-auto w-16 border border-slate-200 dark:border-slate-600 shadow-sm';
+                typing.innerHTML = '<span class="animate-pulse">...</span>';
+                typing.id = 'typing-indicator';
+                messages.insertBefore(typing, suggestions);
+                messages.scrollTop = messages.scrollHeight;
+                fetch('/Chatbot/Ask', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: 'message=' + encodeURIComponent(msg)
+                })
+                .then(function (r) { return r.json(); })
+                .then(function (d) {
+                    var t = document.getElementById('typing-indicator');
+                    if (t) t.remove();
+                    addMessage(d.response, false);
+                    showSuggestions();
+                })
+                .catch(function () {
+                    var t = document.getElementById('typing-indicator');
+                    if (t) t.remove();
+                    addMessage('Sorry, something went wrong.', false);
+                    showSuggestions();
+                });
+            };
+
+            window.ask = function() {
+                window.askMessage(input.value.trim());
+                input.value = '';
+            };
+
+            document.querySelector('[x-data="{ chatOpen: false }"]').addEventListener('click', function(e) {
+                if(!hasStarted) {
+                    addMessage('Ask me anything!', false);
+                    showSuggestions();
+                    hasStarted = true;
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

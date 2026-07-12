@@ -4,123 +4,223 @@
 }
 
 <div class="mb-8">
-    <h1 class="text-3xl font-display font-bold text-zinc-900 dark:text-white mb-2">Gym <span class="text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan to-neon-green">Dashboard</span></h1>
-    <p class="text-zinc-500 dark:text-zinc-400">@DateTime.Now.ToString("dddd, MMMM dd, yyyy")</p>
+    <h1 class="page-title mb-1">Dashboard</h1>
+    <p class="page-subtitle">Welcome back. Here's what's happening at your gym.</p>
 </div>
 
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-10">
-    <!-- Total Members -->
-    <div class="glass-card p-6 relative overflow-hidden group">
-        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-neon-green to-neon-cyan"></div>
-        <div class="flex items-center justify-between mb-4">
-            <div class="w-12 h-12 rounded-xl bg-neon-green/10 flex items-center justify-center border border-neon-green/20 group-hover:shadow-[0_0_15px_rgba(57,255,20,0.4)] transition-all duration-300">
-                <i class="bi bi-people-fill text-neon-green text-xl"></i>
+<!-- Stat Cards -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+    <div class="stat-card">
+        <div class="flex items-center justify-between mb-3">
+            <div class="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center">
+                <i class="bi bi-people-fill text-blue-600 dark:text-blue-400"></i>
             </div>
+            <span class="badge badge-info">Total</span>
         </div>
-        <div class="font-display text-4xl font-bold text-zinc-900 dark:text-white mb-1">@Model.TotalMembers</div>
-        <div class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Total Members</div>
+        <div class="text-2xl font-bold text-slate-900 dark:text-white mb-0.5">@Model.TotalMembers</div>
+        <div class="text-sm text-slate-500 dark:text-slate-400">Total Members</div>
     </div>
 
-    <!-- Total Trainers -->
-    <div class="glass-card p-6 relative overflow-hidden group">
-        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-neon-cyan to-blue-500"></div>
-        <div class="flex items-center justify-between mb-4">
-            <div class="w-12 h-12 rounded-xl bg-neon-cyan/10 flex items-center justify-center border border-neon-cyan/20 group-hover:shadow-[0_0_15px_rgba(0,255,255,0.4)] transition-all duration-300">
-                <i class="bi bi-person-badge-fill text-neon-cyan text-xl"></i>
+    <div class="stat-card">
+        <div class="flex items-center justify-between mb-3">
+            <div class="w-10 h-10 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center">
+                <i class="bi bi-currency-dollar text-emerald-600 dark:text-emerald-400"></i>
             </div>
+            <span class="badge badge-success">Active</span>
         </div>
-        <div class="font-display text-4xl font-bold text-zinc-900 dark:text-white mb-1">@Model.TotalTrainers</div>
-        <div class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Total Trainers</div>
+        <div class="text-2xl font-bold text-slate-900 dark:text-white mb-0.5">@Model.ActivePlans</div>
+        <div class="text-sm text-slate-500 dark:text-slate-400">Active Plans</div>
     </div>
 
-    <!-- Active Plans -->
-    <div class="glass-card p-6 relative overflow-hidden group">
-        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-neon-green to-green-500"></div>
-        <div class="flex items-center justify-between mb-4">
-            <div class="w-12 h-12 rounded-xl bg-neon-green/10 flex items-center justify-center border border-neon-green/20 group-hover:shadow-[0_0_15px_rgba(57,255,20,0.4)] transition-all duration-300">
-                <i class="bi bi-card-checklist text-neon-green text-xl"></i>
+    <div class="stat-card">
+        <div class="flex items-center justify-between mb-3">
+            <div class="w-10 h-10 rounded-lg bg-violet-50 dark:bg-violet-900/20 flex items-center justify-center">
+                <i class="bi bi-calendar-check text-violet-600 dark:text-violet-400"></i>
             </div>
+            <span class="badge badge-info">Today</span>
         </div>
-        <div class="font-display text-4xl font-bold text-zinc-900 dark:text-white mb-1">@Model.ActivePlans</div>
-        <div class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Active Plans</div>
+        <div class="text-2xl font-bold text-slate-900 dark:text-white mb-0.5">@Model.TodaySessions</div>
+        <div class="text-sm text-slate-500 dark:text-slate-400">Today's Sessions</div>
     </div>
 
-    <!-- Today's Sessions -->
-    <div class="glass-card p-6 relative overflow-hidden group">
-        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-pink-500"></div>
-        <div class="flex items-center justify-between mb-4">
-            <div class="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center border border-purple-500/20 group-hover:shadow-[0_0_15px_rgba(168,85,247,0.4)] transition-all duration-300">
-                <i class="bi bi-calendar-event-fill text-purple-400 text-xl"></i>
+    <div class="stat-card">
+        <div class="flex items-center justify-between mb-3">
+            <div class="w-10 h-10 rounded-lg bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center">
+                <i class="bi bi-person-badge text-amber-600 dark:text-amber-400"></i>
             </div>
+            <span class="badge badge-neutral">Staff</span>
         </div>
-        <div class="font-display text-4xl font-bold text-zinc-900 dark:text-white mb-1">@Model.TodaySessions</div>
-        <div class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Today's Sessions</div>
-    </div>
-
-    <!-- Today's Attendance -->
-    <div class="glass-card p-6 relative overflow-hidden group">
-        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-neon-cyan to-neon-green"></div>
-        <div class="flex items-center justify-between mb-4">
-            <div class="w-12 h-12 rounded-xl bg-neon-cyan/10 flex items-center justify-center border border-neon-cyan/20 group-hover:shadow-[0_0_15px_rgba(0,255,255,0.4)] transition-all duration-300">
-                <i class="bi bi-check-circle-fill text-neon-cyan text-xl"></i>
-            </div>
-        </div>
-        <div class="font-display text-4xl font-bold text-zinc-900 dark:text-white mb-1">@Model.TodayAttendance</div>
-        <div class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Today's Attendance</div>
-    </div>
-
-    <!-- Expiring Memberships -->
-    <div class="glass-card p-6 relative overflow-hidden group">
-        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-neon-orange to-red-500"></div>
-        <div class="flex items-center justify-between mb-4">
-            <div class="w-12 h-12 rounded-xl bg-neon-orange/10 flex items-center justify-center border border-neon-orange/20 group-hover:shadow-[0_0_15px_rgba(255,94,0,0.4)] transition-all duration-300">
-                <i class="bi bi-exclamation-triangle-fill text-neon-orange text-xl"></i>
-            </div>
-            <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-xs font-semibold bg-neon-orange/10 text-neon-orange border border-neon-orange/20">
-                Critical
-            </span>
-        </div>
-        <div class="font-display text-4xl font-bold text-zinc-900 dark:text-white mb-1">@Model.ExpiringMemberships</div>
-        <div class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Expiring (&lt; 7 days)</div>
-    </div>
-
-    <!-- Total Plans -->
-    <div class="glass-card p-6 relative overflow-hidden group">
-        <div class="absolute top-0 left-0 w-full h-1 bg-zinc-300 dark:bg-zinc-600"></div>
-        <div class="flex items-center justify-between mb-4">
-            <div class="w-12 h-12 rounded-xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center border border-zinc-200 dark:border-zinc-700 transition-all duration-300">
-                <i class="bi bi-layers-fill text-zinc-500 dark:text-zinc-400 text-xl"></i>
-            </div>
-        </div>
-        <div class="font-display text-4xl font-bold text-zinc-900 dark:text-white mb-1">@Model.TotalPlans</div>
-        <div class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Total Plans</div>
+        <div class="text-2xl font-bold text-slate-900 dark:text-white mb-0.5">@Model.TotalTrainers</div>
+        <div class="text-sm text-slate-500 dark:text-slate-400">Total Trainers</div>
     </div>
 </div>
 
-<div class="border-t border-zinc-200 dark:border-gym-border my-8"></div>
-
-<div class="glass-card overflow-hidden">
-    <div class="px-6 py-5 border-b border-zinc-200 dark:border-gym-border bg-zinc-50 dark:bg-zinc-900/50 flex items-center gap-3">
-        <i class="bi bi-lightning-charge-fill text-neon-orange text-xl"></i>
-        <h2 class="text-lg font-bold text-zinc-900 dark:text-white m-0">Quick Actions</h2>
+<!-- Second row stats -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+    <div class="stat-card">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center">
+                <i class="bi bi-check-circle text-emerald-600 dark:text-emerald-400"></i>
+            </div>
+            <div>
+                <div class="text-xl font-bold text-slate-900 dark:text-white">@Model.TodayAttendance</div>
+                <div class="text-xs text-slate-500 dark:text-slate-400">Today's Attendance</div>
+            </div>
+        </div>
     </div>
-    <div class="p-6">
-        <div class="flex flex-wrap gap-4">
-            <a asp-controller="Members" asp-action="Create" class="btn-primary">
-                <i class="bi bi-person-plus mr-2"></i> Add Member
+
+    <div class="stat-card">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-lg bg-red-50 dark:bg-red-900/20 flex items-center justify-center">
+                <i class="bi bi-exclamation-triangle text-red-600 dark:text-red-400"></i>
+            </div>
+            <div>
+                <div class="text-xl font-bold text-slate-900 dark:text-white">@Model.ExpiringMemberships</div>
+                <div class="text-xs text-slate-500 dark:text-slate-400">Expiring in 7 days</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-lg bg-slate-50 dark:bg-slate-700/50 flex items-center justify-center">
+                <i class="bi bi-layers text-slate-600 dark:text-slate-400"></i>
+            </div>
+            <div>
+                <div class="text-xl font-bold text-slate-900 dark:text-white">@Model.TotalPlans</div>
+                <div class="text-xs text-slate-500 dark:text-slate-400">Total Plans</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="page-card mb-8">
+    <div class="px-5 py-4 border-b border-slate-200 dark:border-slate-700">
+        <h2 class="text-sm font-semibold text-slate-900 dark:text-white">Quick Actions</h2>
+    </div>
+    <div class="p-5">
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+            <a asp-controller="Members" asp-action="Create" class="flex items-center gap-3 p-3 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors group">
+                <div class="w-9 h-9 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center group-hover:bg-blue-100 dark:group-hover:bg-blue-900/30 transition-colors">
+                    <i class="bi bi-person-plus text-blue-600 dark:text-blue-400 text-sm"></i>
+                </div>
+                <span class="text-sm font-medium text-slate-700 dark:text-slate-300">Add Member</span>
             </a>
-            <a asp-controller="Trainers" asp-action="Create" class="btn-outline">
-                <i class="bi bi-person-badge mr-2"></i> Add Trainer
+            <a asp-controller="Trainers" asp-action="Create" class="flex items-center gap-3 p-3 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors group">
+                <div class="w-9 h-9 rounded-lg bg-violet-50 dark:bg-violet-900/20 flex items-center justify-center group-hover:bg-violet-100 dark:group-hover:bg-violet-900/30 transition-colors">
+                    <i class="bi bi-person-badge text-violet-600 dark:text-violet-400 text-sm"></i>
+                </div>
+                <span class="text-sm font-medium text-slate-700 dark:text-slate-300">Add Trainer</span>
             </a>
-            <a asp-controller="Plans" asp-action="Create" class="btn-outline">
-                <i class="bi bi-plus-circle mr-2"></i> Add Plan
+            <a asp-controller="Plans" asp-action="Create" class="flex items-center gap-3 p-3 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors group">
+                <div class="w-9 h-9 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center group-hover:bg-emerald-100 dark:group-hover:bg-emerald-900/30 transition-colors">
+                    <i class="bi bi-plus-circle text-emerald-600 dark:text-emerald-400 text-sm"></i>
+                </div>
+                <span class="text-sm font-medium text-slate-700 dark:text-slate-300">Add Plan</span>
             </a>
-            <a asp-controller="ClassSessions" asp-action="Create" class="btn-outline">
-                <i class="bi bi-calendar-plus mr-2"></i> Create Session
+            <a asp-controller="ClassSessions" asp-action="Create" class="flex items-center gap-3 p-3 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors group">
+                <div class="w-9 h-9 rounded-lg bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center group-hover:bg-amber-100 dark:group-hover:bg-amber-900/30 transition-colors">
+                    <i class="bi bi-calendar-plus text-amber-600 dark:text-amber-400 text-sm"></i>
+                </div>
+                <span class="text-sm font-medium text-slate-700 dark:text-slate-300">Create Session</span>
             </a>
-            <a asp-controller="Attendance" asp-action="Scan" class="btn-outline border-neon-cyan text-neon-cyan hover:bg-neon-cyan hover:text-black hover:border-neon-cyan dark:hover:text-black">
-                <i class="bi bi-qr-code-scan mr-2"></i> Scan QR
+            <a asp-controller="Attendance" asp-action="Scan" class="flex items-center gap-3 p-3 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors group">
+                <div class="w-9 h-9 rounded-lg bg-red-50 dark:bg-red-900/20 flex items-center justify-center group-hover:bg-red-100 dark:group-hover:bg-red-900/30 transition-colors">
+                    <i class="bi bi-qr-code-scan text-red-600 dark:text-red-400 text-sm"></i>
+                </div>
+                <span class="text-sm font-medium text-slate-700 dark:text-slate-300">Scan QR</span>
             </a>
         </div>
     </div>
 </div>
+
+<!-- Charts Row -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+    <div class="page-card">
+        <div class="px-5 py-4 border-b border-slate-200 dark:border-slate-700">
+            <h2 class="text-sm font-semibold text-slate-900 dark:text-white">Members Overview</h2>
+        </div>
+        <div class="p-5">
+            <canvas id="membersChart" height="200"></canvas>
+        </div>
+    </div>
+    <div class="page-card">
+        <div class="px-5 py-4 border-b border-slate-200 dark:border-slate-700">
+            <h2 class="text-sm font-semibold text-slate-900 dark:text-white">Revenue Overview</h2>
+        </div>
+        <div class="p-5">
+            <canvas id="revenueChart" height="200"></canvas>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.effect(() => {
+                const isDark = document.documentElement.classList.contains('dark');
+                const textColor = isDark ? '#94a3b8' : '#64748b';
+                const gridColor = isDark ? 'rgba(148,163,184,0.1)' : 'rgba(100,116,139,0.1)';
+
+                Chart.helpers.each(Chart.instances, function(instance){ instance.destroy(); });
+
+                new Chart(document.getElementById('membersChart'), {
+                    type: 'line',
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                        datasets: [{
+                            label: 'New Members',
+                            data: [12, 19, 8, 15, 22, 14],
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59,130,246,0.1)',
+                            fill: true,
+                            tension: 0.4,
+                            borderWidth: 2,
+                            pointBackgroundColor: '#3b82f6',
+                            pointRadius: 3,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            x: { grid: { display: false }, ticks: { color: textColor, font: { size: 11 } } },
+                            y: { grid: { color: gridColor }, ticks: { color: textColor, font: { size: 11 } }, beginAtZero: true }
+                        }
+                    }
+                });
+
+                new Chart(document.getElementById('revenueChart'), {
+                    type: 'bar',
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                        datasets: [{
+                            label: 'Revenue',
+                            data: [4200, 5800, 3900, 6100, 7200, 5400],
+                            backgroundColor: '#3b82f6',
+                            borderRadius: 6,
+                            barPercentage: 0.6,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            x: { grid: { display: false }, ticks: { color: textColor, font: { size: 11 } } },
+                            y: { grid: { color: gridColor }, ticks: { color: textColor, font: { size: 11 }, callback: v => '$' + v.toLocaleString() }, beginAtZero: true }
+                        }
+                    }
+                });
+            });
+        });
+
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((m) => { if (m.attributeName === 'class') window.dispatchEvent(new Event('theme-changed')); });
+        });
+        observer.observe(document.documentElement, { attributes: true });
+    </script>
+}

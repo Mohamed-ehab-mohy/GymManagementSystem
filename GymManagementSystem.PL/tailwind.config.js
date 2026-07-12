@@ -4,32 +4,42 @@ module.exports = {
     './Views/**/*.cshtml',
     './wwwroot/js/**/*.js',
   ],
-  darkMode: 'class', // Allows explicit dark mode control if needed, though we default to dark
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
-        gym: {
-          dark: '#09090b', // zinc-950
-          darker: '#020617', // slate-950
-          card: '#18181b', // zinc-900
-          border: '#27272a', // zinc-800
+        primary: {
+          50: '#eff6ff',
+          100: '#dbeafe',
+          200: '#bfdbfe',
+          300: '#93c5fd',
+          400: '#60a5fa',
+          500: '#3b82f6',
+          600: '#2563eb',
+          700: '#1d4ed8',
+          800: '#1e40af',
+          900: '#1e3a8a',
         },
-        neon: {
-          green: '#39ff14',
-          cyan: '#0ff',
-          orange: '#ff5e00',
-        }
+        gym: {
+          bg: '#f8fafc',
+          card: '#ffffff',
+          border: '#e2e8f0',
+          text: '#0f172a',
+          muted: '#64748b',
+        },
       },
       fontFamily: {
-        sans: ['Inter', 'sans-serif'],
-        display: ['Outfit', 'sans-serif'],
+        sans: ['Inter', 'system-ui', 'sans-serif'],
       },
       boxShadow: {
-        'neon-green': '0 0 10px rgba(57, 255, 20, 0.4), 0 0 20px rgba(57, 255, 20, 0.2)',
-        'neon-cyan': '0 0 10px rgba(0, 255, 255, 0.4), 0 0 20px rgba(0, 255, 255, 0.2)',
-        'neon-orange': '0 0 10px rgba(255, 94, 0, 0.4), 0 0 20px rgba(255, 94, 0, 0.2)',
-        'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
-      }
+        'card': '0 1px 3px 0 rgb(0 0 0 / 0.04), 0 1px 2px -1px rgb(0 0 0 / 0.04)',
+        'card-hover': '0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.05)',
+        'sidebar': '1px 0 0 0 rgb(0 0 0 / 0.05)',
+      },
+      borderRadius: {
+        'xl': '0.75rem',
+        '2xl': '1rem',
+      },
     },
   },
   plugins: [],
