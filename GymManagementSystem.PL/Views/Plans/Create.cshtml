@@ -6,31 +6,31 @@
 
 <div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
     <div>
-        <h2 class="text-3xl font-display font-bold text-zinc-900 dark:text-white">Create <span class="text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan to-neon-green">Plan</span></h2>
-        <p class="text-zinc-500 dark:text-zinc-400 mt-1">Add a new membership plan to the system.</p>
+        <h1 class="page-title">Create Plan</h1>
+        <p class="page-subtitle mt-1">Add a new membership plan to the system.</p>
     </div>
     <a asp-action="Index" class="btn-outline">
-        <i class="bi bi-arrow-left mr-2"></i> Back to List
+        <i class="bi bi-arrow-left mr-1"></i> Back to Plans
     </a>
 </div>
 
-<div class="glass-card p-6 md:p-8 max-w-3xl mx-auto">
+<div class="page-card p-6 md:p-8 max-w-3xl mx-auto">
     <form asp-action="Create">
-        <div asp-validation-summary="ModelOnly" class="text-red-500 mb-4 bg-red-50 dark:bg-red-500/10 p-3 rounded-lg text-sm border border-red-200 dark:border-red-500/20"></div>
+        <div asp-validation-summary="ModelOnly" class="text-red-600 dark:text-red-400 text-sm mb-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-3 rounded-lg"></div>
 
-        <div class="mb-6">
+        <div class="mb-4">
             <label asp-for="Name" class="form-label"></label>
             <input asp-for="Name" class="form-input" placeholder="e.g. Premium Plan" />
             <span asp-validation-for="Name" class="text-red-500 text-xs mt-1 block"></span>
         </div>
 
-        <div class="mb-6">
+        <div class="mb-4">
             <label asp-for="Description" class="form-label"></label>
-            <textarea asp-for="Description" class="form-input" rows="3" placeholder="Enter plan details..."></textarea>
+            <textarea asp-for="Description" class="form-input" rows="3" placeholder="Plan description..."></textarea>
             <span asp-validation-for="Description" class="text-red-500 text-xs mt-1 block"></span>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
                 <label asp-for="DurationDays" class="form-label">Duration (Days)</label>
                 <input asp-for="DurationDays" class="form-input" type="number" />
@@ -43,20 +43,17 @@
             </div>
         </div>
 
-        <div class="mb-8">
-            <label class="flex items-center cursor-pointer">
-                <input type="checkbox" asp-for="IsActive" class="sr-only peer">
-                <div class="w-11 h-6 bg-zinc-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-neon-green/30 dark:peer-focus:ring-neon-green/20 rounded-full peer dark:bg-zinc-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-zinc-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-zinc-600 peer-checked:bg-neon-green relative"></div>
-                <span class="ml-3 text-sm font-medium text-zinc-900 dark:text-zinc-300">Is Active?</span>
+        <div class="mb-6">
+            <label class="flex items-center gap-3 cursor-pointer">
+                <input type="checkbox" asp-for="IsActive" class="w-4 h-4 rounded border-slate-300 dark:border-slate-600 text-primary-600 focus:ring-primary-500">
+                <span class="text-sm font-medium text-slate-700 dark:text-slate-300">Active</span>
             </label>
         </div>
 
-        <div class="flex justify-between items-center mt-8 pt-6 border-t border-zinc-200 dark:border-zinc-800">
-            <a asp-action="Index" class="text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors font-medium">
-                Cancel
-            </a>
-            <button type="submit" class="btn-primary px-8">
-                <i class="bi bi-check-circle mr-2"></i> Create Plan
+        <div class="flex justify-end gap-3 mt-6 pt-6 border-t border-slate-200 dark:border-slate-700">
+            <button type="button" class="btn-outline" onclick="window.history.back()">Cancel</button>
+            <button type="submit" class="btn-primary">
+                <i class="bi bi-check-circle mr-1"></i> Create Plan
             </button>
         </div>
     </form>

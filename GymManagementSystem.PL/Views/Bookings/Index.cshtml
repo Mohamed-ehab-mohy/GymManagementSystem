@@ -3,26 +3,24 @@
     ViewData["Title"] = "Available Sessions";
 }
 
-<div class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-200 dark:border-gym-border pb-6">
+<div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
     <div>
-        <h1 class="text-3xl font-display font-bold text-zinc-900 dark:text-white mb-2">Available <span class="text-transparent bg-clip-text bg-gradient-to-r from-neon-orange to-neon-cyan">Sessions</span></h1>
-        <p class="text-zinc-500 dark:text-zinc-400">Book your next workout session.</p>
+        <h1 class="page-title">Available Sessions</h1>
+        <p class="page-subtitle mt-1">Book your next workout session.</p>
     </div>
-    <div class="flex items-center">
-        <a asp-action="Mine" class="btn-outline border-neon-cyan text-neon-cyan hover:bg-neon-cyan hover:text-black py-2 shadow-[0_0_10px_rgba(0,255,255,0.1)]">
-            <i class="bi bi-calendar2-check mr-2"></i> My Bookings
-        </a>
-    </div>
+    <a asp-action="Mine" class="btn-outline py-2 text-sm">
+        <i class="bi bi-calendar2-check mr-1"></i> My Bookings
+    </a>
 </div>
 
 @if (!Model.Any())
 {
-    <div class="glass-card text-center py-16">
-        <div class="w-16 h-16 mx-auto rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center mb-4 border border-zinc-200 dark:border-zinc-700">
-            <i class="bi bi-calendar-x text-3xl text-zinc-400 dark:text-zinc-500"></i>
+    <div class="page-card p-12 text-center">
+        <div class="w-16 h-16 mx-auto rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center mb-4">
+            <i class="bi bi-calendar-x text-3xl text-slate-400 dark:text-slate-500"></i>
         </div>
-        <h3 class="text-xl font-bold text-zinc-900 dark:text-white mb-2">No upcoming sessions</h3>
-        <p class="text-zinc-500 dark:text-zinc-400">There are no available sessions for booking right now.</p>
+        <h3 class="text-lg font-semibold text-slate-900 dark:text-white mb-1">No upcoming sessions</h3>
+        <p class="text-sm text-slate-500 dark:text-slate-400">Check back later for available sessions.</p>
     </div>
 }
 else
@@ -30,53 +28,35 @@ else
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         @foreach (var session in Model)
         {
-            <div class="glass-card overflow-hidden flex flex-col hover:border-neon-cyan/50 hover:shadow-[0_0_20px_rgba(0,255,255,0.2)] transition-all duration-300 group">
-                <div class="bg-zinc-50 dark:bg-zinc-900/80 border-b border-zinc-200 dark:border-zinc-800 p-5 relative overflow-hidden">
-                    <div class="absolute -right-4 -top-4 w-24 h-24 bg-neon-cyan/10 rounded-full blur-2xl group-hover:bg-neon-cyan/20 transition-all"></div>
+            <div class="page-card flex flex-col">
+                <div class="p-5 border-b border-slate-200 dark:border-slate-700">
                     <div class="flex justify-between items-start">
-                        <h5 class="text-xl font-display font-bold text-zinc-900 dark:text-white relative z-10">@session.Name</h5>
-                        <span class="relative z-10 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-neon-cyan/10 text-neon-cyan border border-neon-cyan/20 shadow-[0_0_10px_rgba(0,255,255,0.1)]">
-                            @session.CategoryName
-                        </span>
+                        <h5 class="text-lg font-semibold text-slate-900 dark:text-white">@session.Name</h5>
+                        <span class="badge badge-info">@session.CategoryName</span>
                     </div>
                 </div>
-                <div class="p-6 flex-1 flex flex-col bg-white dark:bg-transparent">
-                    <div class="space-y-4 mb-6 flex-1">
-                        <div class="flex items-center text-zinc-700 dark:text-zinc-300 bg-zinc-50 dark:bg-zinc-900/50 p-3 rounded-lg border border-zinc-200 dark:border-zinc-800/50">
-                            <div class="w-8 h-8 rounded-lg bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center mr-3 text-zinc-600 dark:text-zinc-400">
-                                <i class="bi bi-calendar-event"></i>
-                            </div>
-                            <div>
-                                <div class="text-xs text-zinc-500 font-medium uppercase tracking-wider mb-0.5">Date & Time</div>
-                                <div class="font-medium text-zinc-900 dark:text-zinc-300">@session.ScheduleTime.ToString("dd MMM yyyy, HH:mm")</div>
-                            </div>
+                <div class="p-5 flex-1 flex flex-col">
+                    <div class="space-y-3 mb-5 flex-1">
+                        <div class="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-300">
+                            <i class="bi bi-calendar-event text-slate-400 w-4 text-center"></i>
+                            <span>@session.ScheduleTime.ToString("dd MMM yyyy, HH:mm")</span>
                         </div>
-                        <div class="flex items-center text-zinc-700 dark:text-zinc-300 bg-zinc-50 dark:bg-zinc-900/50 p-3 rounded-lg border border-zinc-200 dark:border-zinc-800/50">
-                            <div class="w-8 h-8 rounded-lg bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center mr-3 text-zinc-600 dark:text-zinc-400">
-                                <i class="bi bi-person-badge"></i>
-                            </div>
-                            <div>
-                                <div class="text-xs text-zinc-500 font-medium uppercase tracking-wider mb-0.5">Trainer</div>
-                                <div class="font-medium text-neon-cyan">@session.TrainerName</div>
-                            </div>
+                        <div class="flex items-center gap-3 text-sm">
+                            <i class="bi bi-person-badge text-slate-400 w-4 text-center"></i>
+                            <span class="font-medium text-primary-600 dark:text-primary-400">@session.TrainerName</span>
                         </div>
-                        <div class="flex items-center text-zinc-700 dark:text-zinc-300 bg-zinc-50 dark:bg-zinc-900/50 p-3 rounded-lg border border-zinc-200 dark:border-zinc-800/50">
-                            <div class="w-8 h-8 rounded-lg bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center mr-3 text-zinc-600 dark:text-zinc-400">
-                                <i class="bi bi-people"></i>
-                            </div>
-                            <div>
-                                <div class="text-xs text-zinc-500 font-medium uppercase tracking-wider mb-0.5">Availability</div>
-                                <div class="font-medium @(session.AvailableSlots < 3 ? "text-red-500 dark:text-red-400" : "text-green-500 dark:text-green-400")">
-                                    @session.AvailableSlots / @session.Capacity spots left
-                                </div>
-                            </div>
+                        <div class="flex items-center gap-3 text-sm">
+                            <i class="bi bi-people text-slate-400 w-4 text-center"></i>
+                            <span class="font-medium @(session.AvailableSlots < 3 ? "text-red-600 dark:text-red-400" : "text-emerald-600 dark:text-emerald-400")">
+                                @session.AvailableSlots / @session.Capacity spots left
+                            </span>
                         </div>
                     </div>
-                    
-                    <form asp-action="Book" method="post" class="mt-auto">
+
+                    <form asp-action="Book" method="post">
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="sessionId" value="@session.Id" />
-                        <button type="submit" class="w-full rounded-lg font-semibold py-2.5 transition-all duration-300 @(session.AvailableSlots == 0 ? "bg-zinc-200 dark:bg-zinc-800 text-zinc-500 cursor-not-allowed" : "bg-neon-cyan text-black hover:bg-[#00e6e6] shadow-[0_0_15px_rgba(0,255,255,0.4)] hover:shadow-[0_0_25px_rgba(0,255,255,0.6)]")" @(session.AvailableSlots == 0 ? "disabled" : "")>
+                        <button type="submit" class="w-full @(session.AvailableSlots == 0 ? "bg-slate-100 dark:bg-slate-700 text-slate-400 cursor-not-allowed" : "btn-primary") py-2.5" @(session.AvailableSlots == 0 ? "disabled" : "")>
                             @(session.AvailableSlots == 0 ? "Fully Booked" : "Book Now")
                         </button>
                     </form>

@@ -3,78 +3,72 @@
     ViewData["Title"] = "My Bookings";
 }
 
-<div class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-gym-border pb-6">
+<div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
     <div>
-        <h1 class="text-3xl font-display font-bold text-white mb-2">My <span class="text-transparent bg-clip-text bg-gradient-to-r from-neon-green to-neon-cyan">Bookings</span></h1>
-        <p class="text-zinc-400">Track your upcoming and past sessions.</p>
+        <h1 class="page-title">My Bookings</h1>
+        <p class="page-subtitle mt-1">Track your upcoming and past sessions.</p>
     </div>
-    <div class="flex items-center">
-        <a asp-action="Index" class="btn-primary py-2 shadow-[0_0_15px_rgba(57,255,20,0.3)]">
-            <i class="bi bi-search mr-2"></i> Browse Sessions
-        </a>
-    </div>
+    <a asp-action="Index" class="btn-primary py-2 text-sm">
+        <i class="bi bi-search mr-1"></i> Browse Sessions
+    </a>
 </div>
 
 @if (!Model.Any())
 {
-    <div class="glass-card text-center py-16">
-        <div class="w-16 h-16 mx-auto rounded-full bg-zinc-800 flex items-center justify-center mb-4 border border-zinc-700">
-            <i class="bi bi-calendar2-check text-3xl text-zinc-500"></i>
+    <div class="page-card p-12 text-center">
+        <div class="w-16 h-16 mx-auto rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center mb-4">
+            <i class="bi bi-calendar2-check text-3xl text-slate-400 dark:text-slate-500"></i>
         </div>
-        <h3 class="text-xl font-bold text-white mb-2">You have no bookings yet.</h3>
-        <p class="text-zinc-400 mb-6">Start your fitness journey by booking a session.</p>
+        <h3 class="text-lg font-semibold text-slate-900 dark:text-white mb-1">No bookings yet</h3>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mb-4">Start by booking a session.</p>
         <a asp-action="Index" class="btn-primary">Find a Session</a>
     </div>
 }
 else
 {
-    <div class="glass-card">
-        <div class="overflow-x-auto w-full">
-            <table class="w-full text-left border-collapse whitespace-nowrap">
+    <div class="page-card">
+        <div class="overflow-x-auto">
+            <table class="data-table">
                 <thead>
-                    <tr class="border-b-2 border-zinc-800 bg-zinc-900/50">
-                        <th class="py-4 px-6 font-semibold text-sm text-zinc-400 uppercase tracking-wider">Session</th>
-                        <th class="py-4 px-6 font-semibold text-sm text-zinc-400 uppercase tracking-wider">Category</th>
-                        <th class="py-4 px-6 font-semibold text-sm text-zinc-400 uppercase tracking-wider">Date & Time</th>
-                        <th class="py-4 px-6 font-semibold text-sm text-zinc-400 uppercase tracking-wider">Trainer</th>
-                        <th class="py-4 px-6 font-semibold text-sm text-zinc-400 uppercase tracking-wider">Status</th>
-                        <th class="py-4 px-6 font-semibold text-sm text-zinc-400 uppercase tracking-wider text-right">Actions</th>
+                    <tr>
+                        <th>Session</th>
+                        <th>Category</th>
+                        <th>Date & Time</th>
+                        <th>Trainer</th>
+                        <th>Status</th>
+                        <th class="text-right">Actions</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-zinc-800 text-zinc-300">
+                <tbody>
                     @foreach (var booking in Model)
                     {
-                        <tr class="hover:bg-zinc-800/60 transition-colors group">
-                            <td class="py-4 px-6 align-middle">
-                                <div class="font-bold text-white text-lg font-display">@booking.SessionName</div>
-                            </td>
-                            <td class="py-4 px-6 align-middle">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-neon-cyan/10 text-neon-cyan border border-neon-cyan/20">@booking.CategoryName</span>
-                            </td>
-                            <td class="py-4 px-6 align-middle font-medium text-zinc-300">@booking.ScheduleTime.ToString("dd MMM yyyy, HH:mm")</td>
-                            <td class="py-4 px-6 align-middle text-zinc-400">@booking.TrainerName</td>
-                            <td class="py-4 px-6 align-middle">
+                        <tr>
+                            <td class="font-semibold text-slate-900 dark:text-white">@booking.SessionName</td>
+                            <td><span class="badge badge-info">@booking.CategoryName</span></td>
+                            <td class="text-slate-600 dark:text-slate-400">@booking.ScheduleTime.ToString("dd MMM yyyy, HH:mm")</td>
+                            <td class="text-slate-600 dark:text-slate-400">@booking.TrainerName</td>
+                            <td>
                                 @if (booking.IsAttended)
                                 {
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-500/10 text-green-400 border border-green-500/20">Attended</span>
+                                    <span class="badge badge-success">Attended</span>
                                 }
                                 else if (booking.ScheduleTime < DateTime.Now)
                                 {
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-zinc-500/10 text-zinc-400 border border-zinc-500/20">Past</span>
+                                    <span class="badge badge-neutral">Past</span>
                                 }
                                 else
                                 {
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-neon-cyan/10 text-neon-cyan border border-neon-cyan/20 shadow-[0_0_10px_rgba(0,255,255,0.1)]">Upcoming</span>
+                                    <span class="badge badge-info">Upcoming</span>
                                 }
                             </td>
-                            <td class="py-4 px-6 text-right align-middle">
+                            <td class="text-right">
                                 @if (!booking.IsAttended && booking.ScheduleTime > DateTime.Now)
                                 {
                                     <form asp-action="Cancel" method="post" class="inline">
                                         @Html.AntiForgeryToken()
                                         <input type="hidden" name="bookingId" value="@booking.Id" />
-                                        <button type="submit" class="inline-flex items-center justify-center px-4 py-2 rounded-lg text-sm font-semibold text-white bg-red-600 hover:bg-red-500 transition-colors shadow-[0_0_10px_rgba(220,38,38,0.3)] hover:shadow-[0_0_15px_rgba(220,38,38,0.5)]">
-                                            Cancel Booking
+                                        <button type="submit" class="btn-danger text-xs py-1.5 px-3" onclick="return confirm('Cancel this booking?');">
+                                            Cancel
                                         </button>
                                     </form>
                                 }

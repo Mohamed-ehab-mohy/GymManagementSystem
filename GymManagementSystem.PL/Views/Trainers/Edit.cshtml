@@ -7,33 +7,32 @@
 
 <div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
     <div>
-        <h2 class="text-3xl font-display font-bold text-zinc-900 dark:text-white">Edit <span class="text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan to-neon-green">Trainer</span></h2>
-        <p class="text-zinc-500 dark:text-zinc-400 mt-1">Update information for @Model.FirstName @Model.LastName.</p>
+        <h1 class="page-title">Edit Trainer</h1>
+        <p class="page-subtitle mt-1">Update information for @Model.FirstName @Model.LastName.</p>
     </div>
     <a asp-action="Index" class="btn-outline">
-        <i class="bi bi-arrow-left mr-2"></i> Back to List
+        <i class="bi bi-arrow-left mr-1"></i> Back to List
     </a>
 </div>
 
-<div class="glass-card p-6 md:p-8">
+<div class="page-card p-6 md:p-8">
     <form asp-action="Edit" method="post">
-        <div asp-validation-summary="ModelOnly" class="text-red-500 mb-4 bg-red-50 dark:bg-red-500/10 p-3 rounded-lg text-sm border border-red-200 dark:border-red-500/20"></div>
-        
+        <div asp-validation-summary="ModelOnly" class="text-red-600 dark:text-red-400 text-sm mb-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-3 rounded-lg"></div>
         <input type="hidden" asp-for="Id" />
 
-        <div class="mb-8">
-            <h5 class="flex items-center text-lg font-bold text-zinc-900 dark:text-white mb-4 pb-2 border-b border-zinc-200 dark:border-zinc-800">
-                <i class="bi bi-person-badge text-neon-cyan mr-2"></i> Personal Details
-            </h5>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="mb-6">
+            <h3 class="text-base font-semibold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                <i class="bi bi-person text-primary-600 dark:text-primary-400"></i> Personal Details
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label asp-for="FirstName" class="form-label"></label>
-                    <input asp-for="FirstName" class="form-input" placeholder="Enter first name" />
+                    <input asp-for="FirstName" class="form-input" placeholder="First name" />
                     <span asp-validation-for="FirstName" class="text-red-500 text-xs mt-1 block"></span>
                 </div>
                 <div>
                     <label asp-for="LastName" class="form-label"></label>
-                    <input asp-for="LastName" class="form-input" placeholder="Enter last name" />
+                    <input asp-for="LastName" class="form-input" placeholder="Last name" />
                     <span asp-validation-for="LastName" class="text-red-500 text-xs mt-1 block"></span>
                 </div>
                 <div>
@@ -53,8 +52,8 @@
                 </div>
                 <div>
                     <label asp-for="Gender" class="form-label"></label>
-                    <select asp-for="Gender" class="form-input">
-                        <option value="">-- Select Gender --</option>
+                    <select asp-for="Gender" class="form-select">
+                        <option value="">Select gender</option>
                         <option value="Male">Male</option>
                         <option value="Female">Female</option>
                     </select>
@@ -63,14 +62,14 @@
             </div>
         </div>
 
-        <div class="mb-8">
-            <h5 class="flex items-center text-lg font-bold text-zinc-900 dark:text-white mb-4 pb-2 border-b border-zinc-200 dark:border-zinc-800">
-                <i class="bi bi-geo-alt text-neon-cyan mr-2"></i> Address Information
-            </h5>
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div class="mb-6">
+            <h3 class="text-base font-semibold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                <i class="bi bi-geo-alt text-primary-600 dark:text-primary-400"></i> Address
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div class="md:col-span-4">
                     <label asp-for="Street" class="form-label"></label>
-                    <input asp-for="Street" class="form-input" placeholder="Street name and building number" />
+                    <input asp-for="Street" class="form-input" placeholder="Street and building number" />
                     <span asp-validation-for="Street" class="text-red-500 text-xs mt-1 block"></span>
                 </div>
                 <div class="md:col-span-2">
@@ -80,26 +79,26 @@
                 </div>
                 <div>
                     <label asp-for="State" class="form-label"></label>
-                    <input asp-for="State" class="form-input" placeholder="State/Province" />
+                    <input asp-for="State" class="form-input" placeholder="State" />
                     <span asp-validation-for="State" class="text-red-500 text-xs mt-1 block"></span>
                 </div>
                 <div>
                     <label asp-for="ZipCode" class="form-label"></label>
-                    <input asp-for="ZipCode" class="form-input" placeholder="Postal Code" />
+                    <input asp-for="ZipCode" class="form-input" placeholder="Postal code" />
                     <span asp-validation-for="ZipCode" class="text-red-500 text-xs mt-1 block"></span>
                 </div>
             </div>
         </div>
 
-        <div class="mb-8">
-            <h5 class="flex items-center text-lg font-bold text-neon-orange dark:text-neon-orange mb-4 pb-2 border-b border-zinc-200 dark:border-zinc-800">
-                <i class="bi bi-briefcase mr-2"></i> Employment Information
-            </h5>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="mb-6">
+            <h3 class="text-base font-semibold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                <i class="bi bi-briefcase text-primary-600 dark:text-primary-400"></i> Employment
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label asp-for="Specialty" class="form-label"></label>
-                    <select asp-for="Specialty" class="form-input" asp-items="Html.GetEnumSelectList<TrainerSpecialty>()">
-                        <option value="">-- Select Specialty --</option>
+                    <select asp-for="Specialty" class="form-select" asp-items="Html.GetEnumSelectList<TrainerSpecialty>()">
+                        <option value="">Select specialty</option>
                     </select>
                     <span asp-validation-for="Specialty" class="text-red-500 text-xs mt-1 block"></span>
                 </div>
@@ -111,10 +110,10 @@
             </div>
         </div>
 
-        <div class="flex justify-end gap-3 mt-8 pt-6 border-t border-zinc-200 dark:border-zinc-800">
+        <div class="flex justify-end gap-3 mt-6 pt-6 border-t border-slate-200 dark:border-slate-700">
             <button type="button" class="btn-outline" onclick="window.history.back()">Cancel</button>
             <button type="submit" class="btn-primary">
-                <i class="bi bi-check-circle mr-2"></i> Save Changes
+                <i class="bi bi-check-circle mr-1"></i> Save Changes
             </button>
         </div>
     </form>

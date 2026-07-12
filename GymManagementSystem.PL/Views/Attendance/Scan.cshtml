@@ -1,41 +1,40 @@
 @{
-    ViewData["Title"] = "Reception Desk - Scan QR";
+    ViewData["Title"] = "Scan QR";
 }
 
-<div class="mb-8 flex flex-col items-center justify-center text-center">
-    <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-blue-500 to-neon-cyan flex items-center justify-center text-white text-3xl mb-4 shadow-[0_0_20px_rgba(0,255,255,0.4)]">
+<div class="mb-6 text-center">
+    <div class="w-14 h-14 rounded-xl bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center text-primary-600 dark:text-primary-400 text-2xl mx-auto mb-3">
         <i class="bi bi-qr-code-scan"></i>
     </div>
-    <h2 class="text-3xl font-display font-bold text-zinc-900 dark:text-white mb-2">Gymy Check-In Scanner</h2>
-    <p class="text-zinc-500 dark:text-zinc-400">Point the camera at the member's booking QR code.</p>
+    <h1 class="page-title">Check-In Scanner</h1>
+    <p class="page-subtitle mt-1">Point the camera at the member's booking QR code.</p>
 </div>
 
 <div class="max-w-xl mx-auto">
     @if (TempData["SuccessMessage"] != null)
     {
-        <div class="mb-6 rounded-lg bg-green-50 dark:bg-green-500/10 p-4 border border-green-200 dark:border-green-500/20 text-green-700 dark:text-green-400 flex items-start gap-3 font-medium animate-fade-in">
+        <div class="mb-4 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 p-4 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400 flex items-start gap-3 text-sm">
             <i class="bi bi-check-circle-fill mt-0.5"></i>
             <div>@TempData["SuccessMessage"]</div>
         </div>
     }
     @if (TempData["ErrorMessage"] != null)
     {
-        <div class="mb-6 rounded-lg bg-red-50 dark:bg-red-500/10 p-4 border border-red-200 dark:border-red-500/20 text-red-700 dark:text-red-400 flex items-start gap-3 font-medium animate-fade-in">
+        <div class="mb-4 rounded-lg bg-red-50 dark:bg-red-900/20 p-4 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 flex items-start gap-3 text-sm">
             <i class="bi bi-exclamation-triangle-fill mt-0.5"></i>
             <div>@TempData["ErrorMessage"]</div>
         </div>
     }
     @if (TempData["WarningMessage"] != null)
     {
-        <div class="mb-6 rounded-lg bg-yellow-50 dark:bg-yellow-500/10 p-4 border border-yellow-200 dark:border-yellow-500/20 text-yellow-700 dark:text-yellow-400 flex items-start gap-3 font-medium animate-fade-in">
-            <i class="bi bi-exclamation-circle-fill mt-0.5"></i>
+        <div class="mb-4 rounded-lg bg-amber-50 dark:bg-amber-900/20 p-4 border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-400 flex items-start gap-3 text-sm">
+            <i class="bi bi-info-circle-fill mt-0.5"></i>
             <div>@TempData["WarningMessage"]</div>
         </div>
     }
 
-    <div class="glass-card overflow-hidden p-1 mb-6">
-        <!-- QR Reader Container -->
-        <div id="qr-reader" class="w-full bg-black rounded-xl overflow-hidden shadow-inner border border-zinc-200 dark:border-zinc-800" style="min-height: 300px;"></div>
+    <div class="page-card p-2 mb-4">
+        <div id="qr-reader" class="w-full bg-black rounded-lg overflow-hidden" style="min-height: 280px;"></div>
     </div>
 
     <form id="checkInForm" asp-action="CheckIn" method="post" class="hidden">
@@ -43,14 +42,14 @@
         @Html.AntiForgeryToken()
     </form>
 
-    <a asp-controller="Members" asp-action="Index" class="btn-outline w-full justify-center py-3 border-zinc-300 dark:border-zinc-700 font-medium">
+    <a asp-controller="Members" asp-action="Index" class="btn-outline w-full justify-center py-2.5">
         Cancel and Return
     </a>
 </div>
 
 @section Scripts {
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
-    
+
     <script>
         function onScanSuccess(decodedText, decodedResult) {
             html5QrcodeScanner.clear();
@@ -58,46 +57,29 @@
             document.getElementById('checkInForm').submit();
         }
 
-        function onScanFailure(error) {
-            // handle scan failure, usually better to ignore and keep scanning
-        }
+        function onScanFailure(error) { }
 
         let html5QrcodeScanner = new Html5QrcodeScanner(
-            "qr-reader", 
-            { 
-                fps: 15,          
-                qrbox: { width: 250, height: 250 }, 
-                rememberLastUsedCamera: true 
-            }, 
+            "qr-reader",
+            { fps: 15, qrbox: { width: 250, height: 250 }, rememberLastUsedCamera: true },
             false);
 
         html5QrcodeScanner.render(onScanSuccess, onScanFailure);
 
-        // Customize the scanner UI to match Tailwind
         document.addEventListener('DOMContentLoaded', () => {
             const observer = new MutationObserver(() => {
                 const btn = document.getElementById('html5-qrcode-button-camera-permission');
-                if (btn) {
-                    btn.className = 'btn-primary px-4 py-2 text-sm mt-4';
-                }
+                if (btn) btn.className = 'btn-primary px-4 py-2 text-sm mt-4';
                 const startBtn = document.getElementById('html5-qrcode-button-camera-start');
-                if (startBtn) {
-                    startBtn.className = 'btn-primary px-4 py-2 text-sm m-2';
-                }
+                if (startBtn) startBtn.className = 'btn-primary px-4 py-2 text-sm m-2';
                 const stopBtn = document.getElementById('html5-qrcode-button-camera-stop');
-                if (stopBtn) {
-                    stopBtn.className = 'btn-outline border-zinc-700 px-4 py-2 text-sm m-2';
-                }
+                if (stopBtn) stopBtn.className = 'btn-outline px-4 py-2 text-sm m-2';
                 const select = document.getElementById('html5-qrcode-select-camera');
-                if (select) {
-                    select.className = 'input-field w-auto inline-block m-2';
-                }
+                if (select) select.className = 'form-select w-auto inline-block m-2';
             });
-            
+
             const qrReader = document.getElementById('qr-reader');
-            if (qrReader) {
-                observer.observe(qrReader, { childList: true, subtree: true });
-            }
+            if (qrReader) observer.observe(qrReader, { childList: true, subtree: true });
         });
     </script>
 }

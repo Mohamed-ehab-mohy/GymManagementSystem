@@ -2,33 +2,31 @@
     ViewData["Title"] = "Class Sessions";
 }
 
-<div class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-200 dark:border-gym-border pb-6">
+<div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
     <div>
-        <h1 class="text-3xl font-display font-bold text-zinc-900 dark:text-white mb-2">Class <span class="text-transparent bg-clip-text bg-gradient-to-r from-neon-orange to-neon-cyan">Sessions</span></h1>
-        <p class="text-zinc-500 dark:text-zinc-400">Schedule and manage group training sessions.</p>
+        <h1 class="page-title">Class Sessions</h1>
+        <p class="page-subtitle mt-1">Schedule and manage group training sessions.</p>
     </div>
-    <div class="flex items-center">
-        <a asp-action="Create" class="btn-primary py-2 text-sm shadow-[0_0_15px_rgba(57,255,20,0.3)]">
-            <i class="bi bi-calendar-plus mr-2"></i> Schedule Session
-        </a>
-    </div>
+    <a asp-action="Create" class="btn-primary py-2 text-sm">
+        <i class="bi bi-calendar-plus mr-1"></i> Schedule Session
+    </a>
 </div>
 
-<div class="glass-card">
-    <div class="overflow-x-auto w-full">
-        <table id="dataTable" class="w-full text-left border-collapse whitespace-nowrap">
+<div class="page-card">
+    <div class="overflow-x-auto">
+        <table id="dataTable" class="data-table">
             <thead>
-                <tr class="border-b-2 border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50">
-                    <th class="py-4 px-6 font-semibold text-sm text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Session</th>
-                    <th class="py-4 px-6 font-semibold text-sm text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Category</th>
-                    <th class="py-4 px-6 font-semibold text-sm text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Schedule</th>
-                    <th class="py-4 px-6 font-semibold text-sm text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Capacity</th>
-                    <th class="py-4 px-6 font-semibold text-sm text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Status</th>
-                    <th class="py-4 px-6 font-semibold text-sm text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Trainer</th>
-                    <th class="py-4 px-6 font-semibold text-sm text-zinc-500 dark:text-zinc-400 uppercase tracking-wider text-right">Actions</th>
+                <tr>
+                    <th>Session</th>
+                    <th>Category</th>
+                    <th>Schedule</th>
+                    <th>Capacity</th>
+                    <th>Status</th>
+                    <th>Trainer</th>
+                    <th class="text-right">Actions</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-zinc-200 dark:divide-zinc-800 text-zinc-700 dark:text-zinc-300">
+            <tbody>
             </tbody>
         </table>
     </div>
@@ -45,27 +43,26 @@
                 pageLength: 10,
                 lengthMenu: [10, 25, 50, 100],
                 columns: [
-                    { data: 'session', name: 'Name', orderable: true, className: 'py-4 px-6 align-middle font-bold text-zinc-900 dark:text-white' },
-                    { data: 'category', name: '', orderable: false, className: 'py-4 px-6 align-middle text-neon-cyan' },
-                    { data: 'schedule', name: '', orderable: false, className: 'py-4 px-6 align-middle font-medium' },
-                    { data: 'capacity', name: '', orderable: false, className: 'py-4 px-6 align-middle text-zinc-500 dark:text-zinc-400' },
-                    { data: 'status', name: '', orderable: false, className: 'py-4 px-6 align-middle' },
-                    { data: 'trainer', name: '', orderable: false, className: 'py-4 px-6 align-middle text-zinc-700 dark:text-zinc-300' },
-                    { data: 'actions', name: '', orderable: false, className: 'py-4 px-6 text-right align-middle' }
+                    { data: 'session', name: 'Name', orderable: true, className: 'py-3 px-4 align-middle font-semibold text-slate-900 dark:text-white' },
+                    { data: 'category', name: '', orderable: false, className: 'py-3 px-4 align-middle' },
+                    { data: 'schedule', name: '', orderable: false, className: 'py-3 px-4 align-middle text-slate-600 dark:text-slate-400' },
+                    { data: 'capacity', name: '', orderable: false, className: 'py-3 px-4 align-middle text-slate-600 dark:text-slate-400' },
+                    { data: 'status', name: '', orderable: false, className: 'py-3 px-4 align-middle' },
+                    { data: 'trainer', name: '', orderable: false, className: 'py-3 px-4 align-middle text-slate-600 dark:text-slate-400' },
+                    { data: 'actions', name: '', orderable: false, className: 'py-3 px-4 text-right align-middle' }
                 ],
                 language: { search: "_INPUT_", searchPlaceholder: "Search sessions..." },
                 layout: { topStart: 'pageLength', topEnd: 'search', bottomStart: 'info', bottomEnd: 'paging' },
                 drawCallback: function() {
-                    $('#dataTable tbody tr').addClass('hover:bg-zinc-50 dark:hover:bg-zinc-800/60 transition-colors group');
-                    
+                    $('#dataTable tbody tr').addClass('group');
                     $('#dataTable tbody .btn').each(function() {
                         var $btn = $(this);
                         if ($btn.hasClass('btn-primary') || $btn.text().includes('Edit')) {
-                            $btn.removeClass('btn btn-primary btn-sm').addClass('inline-flex items-center justify-center px-3 py-1.5 rounded-lg text-sm font-semibold text-black bg-neon-cyan hover:bg-[#00e6e6] transition-colors shadow-[0_0_10px_rgba(0,255,255,0.2)] mr-2');
+                            $btn.removeClass('btn btn-primary btn-sm').addClass('btn-primary text-xs py-1.5 px-3 mr-2');
                         } else if ($btn.hasClass('btn-info') || $btn.text().includes('Details')) {
-                            $btn.removeClass('btn btn-info btn-sm').addClass('inline-flex items-center justify-center px-3 py-1.5 rounded-lg text-sm font-semibold text-zinc-700 dark:text-zinc-300 border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-transparent hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white transition-colors mr-2');
+                            $btn.removeClass('btn btn-info btn-sm').addClass('btn-outline text-xs py-1.5 px-3 mr-2');
                         } else if ($btn.hasClass('btn-danger') || $btn.text().includes('Delete')) {
-                            $btn.removeClass('btn btn-danger btn-sm').addClass('inline-flex items-center justify-center px-3 py-1.5 rounded-lg text-sm font-semibold text-white bg-red-600 hover:bg-red-500 transition-colors shadow-[0_0_10px_rgba(220,38,38,0.3)]');
+                            $btn.removeClass('btn btn-danger btn-sm').addClass('btn-danger text-xs py-1.5 px-3');
                         }
                     });
                 }
@@ -73,17 +70,14 @@
 
             setTimeout(() => {
                 $('.dt-container').addClass('flex flex-col w-full');
-                $('.dt-layout-row').addClass('flex justify-between items-center p-4 flex-wrap gap-4 border-b border-zinc-200 dark:border-zinc-800/50').first().removeClass('border-b');
-                $('.dt-layout-row:last-child').removeClass('border-b').addClass('border-t border-zinc-200 dark:border-zinc-800/50');
-                
-                $('.dt-search input').addClass('form-input w-full md:w-64 inline-block bg-white dark:bg-zinc-900 border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-white rounded-lg px-4 py-2 focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan outline-none transition-colors');
-                $('.dt-length select').addClass('form-input bg-white dark:bg-zinc-900 border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-white rounded-lg px-4 py-2 outline-none cursor-pointer focus:border-neon-cyan');
-                
+                $('.dt-layout-row').addClass('flex justify-between items-center p-4 flex-wrap gap-4 border-b border-slate-200 dark:border-slate-700').first().removeClass('border-b');
+                $('.dt-layout-row:last-child').removeClass('border-b').addClass('border-t border-slate-200 dark:border-slate-700');
+                $('.dt-search input').addClass('form-input w-full md:w-64');
+                $('.dt-length select').addClass('form-select');
                 $('.dt-paging').addClass('flex gap-1');
-                $('.dt-paging-button').addClass('px-3 py-1.5 rounded-lg border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white cursor-pointer text-sm text-zinc-500 dark:text-zinc-400 transition-colors bg-white dark:bg-transparent');
-                $('.dt-paging-button.current').removeClass('bg-white dark:bg-transparent border-zinc-300 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400').addClass('bg-neon-cyan/20 border-neon-cyan text-neon-cyan font-bold');
-                
-                $('.dt-info').addClass('text-sm text-zinc-500 dark:text-zinc-400');
+                $('.dt-paging-button').addClass('px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer text-sm text-slate-500 dark:text-slate-400 transition-colors bg-white dark:bg-transparent');
+                $('.dt-paging-button.current').removeClass('bg-white dark:bg-transparent border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400').addClass('bg-primary-50 dark:bg-primary-900/20 border-primary-300 dark:border-primary-700 text-primary-700 dark:text-primary-400 font-semibold');
+                $('.dt-info').addClass('text-sm text-slate-500 dark:text-slate-400');
             }, 100);
         });
     </script>

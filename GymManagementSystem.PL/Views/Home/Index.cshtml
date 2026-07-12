@@ -4,97 +4,93 @@
 
 @if (User.Identity?.IsAuthenticated == true)
 {
-    <div class="mb-8">
-        <h1 class="text-3xl font-display font-bold text-zinc-900 dark:text-white mb-2">Welcome back, <span class="text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan to-neon-green">@User.Identity.Name</span></h1>
-        <p class="text-zinc-500 dark:text-zinc-400">Here's your gym overview for today.</p>
+    <div class="mb-6">
+        <h1 class="page-title">Welcome back, @User.Identity.Name</h1>
+        <p class="page-subtitle mt-1">Here's your gym overview for today.</p>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-        <div class="glass-card p-6 relative overflow-hidden group">
-            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-neon-cyan to-blue-500"></div>
-            <div class="flex items-center justify-between mb-4">
-                <div class="w-12 h-12 rounded-xl bg-neon-cyan/10 flex items-center justify-center border border-neon-cyan/20 group-hover:shadow-[0_0_15px_rgba(0,255,255,0.4)] transition-all duration-300">
-                    <i class="bi bi-people-fill text-neon-cyan text-xl"></i>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div class="stat-card">
+            <div class="flex items-center justify-between mb-3">
+                <div class="w-10 h-10 rounded-lg bg-primary-50 dark:bg-primary-900/20 flex items-center justify-center">
+                    <i class="bi bi-people-fill text-primary-600 dark:text-primary-400"></i>
                 </div>
             </div>
-            <div class="font-display text-4xl font-bold text-zinc-900 dark:text-white mb-1" id="totalMembers">—</div>
-            <div class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Total Members</div>
+            <div class="text-2xl font-bold text-slate-900 dark:text-white mb-0.5" id="totalMembers">&mdash;</div>
+            <div class="text-xs text-slate-500 dark:text-slate-400">Total Members</div>
         </div>
 
-        <div class="glass-card p-6 relative overflow-hidden group">
-            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-pink-500"></div>
-            <div class="flex items-center justify-between mb-4">
-                <div class="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center border border-purple-500/20 group-hover:shadow-[0_0_15px_rgba(168,85,247,0.4)] transition-all duration-300">
-                    <i class="bi bi-calendar-check-fill text-purple-400 text-xl"></i>
+        <div class="stat-card">
+            <div class="flex items-center justify-between mb-3">
+                <div class="w-10 h-10 rounded-lg bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center">
+                    <i class="bi bi-calendar-check-fill text-purple-600 dark:text-purple-400"></i>
                 </div>
             </div>
-            <div class="font-display text-4xl font-bold text-zinc-900 dark:text-white mb-1" id="todaySessions">—</div>
-            <div class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Today's Sessions</div>
+            <div class="text-2xl font-bold text-slate-900 dark:text-white mb-0.5" id="todaySessions">&mdash;</div>
+            <div class="text-xs text-slate-500 dark:text-slate-400">Today's Sessions</div>
         </div>
 
-        <div class="glass-card p-6 relative overflow-hidden group">
-            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-neon-green to-green-500"></div>
-            <div class="flex items-center justify-between mb-4">
-                <div class="w-12 h-12 rounded-xl bg-neon-green/10 flex items-center justify-center border border-neon-green/20 group-hover:shadow-[0_0_15px_rgba(57,255,20,0.4)] transition-all duration-300">
-                    <i class="bi bi-graph-up-arrow text-neon-green text-xl"></i>
+        <div class="stat-card">
+            <div class="flex items-center justify-between mb-3">
+                <div class="w-10 h-10 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center">
+                    <i class="bi bi-graph-up-arrow text-emerald-600 dark:text-emerald-400"></i>
                 </div>
             </div>
-            <div class="font-display text-4xl font-bold text-zinc-900 dark:text-white mb-1" id="activeMemberships">—</div>
-            <div class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Active Plans</div>
+            <div class="text-2xl font-bold text-slate-900 dark:text-white mb-0.5" id="activeMemberships">&mdash;</div>
+            <div class="text-xs text-slate-500 dark:text-slate-400">Active Plans</div>
         </div>
 
-        <div class="glass-card p-6 relative overflow-hidden group">
-            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-400 to-green-600"></div>
-            <div class="flex items-center justify-between mb-4">
-                <div class="w-12 h-12 rounded-xl bg-green-500/10 flex items-center justify-center border border-green-500/20 group-hover:shadow-[0_0_15px_rgba(34,197,94,0.4)] transition-all duration-300">
-                    <i class="bi bi-currency-dollar text-green-500 text-xl"></i>
+        <div class="stat-card">
+            <div class="flex items-center justify-between mb-3">
+                <div class="w-10 h-10 rounded-lg bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center">
+                    <i class="bi bi-currency-dollar text-amber-600 dark:text-amber-400"></i>
                 </div>
             </div>
-            <div class="font-display text-3xl font-bold text-zinc-900 dark:text-white mb-1" id="monthlyRevenue">—</div>
-            <div class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Revenue (Month)</div>
+            <div class="text-2xl font-bold text-slate-900 dark:text-white mb-0.5" id="monthlyRevenue">&mdash;</div>
+            <div class="text-xs text-slate-500 dark:text-slate-400">Revenue (Month)</div>
         </div>
     </div>
-
-    <div class="border-t border-zinc-200 dark:border-zinc-800 my-8"></div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="glass-card overflow-hidden">
-            <div class="px-6 py-5 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 flex items-center gap-3">
-                <i class="bi bi-lightning-charge-fill text-neon-orange text-xl"></i>
-                <h5 class="text-lg font-bold text-zinc-900 dark:text-white m-0">Quick Actions</h5>
+        <div class="page-card">
+            <div class="px-5 py-4 border-b border-slate-200 dark:border-slate-700">
+                <h5 class="text-sm font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+                    <i class="bi bi-lightning-charge-fill text-primary-600 dark:text-primary-400"></i> Quick Actions
+                </h5>
             </div>
-            <div class="p-6">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <a asp-controller="Members" asp-action="Index" class="btn-outline border-zinc-300 dark:border-zinc-700 flex flex-col items-center justify-center py-6 hover:border-neon-cyan hover:text-neon-cyan group">
-                        <i class="bi bi-people text-3xl mb-2 text-zinc-500 dark:text-zinc-400 group-hover:text-neon-cyan transition-colors"></i>
-                        <span>Manage Members</span>
+            <div class="p-5">
+                <div class="grid grid-cols-2 gap-3">
+                    <a asp-controller="Members" asp-action="Index" class="btn-outline flex flex-col items-center justify-center py-5 hover:border-primary-300 hover:text-primary-600 dark:hover:border-primary-700 dark:hover:text-primary-400 transition-colors">
+                        <i class="bi bi-people text-2xl mb-2 text-slate-400 dark:text-slate-500"></i>
+                        <span class="text-sm">Members</span>
                     </a>
-                    <a asp-controller="Bookings" asp-action="Index" class="btn-outline border-zinc-300 dark:border-zinc-700 flex flex-col items-center justify-center py-6 hover:border-purple-400 hover:text-purple-400 group">
-                        <i class="bi bi-calendar-check text-3xl mb-2 text-zinc-500 dark:text-zinc-400 group-hover:text-purple-400 transition-colors"></i>
-                        <span>View Bookings</span>
+                    <a asp-controller="Bookings" asp-action="Index" class="btn-outline flex flex-col items-center justify-center py-5 hover:border-primary-300 hover:text-primary-600 dark:hover:border-primary-700 dark:hover:text-primary-400 transition-colors">
+                        <i class="bi bi-calendar-check text-2xl mb-2 text-slate-400 dark:text-slate-500"></i>
+                        <span class="text-sm">Bookings</span>
                     </a>
-                    <a asp-controller="Analytics" asp-action="Index" class="btn-outline border-zinc-300 dark:border-zinc-700 flex flex-col items-center justify-center py-6 hover:border-green-500 hover:text-green-500 group">
-                        <i class="bi bi-graph-up text-3xl mb-2 text-zinc-500 dark:text-zinc-400 group-hover:text-green-500 transition-colors"></i>
-                        <span>Analytics</span>
+                    <a asp-controller="Analytics" asp-action="Index" class="btn-outline flex flex-col items-center justify-center py-5 hover:border-primary-300 hover:text-primary-600 dark:hover:border-primary-700 dark:hover:text-primary-400 transition-colors">
+                        <i class="bi bi-graph-up text-2xl mb-2 text-slate-400 dark:text-slate-500"></i>
+                        <span class="text-sm">Analytics</span>
                     </a>
-                    <a asp-controller="Plans" asp-action="Index" class="btn-outline border-zinc-300 dark:border-zinc-700 flex flex-col items-center justify-center py-6 hover:border-neon-orange hover:text-neon-orange group">
-                        <i class="bi bi-box-seam text-3xl mb-2 text-zinc-500 dark:text-zinc-400 group-hover:text-neon-orange transition-colors"></i>
-                        <span>Plans & Pricing</span>
+                    <a asp-controller="Plans" asp-action="Index" class="btn-outline flex flex-col items-center justify-center py-5 hover:border-primary-300 hover:text-primary-600 dark:hover:border-primary-700 dark:hover:text-primary-400 transition-colors">
+                        <i class="bi bi-box-seam text-2xl mb-2 text-slate-400 dark:text-slate-500"></i>
+                        <span class="text-sm">Plans</span>
                     </a>
                 </div>
             </div>
         </div>
-        <div class="glass-card overflow-hidden">
-            <div class="px-6 py-5 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 flex items-center gap-3">
-                <i class="bi bi-clock-fill text-neon-cyan text-xl"></i>
-                <h5 class="text-lg font-bold text-zinc-900 dark:text-white m-0">Today's Schedule</h5>
+        <div class="page-card">
+            <div class="px-5 py-4 border-b border-slate-200 dark:border-slate-700">
+                <h5 class="text-sm font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+                    <i class="bi bi-clock-fill text-primary-600 dark:text-primary-400"></i> Today's Schedule
+                </h5>
             </div>
-            <div class="p-6 flex flex-col items-center justify-center h-[280px] text-center">
-                <div class="w-16 h-16 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center mb-4 border border-zinc-200 dark:border-zinc-700">
-                    <i class="bi bi-calendar2-x text-3xl text-zinc-400 dark:text-zinc-500"></i>
+            <div class="p-5 flex flex-col items-center justify-center h-[250px] text-center">
+                <div class="w-14 h-14 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center mb-3">
+                    <i class="bi bi-calendar2-x text-2xl text-slate-400 dark:text-slate-500"></i>
                 </div>
-                <p class="text-zinc-500 dark:text-zinc-400 mb-4 max-w-xs">Session schedule will appear here. Navigate to Sessions to manage.</p>
-                <a asp-controller="ClassSessions" asp-action="Index" class="btn-primary py-2 px-6">Go to Sessions</a>
+                <p class="text-sm text-slate-500 dark:text-slate-400 mb-3">Session schedule will appear here.</p>
+                <a asp-controller="ClassSessions" asp-action="Index" class="btn-primary py-2 px-5 text-sm">Go to Sessions</a>
             </div>
         </div>
     </div>
@@ -106,10 +102,10 @@
                     const r = await fetch('/Analytics/GetStats');
                     if (!r.ok) return;
                     const d = await r.json();
-                    document.getElementById('totalMembers').textContent = d.activeMembers ?? '—';
-                    document.getElementById('todaySessions').textContent = d.todaySessions ?? '—';
-                    document.getElementById('activeMemberships').textContent = d.activePlans ?? '—';
-                    document.getElementById('monthlyRevenue').textContent = d.revenue != null ? '$' + d.revenue.toLocaleString() : '—';
+                    document.getElementById('totalMembers').textContent = d.activeMembers ?? '\u2014';
+                    document.getElementById('todaySessions').textContent = d.todaySessions ?? '\u2014';
+                    document.getElementById('activeMemberships').textContent = d.activePlans ?? '\u2014';
+                    document.getElementById('monthlyRevenue').textContent = d.revenue != null ? '$' + d.revenue.toLocaleString() : '\u2014';
                 } catch(e) {}
             })();
         </script>
@@ -117,66 +113,61 @@
 }
 else
 {
-    <!-- Premium Landing Page for Unauthenticated Users -->
+    <!-- Landing Page for Unauthenticated Users -->
     <div class="flex flex-col items-center justify-center py-16 text-center">
-        <div class="mb-6 relative">
-            <div class="absolute inset-0 bg-neon-cyan/20 rounded-3xl blur-2xl z-0"></div>
-            <div class="relative z-10 w-24 h-24 mx-auto rounded-3xl bg-gradient-to-br from-neon-cyan to-neon-green flex items-center justify-center shadow-[0_0_40px_rgba(0,255,255,0.4)]">
-                <i class="bi bi-bezier2 text-black text-5xl"></i>
-            </div>
+        <div class="w-20 h-20 rounded-2xl bg-primary-600 flex items-center justify-center text-white text-4xl mb-6">
+            <i class="bi bi-bezier2"></i>
         </div>
-        
-        <h1 class="text-5xl md:text-7xl font-display font-extrabold text-zinc-900 dark:text-white mb-6 tracking-tight">
-            The Ultimate <br/>
-            <span class="text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan via-neon-green to-blue-500">Gym Management</span> Platform
+
+        <h1 class="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4 tracking-tight">
+            The Ultimate<br/>Gym Management Platform
         </h1>
-        
-        <p class="text-lg md:text-xl text-zinc-600 dark:text-zinc-400 mb-12 max-w-2xl mx-auto leading-relaxed">
-            Streamline your fitness business with our premium all-in-one software. Manage members, schedule classes, process payments, and track analytics effortlessly.
+
+        <p class="text-lg text-slate-500 dark:text-slate-400 mb-10 max-w-xl leading-relaxed">
+            Streamline your fitness business. Manage members, schedule classes, and track analytics effortlessly.
         </p>
-        
-        <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <a asp-controller="Account" asp-action="Register" class="btn-primary py-3 px-8 text-lg rounded-xl shadow-[0_0_20px_rgba(57,255,20,0.3)] hover:shadow-[0_0_30px_rgba(57,255,20,0.5)]">
+
+        <div class="flex flex-col sm:flex-row gap-4">
+            <a asp-controller="Account" asp-action="Register" class="btn-primary py-3 px-8 text-base">
                 <i class="bi bi-rocket-takeoff mr-2"></i> Get Started Free
             </a>
-            <a asp-controller="Account" asp-action="Login" class="btn-outline border-zinc-300 dark:border-zinc-700 py-3 px-8 text-lg rounded-xl">
-                <i class="bi bi-box-arrow-in-right mr-2"></i> Sign In to Dashboard
+            <a asp-controller="Account" asp-action="Login" class="btn-outline py-3 px-8 text-base">
+                <i class="bi bi-box-arrow-in-right mr-2"></i> Sign In
             </a>
         </div>
     </div>
 
-    <div class="border-t border-zinc-200 dark:border-zinc-800/50 my-16"></div>
+    <div class="border-t border-slate-200 dark:border-slate-700 my-12"></div>
 
-    <!-- Features Section -->
-    <div class="mb-16">
-        <div class="text-center mb-12">
-            <h2 class="text-3xl font-bold text-zinc-900 dark:text-white mb-4">Everything you need to scale</h2>
-            <p class="text-zinc-500 dark:text-zinc-400">Powerful features designed specifically for modern gyms and fitness centers.</p>
+    <div class="mb-12">
+        <div class="text-center mb-10">
+            <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-2">Everything you need</h2>
+            <p class="text-slate-500 dark:text-slate-400">Powerful features for modern gyms.</p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="glass-card p-8 text-center group hover:-translate-y-2 transition-transform duration-300">
-                <div class="w-16 h-16 mx-auto rounded-2xl bg-blue-500/10 flex items-center justify-center mb-6 border border-blue-500/20 group-hover:shadow-[0_0_20px_rgba(59,130,246,0.3)] transition-shadow">
-                    <i class="bi bi-people-fill text-blue-500 text-3xl"></i>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="page-card p-6 text-center">
+                <div class="w-12 h-12 rounded-xl bg-primary-50 dark:bg-primary-900/20 flex items-center justify-center mx-auto mb-4">
+                    <i class="bi bi-people-fill text-primary-600 dark:text-primary-400 text-xl"></i>
                 </div>
-                <h3 class="text-xl font-bold text-zinc-900 dark:text-white mb-3">Member Management</h3>
-                <p class="text-zinc-600 dark:text-zinc-400">Register, track, and manage all your gym members with detailed profiles, attendance history, and QR scanning.</p>
+                <h3 class="text-base font-semibold text-slate-900 dark:text-white mb-2">Member Management</h3>
+                <p class="text-sm text-slate-500 dark:text-slate-400">Register, track, and manage members with profiles and QR scanning.</p>
             </div>
 
-            <div class="glass-card p-8 text-center group hover:-translate-y-2 transition-transform duration-300">
-                <div class="w-16 h-16 mx-auto rounded-2xl bg-purple-500/10 flex items-center justify-center mb-6 border border-purple-500/20 group-hover:shadow-[0_0_20px_rgba(168,85,247,0.3)] transition-shadow">
-                    <i class="bi bi-calendar-week-fill text-purple-400 text-3xl"></i>
+            <div class="page-card p-6 text-center">
+                <div class="w-12 h-12 rounded-xl bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center mx-auto mb-4">
+                    <i class="bi bi-calendar-week-fill text-purple-600 dark:text-purple-400 text-xl"></i>
                 </div>
-                <h3 class="text-xl font-bold text-zinc-900 dark:text-white mb-3">Session Scheduling</h3>
-                <p class="text-zinc-600 dark:text-zinc-400">Create and manage group sessions with trainer assignments, automated capacity tracking, and member bookings.</p>
+                <h3 class="text-base font-semibold text-slate-900 dark:text-white mb-2">Session Scheduling</h3>
+                <p class="text-sm text-slate-500 dark:text-slate-400">Create and manage sessions with trainers and capacity tracking.</p>
             </div>
 
-            <div class="glass-card p-8 text-center group hover:-translate-y-2 transition-transform duration-300">
-                <div class="w-16 h-16 mx-auto rounded-2xl bg-neon-green/10 flex items-center justify-center mb-6 border border-neon-green/20 group-hover:shadow-[0_0_20px_rgba(57,255,20,0.3)] transition-shadow">
-                    <i class="bi bi-graph-up-arrow text-neon-green text-3xl"></i>
+            <div class="page-card p-6 text-center">
+                <div class="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center mx-auto mb-4">
+                    <i class="bi bi-graph-up-arrow text-emerald-600 dark:text-emerald-400 text-xl"></i>
                 </div>
-                <h3 class="text-xl font-bold text-zinc-900 dark:text-white mb-3">Analytics & Reports</h3>
-                <p class="text-zinc-600 dark:text-zinc-400">Real-time dynamic dashboards with revenue tracking, active memberships, capacity fill rates, and beautiful charts.</p>
+                <h3 class="text-base font-semibold text-slate-900 dark:text-white mb-2">Analytics & Reports</h3>
+                <p class="text-sm text-slate-500 dark:text-slate-400">Real-time dashboards with revenue tracking and beautiful charts.</p>
             </div>
         </div>
     </div>

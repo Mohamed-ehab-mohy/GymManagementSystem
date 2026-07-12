@@ -4,168 +4,39 @@
     Layout = "_Layout";
 }
 
-<style>
-    .error-page {
-        min-height: 70vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .error-card {
-        background: var(--bg-secondary);
-        border: 1px solid var(--border-color);
-        border-radius: 20px;
-        padding: 3rem;
-        max-width: 680px;
-        width: 100%;
-        text-align: center;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
-        animation: slideUp 0.4s ease;
-    }
-
-    @@keyframes slideUp {
-        from { opacity: 0; transform: translateY(20px); }
-        to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .error-icon-wrap {
-        width: 100px;
-        height: 100px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 1.5rem;
-        font-size: 2.8rem;
-        animation: pulse 2s infinite;
-    }
-
-    @@keyframes pulse {
-        0%, 100% { transform: scale(1); }
-        50%       { transform: scale(1.06); }
-    }
-
-    .status-code {
-        font-size: 5rem;
-        font-weight: 900;
-        line-height: 1;
-        letter-spacing: -2px;
-        background: linear-gradient(135deg, var(--status-color), #8b5cf6);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-    }
-
-    .error-title {
-        font-size: 1.6rem;
-        font-weight: 700;
-        margin: 0.5rem 0 1rem;
-    }
-
-    .error-message {
-        color: var(--text-secondary);
-        font-size: 1rem;
-        line-height: 1.7;
-        margin-bottom: 2rem;
-    }
-
-    .error-actions {
-        display: flex;
-        gap: 1rem;
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-
-    .btn-error-primary {
-        background: linear-gradient(135deg, var(--status-color), #8b5cf6);
-        color: #fff;
-        border: none;
-        padding: 0.65rem 1.8rem;
-        border-radius: 10px;
-        font-weight: 600;
-        text-decoration: none;
-        transition: opacity .2s, transform .2s;
-    }
-
-    .btn-error-primary:hover {
-        opacity: 0.88;
-        transform: translateY(-1px);
-        color: #fff;
-    }
-
-    .btn-error-outline {
-        background: transparent;
-        border: 1px solid var(--border-color);
-        color: var(--text-secondary);
-        padding: 0.65rem 1.8rem;
-        border-radius: 10px;
-        font-weight: 600;
-        text-decoration: none;
-        transition: border-color .2s, color .2s, transform .2s;
-    }
-
-    .btn-error-outline:hover {
-        border-color: var(--status-color);
-        color: var(--status-color);
-        transform: translateY(-1px);
-    }
-
-    .request-id {
-        font-size: 0.75rem;
-        color: var(--text-secondary);
-        margin-top: 2rem;
-        font-family: monospace;
-    }
-
-    .exception-details {
-        background: rgba(239, 68, 68, 0.07);
-        border: 1px solid rgba(239, 68, 68, 0.25);
-        border-radius: 10px;
-        padding: 1rem;
-        margin-top: 1.5rem;
-        text-align: left;
-        font-family: monospace;
-        font-size: 0.78rem;
-        color: #fca5a5;
-        white-space: pre-wrap;
-        word-break: break-all;
-        max-height: 220px;
-        overflow-y: auto;
-    }
-</style>
-
-<div class="error-page" style="--status-color: @Model.StatusColor">
-    <div class="error-card">
-
-        <div class="error-icon-wrap" style="background: @(Model.StatusColor)22;">
-            <i class="bi @Model.StatusIcon" style="color: @Model.StatusColor"></i>
+<div class="flex items-center justify-center min-h-[70vh]">
+    <div class="page-card p-10 max-w-lg w-full text-center">
+        <div class="w-20 h-20 mx-auto rounded-full flex items-center justify-center text-4xl mb-5" style="background: @(Model.StatusColor)15; color: @(Model.StatusColor);">
+            <i class="bi @Model.StatusIcon"></i>
         </div>
 
-        <div class="status-code">@Model.StatusCode</div>
-        <h1 class="error-title">@Model.Title</h1>
-        <p class="error-message">@Model.Message</p>
+        <div class="text-5xl font-bold text-slate-900 dark:text-white mb-2 tracking-tight" style="color: @(Model.StatusColor);">
+            @Model.StatusCode
+        </div>
+        <h1 class="text-xl font-semibold text-slate-900 dark:text-white mb-2">@Model.Title</h1>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">@Model.Message</p>
 
-        <div class="error-actions">
-            <a href="/" class="btn-error-primary">
-                <i class="bi bi-house me-1"></i> Go Home
+        <div class="flex gap-3 justify-center">
+            <a href="/" class="btn-primary py-2.5 px-6">
+                <i class="bi bi-house mr-1"></i> Go Home
             </a>
-            <a href="javascript:history.back()" class="btn-error-outline">
-                <i class="bi bi-arrow-left me-1"></i> Go Back
+            <a href="javascript:history.back()" class="btn-outline py-2.5 px-6">
+                <i class="bi bi-arrow-left mr-1"></i> Go Back
             </a>
         </div>
 
         @if (Model.ShowRequestId)
         {
-            <div class="request-id">
+            <div class="mt-6 text-xs text-slate-400 dark:text-slate-500 font-mono">
                 Request ID: @Model.RequestId
             </div>
         }
 
         @if (!string.IsNullOrEmpty(Model.ExceptionDetails))
         {
-            <div class="exception-details">@Model.ExceptionDetails</div>
+            <div class="mt-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3 text-left font-mono text-xs text-red-600 dark:text-red-400 whitespace-pre-wrap max-h-48 overflow-y-auto">
+                @Model.ExceptionDetails
+            </div>
         }
-
     </div>
 </div>

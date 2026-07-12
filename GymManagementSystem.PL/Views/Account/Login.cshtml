@@ -1,72 +1,68 @@
 @model LoginViewModel
 @{
-    ViewData["Title"] = "Login";
+    ViewData["Title"] = "Sign In";
 }
 
-<div class="flex items-center justify-center min-h-[75vh] relative">
-    <!-- Background Decoration -->
-    <div class="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] rounded-full bg-neon-cyan/10 dark:bg-neon-cyan/5 blur-[120px] pointer-events-none"></div>
-    <div class="absolute -bottom-[20%] -right-[10%] w-[50%] h-[50%] rounded-full bg-neon-green/10 dark:bg-neon-green/5 blur-[120px] pointer-events-none"></div>
-
-    <div class="w-full max-w-md p-4 relative z-10">
-        <div class="glass-card p-8 md:p-10 border-zinc-200 dark:border-gym-border shadow-lg dark:shadow-glass">
+<div class="flex items-center justify-center min-h-[75vh]">
+    <div class="w-full max-w-md p-4">
+        <div class="page-card p-8 md:p-10">
             <div class="text-center mb-8">
-                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-neon-green/10 border border-neon-green/30 shadow-[0_0_15px_rgba(57,255,20,0.2)] mb-4">
-                    <i class="bi bi-dumbbell text-3xl text-neon-green"></i>
+                <div class="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-primary-100 dark:bg-primary-900/30 mb-4">
+                    <i class="bi bi-dumbbell text-2xl text-primary-600 dark:text-primary-400"></i>
                 </div>
-                <h1 class="text-3xl font-display font-bold text-zinc-900 dark:text-white">Gym<span class="text-transparent bg-clip-text bg-gradient-to-r from-neon-green to-neon-cyan">Pro</span></h1>
-                <p class="text-zinc-500 dark:text-zinc-400 mt-2 font-medium">Welcome back! Sign in to manage.</p>
+                <h1 class="text-2xl font-bold text-slate-900 dark:text-white">GymPro</h1>
+                <p class="text-slate-500 dark:text-slate-400 mt-1.5 text-sm">Sign in to your account</p>
             </div>
 
             <form method="post" asp-action="Login" asp-controller="Account">
-                <div asp-validation-summary="ModelOnly" class="text-red-500 text-sm mb-4 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 p-3 rounded-lg font-medium"></div>
+                <div asp-validation-summary="ModelOnly" class="text-red-600 dark:text-red-400 text-sm mb-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-3 rounded-lg"></div>
 
-                <div class="mb-5">
+                <div class="mb-4">
                     <label asp-for="Email" class="form-label"></label>
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <i class="bi bi-envelope text-zinc-400"></i>
+                            <i class="bi bi-envelope text-slate-400"></i>
                         </div>
-                        <input asp-for="Email" class="form-input pl-10" autofocus placeholder="you@gym.com" />
+                        <input asp-for="Email" class="form-input pl-10" autofocus placeholder="you@example.com" />
                     </div>
                     <span asp-validation-for="Email" class="text-red-500 text-xs mt-1 block"></span>
                 </div>
 
                 <div class="mb-6">
                     <div class="flex justify-between items-center mb-1.5">
-                        <label asp-for="Password" class="block text-sm font-medium text-zinc-700 dark:text-zinc-400"></label>
-                        <a asp-action="ForgotPassword" asp-controller="Account" class="text-sm font-semibold text-neon-cyan hover:text-[#00e6e6] transition-colors">Forgot Password?</a>
+                        <label asp-for="Password" class="form-label mb-0"></label>
+                        <a asp-action="ForgotPassword" asp-controller="Account" class="text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors">Forgot password?</a>
                     </div>
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <i class="bi bi-lock text-zinc-400"></i>
+                            <i class="bi bi-lock text-slate-400"></i>
                         </div>
-                        <input asp-for="Password" class="form-input pl-10" placeholder="••••••••" />
+                        <input asp-for="Password" class="form-input pl-10" placeholder="Enter your password" />
                     </div>
                     <span asp-validation-for="Password" class="text-red-500 text-xs mt-1 block"></span>
                 </div>
 
-                <button type="submit" class="btn-primary w-full py-3 text-lg shadow-[0_0_15px_rgba(57,255,20,0.3)]">
+                <button type="submit" class="btn-primary w-full py-2.5">
                     Sign In
                 </button>
 
                 @if (ViewBag.GoogleAuthEnabled == true)
                 {
-                    <div class="my-6 flex items-center">
-                        <div class="flex-grow border-t border-zinc-200 dark:border-zinc-800"></div>
-                        <span class="flex-shrink-0 mx-4 text-zinc-400 dark:text-zinc-500 text-sm font-medium">or continue with</span>
-                        <div class="flex-grow border-t border-zinc-200 dark:border-zinc-800"></div>
+                    <div class="my-5 flex items-center">
+                        <div class="flex-grow border-t border-slate-200 dark:border-slate-700"></div>
+                        <span class="flex-shrink-0 mx-4 text-slate-400 dark:text-slate-500 text-sm">or</span>
+                        <div class="flex-grow border-t border-slate-200 dark:border-slate-700"></div>
                     </div>
 
-                    <a asp-action="GoogleLogin" asp-controller="Account" class="w-full flex items-center justify-center px-4 py-2.5 border border-zinc-300 dark:border-zinc-700 rounded-lg text-zinc-700 dark:text-zinc-300 bg-white dark:bg-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-colors shadow-sm font-semibold">
+                    <a asp-action="GoogleLogin" asp-controller="Account" class="btn-outline w-full py-2.5">
                         <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="w-5 h-5 mr-2" />
-                        Google
+                        Continue with Google
                     </a>
                 }
 
-                <div class="mt-8 text-center">
-                    <p class="text-zinc-500 dark:text-zinc-400 text-sm font-medium">
-                        Don't have an account? <a asp-action="Register" class="text-neon-cyan hover:text-[#00e6e6] font-semibold ml-1">Register here</a>
+                <div class="mt-6 text-center">
+                    <p class="text-slate-500 dark:text-slate-400 text-sm">
+                        Don't have an account? <a asp-action="Register" class="font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300">Create account</a>
                     </p>
                 </div>
             </form>

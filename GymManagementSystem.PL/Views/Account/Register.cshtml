@@ -1,45 +1,42 @@
 @model RegisterViewModel
 @{
-    ViewData["Title"] = "Register";
+    ViewData["Title"] = "Create Account";
 }
 
-<div class="flex items-center justify-center min-h-[75vh] relative">
-    <div class="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] rounded-full bg-neon-cyan/10 dark:bg-neon-cyan/5 blur-[120px] pointer-events-none"></div>
-    <div class="absolute -bottom-[20%] -right-[10%] w-[50%] h-[50%] rounded-full bg-neon-green/10 dark:bg-neon-green/5 blur-[120px] pointer-events-none"></div>
-
-    <div class="w-full max-w-xl p-4 relative z-10">
-        <div class="glass-card p-8 md:p-10 border-zinc-200 dark:border-gym-border shadow-lg dark:shadow-glass my-8">
+<div class="flex items-center justify-center min-h-[75vh]">
+    <div class="w-full max-w-xl p-4">
+        <div class="page-card p-8 md:p-10 my-8">
             <div class="text-center mb-8">
-                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-neon-cyan/10 border border-neon-cyan/30 shadow-[0_0_15px_rgba(0,255,255,0.2)] mb-4">
-                    <i class="bi bi-person-plus-fill text-3xl text-neon-cyan"></i>
+                <div class="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-primary-100 dark:bg-primary-900/30 mb-4">
+                    <i class="bi bi-person-plus-fill text-2xl text-primary-600 dark:text-primary-400"></i>
                 </div>
-                <h1 class="text-3xl font-display font-bold text-zinc-900 dark:text-white">Join <span class="text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan to-neon-green">GymPro</span></h1>
-                <p class="text-zinc-500 dark:text-zinc-400 mt-2 font-medium">Create your account to get started.</p>
+                <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Create your account</h1>
+                <p class="text-slate-500 dark:text-slate-400 mt-1.5 text-sm">Join GymPro and start your fitness journey.</p>
             </div>
 
             <form method="post" asp-action="Register" asp-controller="Account">
-                <div asp-validation-summary="ModelOnly" class="text-red-500 text-sm mb-4 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 p-3 rounded-lg font-medium"></div>
+                <div asp-validation-summary="ModelOnly" class="text-red-600 dark:text-red-400 text-sm mb-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-3 rounded-lg"></div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                     <div>
                         <label asp-for="FirstName" class="form-label"></label>
-                        <input asp-for="FirstName" class="form-input" autofocus placeholder="John" />
+                        <input asp-for="FirstName" class="form-input" autofocus placeholder="First name" />
                         <span asp-validation-for="FirstName" class="text-red-500 text-xs mt-1 block"></span>
                     </div>
                     <div>
                         <label asp-for="LastName" class="form-label"></label>
-                        <input asp-for="LastName" class="form-input" placeholder="Doe" />
+                        <input asp-for="LastName" class="form-input" placeholder="Last name" />
                         <span asp-validation-for="LastName" class="text-red-500 text-xs mt-1 block"></span>
                     </div>
                 </div>
 
-                <div class="mb-5">
+                <div class="mb-4">
                     <label asp-for="Email" class="form-label"></label>
-                    <input asp-for="Email" class="form-input" placeholder="you@gym.com" />
+                    <input asp-for="Email" class="form-input" placeholder="you@example.com" />
                     <span asp-validation-for="Email" class="text-red-500 text-xs mt-1 block"></span>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                     <div>
                         <label asp-for="Password" class="form-label"></label>
                         <input asp-for="Password" type="password" class="form-input" placeholder="Min. 8 characters" />
@@ -52,7 +49,7 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                     <div>
                         <label asp-for="DateOfBirth" class="form-label"></label>
                         <input asp-for="DateOfBirth" type="date" class="form-input" />
@@ -60,7 +57,8 @@
                     </div>
                     <div>
                         <label asp-for="Gender" class="form-label"></label>
-                        <select asp-for="Gender" class="form-input">
+                        <select asp-for="Gender" class="form-select">
+                            <option value="">Select gender</option>
                             <option value="Male">Male</option>
                             <option value="Female">Female</option>
                         </select>
@@ -68,13 +66,13 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn-primary w-full py-3 text-lg shadow-[0_0_15px_rgba(57,255,20,0.3)] bg-gradient-to-r from-neon-cyan to-neon-green text-black border-none">
+                <button type="submit" class="btn-primary w-full py-2.5">
                     Create Account
                 </button>
 
-                <div class="mt-8 text-center">
-                    <p class="text-zinc-500 dark:text-zinc-400 text-sm font-medium">
-                        Already have an account? <a asp-action="Login" class="text-neon-cyan hover:text-[#00e6e6] font-semibold ml-1">Sign In</a>
+                <div class="mt-6 text-center">
+                    <p class="text-slate-500 dark:text-slate-400 text-sm">
+                        Already have an account? <a asp-action="Login" class="font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300">Sign in</a>
                     </p>
                 </div>
             </form>
