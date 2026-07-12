@@ -1,6 +1,6 @@
-# Gym Management System (Gymy)
+# GymPro — Gym Management System
 
-A complete gym management web application built on .NET 10.0 with Clean Architecture.
+A complete gym management web application built on .NET 10.0 with Clean Architecture, featuring a professional UI with dark/light mode support.
 
 ## Tech Stack
 
@@ -18,6 +18,8 @@ A complete gym management web application built on .NET 10.0 with Clean Architec
 | Quartz.NET | 3.13.1 |
 | SignalR | - |
 | Tailwind CSS | 3.4.4 |
+| Alpine.js | 3.x |
+| Chart.js | - |
 | xUnit | 2.9.3 |
 
 ### Packages
@@ -29,7 +31,7 @@ A complete gym management web application built on .NET 10.0 with Clean Architec
 | Logging | Serilog.AspNetCore, Serilog.Sinks.Seq, Serilog.Sinks.Postgresql.Alternative, Serilog.Enrichers.Environment, Serilog.Enrichers.Thread |
 | Export | ClosedXML (Excel), QuestPDF (PDF) |
 | AI | OpenAI (GPT-4o-mini) |
-| Images / QR | CloudinaryDotNet, QRCoder |
+| Images / QR | CloudinaryDotNet, QRCoder, html5-qrcode@2.3.8 |
 | Auth | BCrypt.Net-Next, Microsoft.AspNetCore.Authentication.Google |
 | Email | MailKit |
 | Scheduling | Quartz, Quartz.Extensions.Hosting |
@@ -79,13 +81,27 @@ Key relationships:
 ### Presentation Layer
 
 - 10 MVC Controllers
-- 15 View folders
-- SignalR Hub (`/hubs/notifications`)
+- 15 View folders with professional blue/slate design system
+- Sidebar-based layout (`_LayoutSidebar.cshtml`) with collapsible sidebar and topbar
+- Auth pages use simplified `_Layout.cshtml` (centered card layout)
+- Dark/Light mode via Alpine.js with localStorage persistence
+- Consistent component classes: `page-card`, `stat-card`, `data-table`, `badge-*`, `form-*`, `btn-*`
+- DataTables integration with Tailwind-styled pagination
+- SignalR Hub (`/hubs/notifications`) with real-time toast notifications
+- AI Chatbot widget on all pages
 - 2 Quartz jobs: `PurgeDeletedRecordsJob` (daily 3 AM), `RenewalReminderJob` (daily 8 AM)
 - Database seeder with 4 plans from JSON
-- Tailwind CSS with PostCSS build pipeline
+- Tailwind CSS with PostCSS build pipeline (`npm run build:css`)
 
 ## Features
+
+### UI Design
+- Professional blue/slate color palette (primary: #2563eb, neutrals: slate)
+- Collapsible sidebar navigation with role-based menu items
+- Top bar with theme toggle, notifications dropdown, and profile menu
+- Dark/Light mode with system preference detection and localStorage persistence
+- Responsive design for desktop and mobile
+- AI chatbot widget floating on all pages
 
 ### Members
 - Full CRUD with soft delete
@@ -120,12 +136,13 @@ Key relationships:
 - Real-time SignalR notifications
 
 ### Attendance
-- QR code generation (QRCoder)
+- QR code generation (QRCoder) for member check-in
 - HMAC-signed payload format: `GYMYCHECKIN:{bookingId}:{signature}`
 - Signature verification prevents tampering
 - Duplicate attendance prevention
 - Session date validation (today only)
-- Scan page with result display
+- Admin scan page with html5-qrcode camera scanner
+- Member QR code display page
 
 ### Payments
 - Paymob gateway integration
@@ -146,7 +163,7 @@ Key relationships:
 - Google OAuth 2.0
 - BCrypt password hashing (12 rounds)
 - OTP-based password reset via email
-- Roles: Admin, Member, Trainer
+- Roles: Admin, SuperAdmin, Member, Trainer
 - Anti-CSRF on all POST requests
 - Soft delete with audit fields
 
@@ -193,8 +210,10 @@ After running the app (Docker or manual), the seeder creates these accounts:
 |-------|----------|------|
 | admin@gymy.com | Admin@123 | Admin |
 | superadmin@gymy.com | Super@123 | SuperAdmin |
-| member1@gmail.com - member100@gmail.com | Member@123 | Member |
-| trainer1@gymy.com - trainer100@gymy.com | Trainer@123 | Trainer |
+| member1@gmail.com – member100@gmail.com | Member@123 | Member |
+| trainer1@gymy.com – trainer100@gymy.com | Trainer@123 | Trainer |
+
+> **Note:** `AttendanceSettings:SecretKey` must be configured in `appsettings.json` (or via environment variable `AttendanceSettings__SecretKey`) for the QR attendance system to work.
 
 ## How to Run
 
@@ -317,12 +336,14 @@ dotnet test --collect:"XPlat Code Coverage"    # With coverage
 | `/Members/ExportPdf` | Export to PDF |
 | `/Trainers` | Trainer list |
 | `/Plans` | Plan management |
-| `/Bookings` | Bookings |
-| `/Bookings/Book` | Book a session |
-| `/Bookings/Mine` | My bookings |
+| `/Bookings` | Book a session (Member) |
+| `/Bookings/Mine` | My bookings (Member) |
+| `/AdminBooking` | Manage bookings (Admin) |
+| `/AdminBooking/Create` | Create booking (Admin) |
 | `/ClassSessions` | Class sessions |
-| `/Attendance/Scan` | QR scanner page |
+| `/Attendance/Scan` | QR scanner page (Admin) |
 | `/Attendance/CheckIn` | Process check-in |
+| `/Attendance/MyQr` | My QR code (Member) |
 | `/Analytics` | Analytics page |
 | `/Notifications` | Notifications |
 | `/hubs/notifications` | SignalR hub |
